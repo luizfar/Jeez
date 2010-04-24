@@ -1,5 +1,6 @@
 package com.jeez.compiler.lexer;
 
+import java.util.Arrays;
 import java.util.Hashtable;
 
 public class Lexer {
@@ -14,32 +15,32 @@ public class Lexer {
   
   private char []input;
   
-  private static final Hashtable<String, Symbol> keywordsTable = new Hashtable<String, Symbol>();
+  private static final Hashtable<String, Symbol> KEYWORDS = new Hashtable<String, Symbol>();
   
   private static final Hashtable<String, Symbol> OPERATORS = new Hashtable<String, Symbol>();
   
   static {
-    keywordsTable.put("true", Symbol.TRUE);
-    keywordsTable.put("false", Symbol.FALSE);
-    keywordsTable.put("static", Symbol.STATIC);
-    keywordsTable.put("void", Symbol.VOID);
-    keywordsTable.put("null", Symbol.NULL);
-    keywordsTable.put("if", Symbol.IF);
-    keywordsTable.put("else", Symbol.ELSE);
-    keywordsTable.put("while", Symbol.WHILE);
-    keywordsTable.put("read", Symbol.READ);
-    keywordsTable.put("write", Symbol.WRITE);
-    keywordsTable.put("break", Symbol.BREAK);
-    keywordsTable.put("int", Symbol.INT);
-    keywordsTable.put("boolean", Symbol.BOOLEAN);
-    keywordsTable.put("return", Symbol.RETURN);
-    keywordsTable.put("class", Symbol.CLASS);
-    keywordsTable.put("super", Symbol.SUPER);
-    keywordsTable.put("this", Symbol.THIS);
-    keywordsTable.put("new", Symbol.NEW);
-    keywordsTable.put("public", Symbol.PUBLIC);
-    keywordsTable.put("private", Symbol.PRIVATE);
-    keywordsTable.put("extends", Symbol.EXTENDS);
+    KEYWORDS.put("true", Symbol.TRUE);
+    KEYWORDS.put("false", Symbol.FALSE);
+    KEYWORDS.put("static", Symbol.STATIC);
+    KEYWORDS.put("void", Symbol.VOID);
+    KEYWORDS.put("null", Symbol.NULL);
+    KEYWORDS.put("if", Symbol.IF);
+    KEYWORDS.put("else", Symbol.ELSE);
+    KEYWORDS.put("while", Symbol.WHILE);
+    KEYWORDS.put("read", Symbol.READ);
+    KEYWORDS.put("write", Symbol.WRITE);
+    KEYWORDS.put("break", Symbol.BREAK);
+    KEYWORDS.put("int", Symbol.INT);
+    KEYWORDS.put("boolean", Symbol.BOOLEAN);
+    KEYWORDS.put("return", Symbol.RETURN);
+    KEYWORDS.put("class", Symbol.CLASS);
+    KEYWORDS.put("super", Symbol.SUPER);
+    KEYWORDS.put("this", Symbol.THIS);
+    KEYWORDS.put("new", Symbol.NEW);
+    KEYWORDS.put("public", Symbol.PUBLIC);
+    KEYWORDS.put("private", Symbol.PRIVATE);
+    KEYWORDS.put("extends", Symbol.EXTENDS);
     
     OPERATORS.put("+", Symbol.PLUS);
     OPERATORS.put("-", Symbol.MINUS);
@@ -54,25 +55,23 @@ public class Lexer {
     OPERATORS.put("==", Symbol.EQUAL);
     OPERATORS.put("!=", Symbol.NOT_EQUAL);
     OPERATORS.put("!", Symbol.NOT);
-    OPERATORS.put("(", Symbol.NOT_EQUAL);
-    OPERATORS.put(")", Symbol.NOT_EQUAL);
-    OPERATORS.put("{", Symbol.NOT_EQUAL);
-    OPERATORS.put("}", Symbol.NOT_EQUAL);
-    OPERATORS.put(",", Symbol.NOT_EQUAL);
-    OPERATORS.put(";", Symbol.NOT_EQUAL);
-    OPERATORS.put(".", Symbol.NOT_EQUAL);
-    OPERATORS.put("&&", Symbol.NOT_EQUAL);
-    OPERATORS.put("||", Symbol.NOT_EQUAL);
-    OPERATORS.put("&&", Symbol.NOT_EQUAL);
-    OPERATORS.put("&&", Symbol.NOT_EQUAL);
+    OPERATORS.put("(", Symbol.LEFT_PAR);
+    OPERATORS.put(")", Symbol.RIGHT_PAR);
+    OPERATORS.put("{", Symbol.LEFT_CUR_BRACKET);
+    OPERATORS.put("}", Symbol.RIGHT_CUR_BRACKET);
+    OPERATORS.put("[", Symbol.LEFT_BRACKET);
+    OPERATORS.put("]", Symbol.RIGHT_BRACKET);
+    OPERATORS.put(",", Symbol.COMMA);
+    OPERATORS.put(";", Symbol.SEMICOLON);
+    OPERATORS.put(".", Symbol.DOT);
+    OPERATORS.put("&&", Symbol.AND);
+    OPERATORS.put("||", Symbol.OR);
   }
   
-  public Lexer(char []input) {
-    this.input = input;
-    // add an end-of-file label to make it easy to do the lexer
+  public Lexer(char[] originalInput) {
+    input = Arrays.copyOf(originalInput, originalInput.length + 1);
     input[input.length - 1] = '\0';
     
-    // number of the current line
     lineNumber = 1;
     tokenPos = 0;
   }
@@ -127,24 +126,20 @@ public class Lexer {
     }
     
     stringValue = identifier.toString();
-    Symbol keywordSymbol = keywordsTable.get(stringValue);
+    Symbol keywordSymbol = KEYWORDS.get(stringValue);
     if (keywordSymbol == null) {
       token = Symbol.IDENTIFIER;
     }
   }
 
   private void parseLiteralString() {
+    tokenPos++;
     StringBuffer s = new StringBuffer();
-    while (input[tokenPos] != '\0' && input[tokenPos] != '\n')
-      if (input[tokenPos] == '"')
-        break;
-      else if (input[tokenPos] == '\\') {
+    while (input[tokenPos] != '\0' && input[tokenPos] != '\n' && input[tokenPos] != '"') {
+      if (input[tokenPos] == '\\') {
         if (input[tokenPos + 1] != '\n' && input[tokenPos + 1] != '\0') {
           s.append(input[tokenPos]);
           tokenPos++;
-          s.append(input[tokenPos]);
-          tokenPos++;
-        } else {
           s.append(input[tokenPos]);
           tokenPos++;
         }
@@ -152,14 +147,16 @@ public class Lexer {
         s.append(input[tokenPos]);
         tokenPos++;
       }
-
-    if (input[tokenPos] == '\0' || input[tokenPos] == '\n') {
-      literalStringValue = "";
-      throw new LexerException("Unterminated string literal", lineNumber);
-    } else {
+    }
+    
+    if (input[tokenPos] == '"') {
       tokenPos++;
       literalStringValue = s.toString();
+    } else {
+      literalStringValue = "";
+      throw new LexerException("Unterminated string literal", lineNumber);
     }
+    
     token = Symbol.LITERAL_STRING;
   }
 
@@ -190,17 +187,19 @@ public class Lexer {
     char ch;
     int lineNumberStartComment = lineNumber;
     tokenPos += 2;
-    while ((ch = input[tokenPos]) != '\0'
-        && (ch != '*' || input[tokenPos + 1] != '/')) {
-      if (ch == '\n')
+    ch = input[tokenPos];
+    while (ch != '\0' && !(ch == '*' && input[tokenPos + 1] == '/')) {
+      if (ch == '\n') {
         lineNumber++;
-      tokenPos++;
+      }
+      tokenPos++;      
+      ch = input[tokenPos];
     }
-    if (ch == '\0') {
-      throw new LexerException("Comment opened and not closed", lineNumberStartComment);
-    }
-    else {
+    
+    if (ch == '*') {
       tokenPos += 2;
+    } else {
+      throw new LexerException("Comment opened and not closed", lineNumberStartComment);
     }
   }
 
