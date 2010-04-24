@@ -10,4 +10,13 @@ public class SourceUnit implements ASTNode {
   public void addMember(SourceUnitMember member) {
     members.add(member);
   }
+  
+  public List<SourceUnitMember> getMembers() {
+    return members;
+  }
+
+  @Override
+  public void accept(JeezCodeVisitor visitor) {
+    visitor.visitSourceUnit(this);
+  }
 }

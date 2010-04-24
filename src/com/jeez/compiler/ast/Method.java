@@ -11,4 +11,9 @@ public class Method implements ClassMember {
   public void setName(String name) {
     this.name = name;
   }
+
+  @Override
+  public void accept(JeezCodeVisitor visitor) {
+    visitor.visitMethod(this);
+  }
 }

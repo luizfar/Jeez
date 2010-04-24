@@ -1,6 +1,5 @@
 package com.jeez.compiler.parser;
 
-import com.jeez.compiler.ast.ASTNode;
 import com.jeez.compiler.ast.ClassMember;
 import com.jeez.compiler.ast.JeezClass;
 import com.jeez.compiler.ast.Method;
@@ -20,15 +19,13 @@ public class JeezParser {
     sourceUnit = new SourceUnit();
   }
   
-  public ASTNode start() {
+  public SourceUnit start() {
     lexer.nextToken();
-    System.out.println(lexer.token);
-    System.out.println(lexer.getInput());
     switch (lexer.token) {
       case CLASS: sourceUnit.addMember(parseClass());
     }
     
-    return null;
+    return sourceUnit;
   }
   
   SourceUnitMember parseClass() {

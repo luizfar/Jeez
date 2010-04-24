@@ -20,4 +20,13 @@ public class JeezClass implements SourceUnitMember {
   public void addMember(ClassMember member) {
     members.add(member);
   }
+  
+  public List<ClassMember> getMembers() {
+    return members;
+  }
+
+  @Override
+  public void accept(JeezCodeVisitor visitor) {
+    visitor.visitClass(this);
+  }
 }
