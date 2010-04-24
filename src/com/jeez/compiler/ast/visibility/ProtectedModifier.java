@@ -7,7 +7,7 @@ public class ProtectedModifier implements VisibilityModifier {
 
   @Override
   public void accept(JeezCodeVisitor visitor) {
-    // TODO luiz
+    visitor.visitProtectedModifier(this);
   }
 
 }

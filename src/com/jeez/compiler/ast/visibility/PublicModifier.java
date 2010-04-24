@@ -7,7 +7,7 @@ public class PublicModifier implements VisibilityModifier {
 
   @Override
   public void accept(JeezCodeVisitor visitor) {
-    // TODO luiz
+    visitor.visitPublicModifier(this);
   }
 
 }

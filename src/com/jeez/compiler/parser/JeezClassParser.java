@@ -23,6 +23,8 @@ public class JeezClassParser {
   
   static {
     VISIBILITY_MODIFIERS.put(PUBLIC, PUBLIC_MODIFIER);
+    VISIBILITY_MODIFIERS.put(PROTECTED, PROTECTED_MODIFIER);
+    VISIBILITY_MODIFIERS.put(PRIVATE, PRIVATE_MODIFIER);
   }
 
   private JeezParser jeezParser;
@@ -62,13 +64,16 @@ public class JeezClassParser {
     
     if (jeezParser.getToken() == LEFT_PAR) {      
       Method method = parseMethod();
-      method.setStatic(isStatic);
       method.setVisibilityModifier(visibilityModifier);
+      method.setStatic(isStatic);
+      method.setReturnType(type);
+      method.setName(name);
       
       return method;
     }
     
     InstanceVariable attribute = new InstanceVariable();
+    attribute.setVisibilityModifier(visibilityModifier);
     attribute.setType(type);
     attribute.setName(name);
     

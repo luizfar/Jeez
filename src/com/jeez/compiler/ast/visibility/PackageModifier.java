@@ -7,7 +7,7 @@ public class PackageModifier implements VisibilityModifier {
 
   @Override
   public void accept(JeezCodeVisitor visitor) {
-    // TODO luiz
+    visitor.visitPackageModifier(this);
   }
 
 }

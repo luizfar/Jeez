@@ -10,7 +10,7 @@ import com.jeez.compiler.parser.JeezParser;
 
 public class JeezCompiler {
   
-  private static final String CODE = "class Dog { private int public age boolean alive static void bark(int volume) { print \"woof\" } }";
+  private static final String CODE = "class Dog { private int age public boolean alive static void bark(int volume) { print \"woof\" } }";
   
   private JeezLexer lexer;
   

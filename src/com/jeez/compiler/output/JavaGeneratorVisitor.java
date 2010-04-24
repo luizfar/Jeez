@@ -13,6 +13,10 @@ import com.jeez.compiler.ast.Variable;
 import com.jeez.compiler.ast.type.BooleanType;
 import com.jeez.compiler.ast.type.IntegerType;
 import com.jeez.compiler.ast.type.VoidType;
+import com.jeez.compiler.ast.visibility.PackageModifier;
+import com.jeez.compiler.ast.visibility.PrivateModifier;
+import com.jeez.compiler.ast.visibility.ProtectedModifier;
+import com.jeez.compiler.ast.visibility.PublicModifier;
 
 public class JavaGeneratorVisitor implements JeezCodeVisitor {
 
@@ -44,7 +48,7 @@ public class JavaGeneratorVisitor implements JeezCodeVisitor {
 
   @Override
   public void visitMethod(Method method) {
-    printWriter.print("public ");
+    method.getVisibilityModifier().accept(this);
     method.getReturnType().accept(this);
     printWriter.append(" " + method.getName() + " ");
     method.getParameters().accept(this);
@@ -57,7 +61,7 @@ public class JavaGeneratorVisitor implements JeezCodeVisitor {
   
   @Override
   public void visitInstanceVariable(InstanceVariable variable) {
-    printWriter.print("private ");
+    variable.getVisibilityModifier().accept(this);
     variable.getType().accept(this);
     printWriter.appendln(" " + variable.getName() + ";");
   }
@@ -100,5 +104,25 @@ public class JavaGeneratorVisitor implements JeezCodeVisitor {
       }
     }
     printWriter.append(")");
+  }
+
+  @Override
+  public void visitPackageModifier(PackageModifier packageModifier) {
+    printWriter.print("");
+  }
+
+  @Override
+  public void visitPrivateModifier(PrivateModifier privateModifier) {
+    printWriter.print("private ");
+  }
+
+  @Override
+  public void visitProtectedModifier(ProtectedModifier protectedModifier) {
+    printWriter.print("protected ");
+  }
+
+  @Override
+  public void visitPublicModifier(PublicModifier publicModifier) {
+    printWriter.print("public ");
   }
 }
