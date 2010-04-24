@@ -1,11 +1,9 @@
-package com.jeez.compiler.ast;
+package com.jeez.compiler.ast.modifier.visibility;
 
-import com.jeez.compiler.ast.visibility.PackageModifier;
-import com.jeez.compiler.ast.visibility.PrivateModifier;
-import com.jeez.compiler.ast.visibility.ProtectedModifier;
-import com.jeez.compiler.ast.visibility.PublicModifier;
+import com.jeez.compiler.ast.modifier.ClassMemberModifier;
+import com.jeez.compiler.ast.modifier.PublicModifier;
 
-public interface VisibilityModifier extends ASTNode {
+public interface VisibilityModifier extends ClassMemberModifier {
 
   public static final VisibilityModifier PUBLIC_MODIFIER = new PublicModifier();
   

@@ -41,6 +41,7 @@ public class JeezLexer {
     KEYWORDS.put("public", Symbol.PUBLIC);
     KEYWORDS.put("private", Symbol.PRIVATE);
     KEYWORDS.put("extends", Symbol.EXTENDS);
+    KEYWORDS.put("abstract", Symbol.ABSTRACT);
     
     OPERATORS.put("+", Symbol.PLUS);
     OPERATORS.put("-", Symbol.MINUS);

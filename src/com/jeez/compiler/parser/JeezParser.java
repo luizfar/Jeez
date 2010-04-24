@@ -40,6 +40,10 @@ public class JeezParser {
     lexer.nextToken();
   }
   
+  public int getLineNumber() {
+    return lexer.getLineNumber();
+  }
+  
   public void expect(Symbol symbol) {
     if (lexer.token != symbol) {
       throw new JeezParserException("'" + symbol + "' expected", lexer.getLineNumber());

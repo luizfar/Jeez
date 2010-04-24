@@ -1,12 +1,14 @@
 package com.jeez.compiler.ast;
 
+import com.jeez.compiler.ast.modifier.AbstractModifier;
+import com.jeez.compiler.ast.modifier.PublicModifier;
+import com.jeez.compiler.ast.modifier.StaticModifier;
+import com.jeez.compiler.ast.modifier.visibility.PackageModifier;
+import com.jeez.compiler.ast.modifier.visibility.PrivateModifier;
+import com.jeez.compiler.ast.modifier.visibility.ProtectedModifier;
 import com.jeez.compiler.ast.type.BooleanType;
 import com.jeez.compiler.ast.type.IntegerType;
 import com.jeez.compiler.ast.type.VoidType;
-import com.jeez.compiler.ast.visibility.PackageModifier;
-import com.jeez.compiler.ast.visibility.PrivateModifier;
-import com.jeez.compiler.ast.visibility.ProtectedModifier;
-import com.jeez.compiler.ast.visibility.PublicModifier;
 
 public interface JeezCodeVisitor {
 
@@ -37,4 +39,8 @@ public interface JeezCodeVisitor {
   void visitPrivateModifier(PrivateModifier privateModifier);
 
   void visitPackageModifier(PackageModifier packageModifier);
+
+  void visitStaticModifier(StaticModifier staticModifier);
+
+  void visitAbstractModifier(AbstractModifier abstractModifier);
 }

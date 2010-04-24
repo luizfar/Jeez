@@ -1,7 +1,6 @@
-package com.jeez.compiler.ast.visibility;
+package com.jeez.compiler.ast.modifier.visibility;
 
 import com.jeez.compiler.ast.JeezCodeVisitor;
-import com.jeez.compiler.ast.VisibilityModifier;
 
 public class PackageModifier implements VisibilityModifier {
 

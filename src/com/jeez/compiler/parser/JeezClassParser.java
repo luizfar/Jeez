@@ -1,10 +1,12 @@
 package com.jeez.compiler.parser;
 
-import static com.jeez.compiler.ast.VisibilityModifier.*;
+import static com.jeez.compiler.ast.modifier.visibility.VisibilityModifier.*;
 import static com.jeez.compiler.lexer.Symbol.*;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import com.jeez.compiler.ast.ClassMember;
 import com.jeez.compiler.ast.InstanceVariable;
@@ -14,17 +16,18 @@ import com.jeez.compiler.ast.Method;
 import com.jeez.compiler.ast.MethodParameter;
 import com.jeez.compiler.ast.MethodParameterList;
 import com.jeez.compiler.ast.Type;
-import com.jeez.compiler.ast.VisibilityModifier;
+import com.jeez.compiler.ast.modifier.ClassMemberModifier;
 import com.jeez.compiler.lexer.Symbol;
 
 public class JeezClassParser {
-
-  private static final Map<Symbol, VisibilityModifier> VISIBILITY_MODIFIERS = new HashMap<Symbol, VisibilityModifier>();
   
+  private static final Map<Symbol, ClassMemberModifier> MEMBER_MODIFIERS = new HashMap<Symbol, ClassMemberModifier>();
   static {
-    VISIBILITY_MODIFIERS.put(PUBLIC, PUBLIC_MODIFIER);
-    VISIBILITY_MODIFIERS.put(PROTECTED, PROTECTED_MODIFIER);
-    VISIBILITY_MODIFIERS.put(PRIVATE, PRIVATE_MODIFIER);
+    MEMBER_MODIFIERS.put(PUBLIC, PUBLIC_MODIFIER);
+    MEMBER_MODIFIERS.put(PROTECTED, PROTECTED_MODIFIER);
+    MEMBER_MODIFIERS.put(PRIVATE, PRIVATE_MODIFIER);
+    MEMBER_MODIFIERS.put(STATIC, STATIC_MODIFIER);
+    MEMBER_MODIFIERS.put(ABSTRACT, ABSTRACT_MODIFIER);
   }
 
   private JeezParser jeezParser;
@@ -51,42 +54,29 @@ public class JeezClassParser {
   }
 
   ClassMember parseClassMember() {
-    VisibilityModifier visibilityModifier = parseVisibilityModifier();
-    boolean isStatic = false;
-    
-    if (jeezParser.getToken() == STATIC) {
-      jeezParser.nextToken();
-      isStatic = true;
+    Set<ClassMemberModifier> modifiers = new HashSet<ClassMemberModifier>();
+    while (isClassMemberModifier(jeezParser.getToken())) {
+      modifiers.add(parseClassMemberModifier());
     }
     
     Type type = jeezParser.parseType();
     String name = jeezParser.parseIdentifier();
+    ClassMember member;
     
     if (jeezParser.getToken() == LEFT_PAR) {      
-      Method method = parseMethod();
-      method.setVisibilityModifier(visibilityModifier);
-      method.setStatic(isStatic);
-      method.setReturnType(type);
-      method.setName(name);
-      
-      return method;
+      member = parseMethod();
+    } else {
+      member = new InstanceVariable();
     }
     
-    InstanceVariable attribute = new InstanceVariable();
-    attribute.setVisibilityModifier(visibilityModifier);
-    attribute.setType(type);
-    attribute.setName(name);
+    member.setType(type);
+    member.setName(name);
     
-    return attribute;
-  }
-  
-  VisibilityModifier parseVisibilityModifier() {
-    VisibilityModifier modifier = PACKAGE_MODIFIER;
-    if (VISIBILITY_MODIFIERS.containsKey(jeezParser.getToken())) {
-      modifier = VISIBILITY_MODIFIERS.get(jeezParser.getToken());
-      jeezParser.nextToken();
+    for (ClassMemberModifier modifier : modifiers) {
+      member.addModifier(modifier);
     }
-    return modifier;
+    
+    return member;
   }
   
   Method parseMethod() {
@@ -129,5 +119,21 @@ public class JeezClassParser {
     parameter.setName(jeezParser.parseIdentifier());
     
     return parameter;
+  }
+  
+  ClassMemberModifier parseClassMemberModifier() {
+    ClassMemberModifier modifier = MEMBER_MODIFIERS.get(jeezParser.getToken());
+    if (modifier == null) {
+      throw new JeezParserException(
+          "'public', 'private', 'protected', 'static' or 'abstract' expected",
+          jeezParser.getLineNumber());
+    }
+    jeezParser.nextToken();
+    
+    return modifier;
+  }
+  
+  boolean isClassMemberModifier(Symbol token) {
+    return MEMBER_MODIFIERS.containsKey(token);
   }
 }

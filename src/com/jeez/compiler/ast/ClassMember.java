@@ -1,8 +1,39 @@
 package com.jeez.compiler.ast;
 
-public interface ClassMember extends ASTNode {
+import java.util.HashSet;
+import java.util.Set;
 
-  VisibilityModifier getVisibilityModifier();
+import com.jeez.compiler.ast.modifier.ClassMemberModifier;
+
+public abstract class ClassMember implements ASTNode {
+
+  private Set<ClassMemberModifier> modifiers = new HashSet<ClassMemberModifier>();
   
-  boolean isStatic();
+  private Type type;
+  
+  private String name;
+  
+  public void addModifier(ClassMemberModifier modifier) {
+    modifiers.add(modifier);
+  }
+  
+  public Set<ClassMemberModifier> getModifiers() {
+    return modifiers;
+  }
+
+  public void setType(Type type) {
+    this.type = type;
+  }
+
+  public Type getType() {
+    return type;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public String getName() {
+    return name;
+  }
 }

@@ -1,31 +1,16 @@
 package com.jeez.compiler.ast;
 
-public class InstanceVariable extends Variable implements ClassMember {
+import com.jeez.compiler.ast.modifier.ClassMemberModifier;
 
-  private VisibilityModifier visibilityModifier;
+public class InstanceVariable extends ClassMember {
   
-  private boolean isStatic;
+  @Override
+  public void addModifier(ClassMemberModifier modifier) {
+    super.addModifier(modifier);
+  }
   
   @Override
   public void accept(JeezCodeVisitor visitor) {
     visitor.visitInstanceVariable(this);
-  }
-
-  public void setVisibilityModifier(VisibilityModifier visibilityModifier) {
-    this.visibilityModifier = visibilityModifier;
-  }
-
-  @Override
-  public VisibilityModifier getVisibilityModifier() {
-    return visibilityModifier;
-  }
-
-  public void setStatic(boolean isStatic) {
-    this.isStatic = isStatic;
-  }
-
-  @Override
-  public boolean isStatic() {
-    return isStatic;
-  }
+  }  
 }

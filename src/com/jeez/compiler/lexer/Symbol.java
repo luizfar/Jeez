@@ -55,5 +55,6 @@ public enum Symbol {
   RIGHT_CUR_BRACKET,
   NOT,
   STATIC,
+  ABSTRACT,
   LastSymbol;
 }
