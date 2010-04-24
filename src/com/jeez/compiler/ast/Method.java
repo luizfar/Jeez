@@ -1,6 +1,10 @@
 package com.jeez.compiler.ast;
 
 public class Method implements ClassMember {
+  
+  private VisibilityModifier visibilityModifier;
+  
+  private boolean isStatic;
 
   private Type returnType;
   
@@ -30,6 +34,24 @@ public class Method implements ClassMember {
 
   public MethodParameterList getParameters() {
     return parameters;
+  }
+
+  public void setVisibilityModifier(VisibilityModifier visibilityModifier) {
+    this.visibilityModifier = visibilityModifier;
+  }
+
+  @Override
+  public VisibilityModifier getVisibilityModifier() {
+    return visibilityModifier;
+  }
+
+  public void setStatic(boolean isStatic) {
+    this.isStatic = isStatic;
+  }
+
+  @Override
+  public boolean isStatic() {
+    return isStatic;
   }
 
   @Override
