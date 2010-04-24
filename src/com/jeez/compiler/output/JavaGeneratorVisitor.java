@@ -1,9 +1,18 @@
-package com.jeez.compiler.ast;
+package com.jeez.compiler.output;
 
+import com.jeez.compiler.ast.ClassMember;
+import com.jeez.compiler.ast.InstanceVariable;
+import com.jeez.compiler.ast.JeezClass;
+import com.jeez.compiler.ast.JeezCodeVisitor;
+import com.jeez.compiler.ast.Method;
+import com.jeez.compiler.ast.MethodParameter;
+import com.jeez.compiler.ast.MethodParameterList;
+import com.jeez.compiler.ast.SourceUnit;
+import com.jeez.compiler.ast.SourceUnitMember;
+import com.jeez.compiler.ast.Variable;
 import com.jeez.compiler.ast.type.BooleanType;
 import com.jeez.compiler.ast.type.IntegerType;
 import com.jeez.compiler.ast.type.VoidType;
-import com.jeez.compiler.output.JeezPrintWriter;
 
 public class JavaGeneratorVisitor implements JeezCodeVisitor {
 

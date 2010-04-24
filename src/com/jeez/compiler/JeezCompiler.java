@@ -2,9 +2,9 @@ package com.jeez.compiler;
 
 import java.io.PrintWriter;
 
-import com.jeez.compiler.ast.JavaGeneratorVisitor;
 import com.jeez.compiler.ast.SourceUnit;
 import com.jeez.compiler.lexer.JeezLexer;
+import com.jeez.compiler.output.JavaGeneratorVisitor;
 import com.jeez.compiler.output.JeezPrintWriter;
 import com.jeez.compiler.parser.JeezParser;
 
