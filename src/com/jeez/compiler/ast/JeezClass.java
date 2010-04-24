@@ -3,7 +3,7 @@ package com.jeez.compiler.ast;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JeezClass implements SourceUnitMember {
+public class JeezClass implements JeezSourceMember {
 
   private String name;
   

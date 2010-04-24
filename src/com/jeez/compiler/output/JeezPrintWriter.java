@@ -20,6 +20,14 @@ public class JeezPrintWriter {
   public void set(int indent) {
     currentIndent = indent;
   }
+  
+  public void append(String s) {
+    out.print(s);
+  }
+  
+  public void appendln(String s) {
+    out.println(s);
+  }
 
   public void print(String s) {
     out.print(space.substring(0, currentIndent));

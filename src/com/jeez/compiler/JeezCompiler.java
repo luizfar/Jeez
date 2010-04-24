@@ -2,7 +2,7 @@ package com.jeez.compiler;
 
 import java.io.PrintWriter;
 
-import com.jeez.compiler.ast.SourceUnit;
+import com.jeez.compiler.ast.JeezSource;
 import com.jeez.compiler.lexer.JeezLexer;
 import com.jeez.compiler.output.JavaGeneratorVisitor;
 import com.jeez.compiler.output.JeezPrintWriter;
@@ -10,7 +10,7 @@ import com.jeez.compiler.parser.JeezParser;
 
 public class JeezCompiler {
   
-  private static final String CODE = "class Dog { void bark() { print \"woof\" } }";
+  private static final String CODE = "class Dog { int age boolean alive void bark(int volume) { print \"woof\" } }";
   
   private JeezLexer lexer;
   
@@ -24,12 +24,12 @@ public class JeezCompiler {
     lexer = new JeezLexer(input);
     parser = new JeezParser(lexer);
     
-    SourceUnit root = parser.start();
+    JeezSource root = parser.start();
     
     outputToScreen(root);
   }
   
-  private void outputToScreen(SourceUnit root) {
+  private void outputToScreen(JeezSource root) {
     JeezPrintWriter printWriter = new JeezPrintWriter();
     printWriter.set(new PrintWriter(System.out));
     

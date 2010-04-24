@@ -8,8 +8,8 @@ import com.jeez.compiler.ast.JeezClass;
 import com.jeez.compiler.ast.Method;
 import com.jeez.compiler.ast.MethodParameter;
 import com.jeez.compiler.ast.MethodParameterList;
-import com.jeez.compiler.ast.SourceUnit;
-import com.jeez.compiler.ast.SourceUnitMember;
+import com.jeez.compiler.ast.JeezSource;
+import com.jeez.compiler.ast.JeezSourceMember;
 import com.jeez.compiler.ast.Type;
 import com.jeez.compiler.lexer.JeezLexer;
 import com.jeez.compiler.lexer.Symbol;
@@ -18,14 +18,14 @@ public class JeezParser {
 
   private JeezLexer lexer;
   
-  private SourceUnit sourceUnit;
+  private JeezSource sourceUnit;
   
   public JeezParser(JeezLexer lexer) {
     this.lexer = lexer;
-    sourceUnit = new SourceUnit();
+    sourceUnit = new JeezSource();
   }
   
-  public SourceUnit start() {
+  public JeezSource start() {
     lexer.nextToken();
     switch (lexer.token) {
       case CLASS: sourceUnit.addMember(parseClass());
@@ -34,7 +34,7 @@ public class JeezParser {
     return sourceUnit;
   }
   
-  SourceUnitMember parseClass() {
+  JeezSourceMember parseClass() {
     expect(CLASS);
     
     JeezClass clazz = new JeezClass();
@@ -42,7 +42,9 @@ public class JeezParser {
     
     expect(LEFT_CUR_BRACKET);
     
-    clazz.addMember(parseClassMember());
+    while (lexer.token != RIGHT_CUR_BRACKET) {
+      clazz.addMember(parseClassMember());
+    }
     
     expect(RIGHT_CUR_BRACKET);
     

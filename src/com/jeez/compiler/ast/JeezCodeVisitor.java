@@ -6,7 +6,7 @@ import com.jeez.compiler.ast.type.VoidType;
 
 public interface JeezCodeVisitor {
 
-  void visitSourceUnit(SourceUnit sourceUnit);
+  void visitSourceUnit(JeezSource sourceUnit);
   
   void visitClass(JeezClass clazz);
 

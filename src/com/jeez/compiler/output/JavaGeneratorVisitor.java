@@ -7,8 +7,8 @@ import com.jeez.compiler.ast.JeezCodeVisitor;
 import com.jeez.compiler.ast.Method;
 import com.jeez.compiler.ast.MethodParameter;
 import com.jeez.compiler.ast.MethodParameterList;
-import com.jeez.compiler.ast.SourceUnit;
-import com.jeez.compiler.ast.SourceUnitMember;
+import com.jeez.compiler.ast.JeezSource;
+import com.jeez.compiler.ast.JeezSourceMember;
 import com.jeez.compiler.ast.Variable;
 import com.jeez.compiler.ast.type.BooleanType;
 import com.jeez.compiler.ast.type.IntegerType;
@@ -23,8 +23,8 @@ public class JavaGeneratorVisitor implements JeezCodeVisitor {
   }
 
   @Override
-  public void visitSourceUnit(SourceUnit sourceUnit) {
-    for (SourceUnitMember member : sourceUnit.getMembers()) {
+  public void visitSourceUnit(JeezSource sourceUnit) {
+    for (JeezSourceMember member : sourceUnit.getMembers()) {
       member.accept(this);
     }
   }
@@ -44,9 +44,11 @@ public class JavaGeneratorVisitor implements JeezCodeVisitor {
 
   @Override
   public void visitMethod(Method method) {
-    printWriter.print("public void " + method.getName());
+    printWriter.print("public ");
+    method.getReturnType().accept(this);
+    printWriter.append(" " + method.getName() + " ");
     method.getParameters().accept(this);
-    printWriter.println("{");
+    printWriter.appendln(" {");
     printWriter.add();
     
     printWriter.sub();
@@ -55,45 +57,48 @@ public class JavaGeneratorVisitor implements JeezCodeVisitor {
   
   @Override
   public void visitInstanceVariable(InstanceVariable variable) {
-    visitVariable(variable);
+    printWriter.print("private ");
+    variable.getType().accept(this);
+    printWriter.appendln(" " + variable.getName() + ";");
   }
 
   @Override
   public void visitMethodParameter(MethodParameter parameter) {
-    visitVariable(parameter);
+    parameter.getType().accept(this);
+    printWriter.append(" " + parameter.getName());
   }
   
   @Override
   public void visitVariable(Variable variable) {
     variable.getType().accept(this);
-    printWriter.print(" " + variable.getName() + ";");
+    printWriter.appendln(" " + variable.getName() + ";");
   }
 
   @Override
   public void visitBoolean(BooleanType booleanType) {
-    printWriter.print("boolean");
+    printWriter.append("boolean");
   }
 
   @Override
   public void visitInteger(IntegerType integerType) {
-    printWriter.print("int");
+    printWriter.append("int");
   }
   
   @Override
   public void visitVoid(VoidType voidType) {
-    printWriter.print("void");
+    printWriter.append("void");
   }
 
   @Override
   public void visitMethodParameterList(MethodParameterList methodParameterList) {
-    printWriter.print("(");
+    printWriter.append("(");
     for (int i = 0; i < methodParameterList.getParameters().size(); i++) {
       MethodParameter parameter = methodParameterList.getParameters().get(i);
       parameter.accept(this);
       if (i != methodParameterList.getParameters().size() - 1) {
-        printWriter.print(", ");
+        printWriter.append(", ");
       }
     }
-    printWriter.print(")");
+    printWriter.append(")");
   }
 }
