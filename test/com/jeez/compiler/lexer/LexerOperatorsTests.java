@@ -6,12 +6,12 @@ import org.junit.Test;
 
 public class LexerOperatorsTests {
 
-  private Lexer lexer;
+  private JeezLexer lexer;
   
   @Test
   public void plus() throws Exception {
     char[] code = "a + b".toCharArray();
-    lexer = new Lexer(code);
+    lexer = new JeezLexer(code);
     lexer.nextToken();
     assertEquals(Symbol.IDENTIFIER, lexer.token);
     lexer.nextToken();
@@ -25,7 +25,7 @@ public class LexerOperatorsTests {
   @Test
   public void greaterThan() throws Exception {
     char[] code = "a > b".toCharArray();
-    lexer = new Lexer(code);
+    lexer = new JeezLexer(code);
     lexer.nextToken();
     assertEquals(Symbol.IDENTIFIER, lexer.token);
     lexer.nextToken();
@@ -39,7 +39,7 @@ public class LexerOperatorsTests {
   @Test
   public void greaterOrEquals() throws Exception {
     char[] code = "a >= b".toCharArray();
-    lexer = new Lexer(code);
+    lexer = new JeezLexer(code);
     lexer.nextToken();
     assertEquals(Symbol.IDENTIFIER, lexer.token);
     lexer.nextToken();
@@ -53,7 +53,7 @@ public class LexerOperatorsTests {
   @Test
   public void notEquals() throws Exception {
     char[] code = "a != b".toCharArray();
-    lexer = new Lexer(code);
+    lexer = new JeezLexer(code);
     lexer.nextToken();
     assertEquals(Symbol.IDENTIFIER, lexer.token);
     lexer.nextToken();
@@ -67,7 +67,7 @@ public class LexerOperatorsTests {
   @Test
   public void equals() throws Exception {
     char[] code = "a==b".toCharArray();
-    lexer = new Lexer(code);
+    lexer = new JeezLexer(code);
     lexer.nextToken();
     assertEquals(Symbol.IDENTIFIER, lexer.token);
     lexer.nextToken();
@@ -81,7 +81,7 @@ public class LexerOperatorsTests {
   @Test
   public void commaAndBrackets() throws Exception {
     char[] code = "a() { [b, c] }".toCharArray();
-    lexer = new Lexer(code);
+    lexer = new JeezLexer(code);
     lexer.nextToken();
     assertEquals(Symbol.IDENTIFIER, lexer.token);
     lexer.nextToken();

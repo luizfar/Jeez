@@ -3,7 +3,7 @@ package com.jeez.compiler.lexer;
 import java.util.Arrays;
 import java.util.Hashtable;
 
-public class Lexer {
+public class JeezLexer {
 
   public Symbol token;
   private String stringValue, literalStringValue;
@@ -68,7 +68,7 @@ public class Lexer {
     OPERATORS.put("||", Symbol.OR);
   }
   
-  public Lexer(char[] originalInput) {
+  public JeezLexer(char[] originalInput) {
     input = Arrays.copyOf(originalInput, originalInput.length + 1);
     input[input.length - 1] = '\0';
     
@@ -91,18 +91,32 @@ public class Lexer {
       nextToken();
     } else {
       if (isValidIdentifierChar(ch)) {
-        parseKeywordOrIdentifier(ch);
+        parseKeywordOrIdentifier();
       } else if (isDigit(ch)) {
-        parseLiteralNumber(ch);
+        parseLiteralNumber();
       } else if (ch == '"') {
         parseLiteralString();
       } else {
-        parseOperator(ch);
+        parseOperator();
       }
     }
   }
 
-  private void parseLiteralNumber(char ch) {
+  private void parseKeywordOrIdentifier() {
+    StringBuffer identifier = new StringBuffer();
+    while (isLetterOrDigit(input[tokenPos])) {
+      identifier.append(input[tokenPos]);
+      tokenPos++;
+    }
+    
+    stringValue = identifier.toString();
+    token = KEYWORDS.get(stringValue);
+    if (token == null) {
+      token = Symbol.IDENTIFIER;
+    }
+  }
+
+  private void parseLiteralNumber() {
     StringBuffer number = new StringBuffer();
     while (isDigit(input[tokenPos])) {
       number.append(input[tokenPos]);
@@ -112,24 +126,10 @@ public class Lexer {
     try {
       numberValue = Integer.valueOf(number.toString()).intValue();
     } catch (NumberFormatException e) {
-      throw new LexerException("Number out of limits", lineNumber);
+      throw new JeezLexerException("Number out of limits", lineNumber);
     }
     
     token = Symbol.NUMBER;
-  }
-
-  private void parseKeywordOrIdentifier(char ch) {
-    StringBuffer identifier = new StringBuffer();
-    while (isLetterOrDigit(ch)) {
-      identifier.append(input[tokenPos]);
-      tokenPos++;
-    }
-    
-    stringValue = identifier.toString();
-    Symbol keywordSymbol = KEYWORDS.get(stringValue);
-    if (keywordSymbol == null) {
-      token = Symbol.IDENTIFIER;
-    }
   }
 
   private void parseLiteralString() {
@@ -154,20 +154,20 @@ public class Lexer {
       literalStringValue = s.toString();
     } else {
       literalStringValue = "";
-      throw new LexerException("Unterminated string literal", lineNumber);
+      throw new JeezLexerException("Unterminated string literal", lineNumber);
     }
     
     token = Symbol.LITERAL_STRING;
   }
 
-  private void parseOperator(char ch) {
-    tokenPos++;
-    String operator = String.valueOf(ch) + input[tokenPos];
+  private void parseOperator() {
+    String operator = String.valueOf(input[tokenPos]) + input[tokenPos + 1];
     token = OPERATORS.get(operator);
     if (token != null) {
-      tokenPos++;
+      tokenPos += 2;
     } else {
-      token = OPERATORS.get(String.valueOf(ch));
+      token = OPERATORS.get(String.valueOf(input[tokenPos]));
+      tokenPos++;
     }
   }
 
@@ -199,7 +199,7 @@ public class Lexer {
     if (ch == '*') {
       tokenPos += 2;
     } else {
-      throw new LexerException("Comment opened and not closed", lineNumberStartComment);
+      throw new JeezLexerException("Comment opened and not closed", lineNumberStartComment);
     }
   }
 
@@ -209,12 +209,13 @@ public class Lexer {
   }
 
   private char findNextChar() {
-    char ch;
-    while ((ch = input[tokenPos]) == ' ' || ch == '\r' || ch == '\t' || ch == '\n') {
-      // count the number of lines
-      if (ch == '\n')
+    char ch = input[tokenPos];
+    while (ch == ' ' || ch == '\r' || ch == '\t' || ch == '\n') {
+      if (ch == '\n') {
         lineNumber++;
+      }
       tokenPos++;
+      ch = input[tokenPos];
     }
     return ch;
   }
@@ -269,5 +270,9 @@ public class Lexer {
 
   public String getLiteralStringValue() {
     return literalStringValue;
+  }
+  
+  public char[] getInput() {
+    return input;
   }
 }
