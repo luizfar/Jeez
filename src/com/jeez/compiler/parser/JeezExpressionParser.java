@@ -117,11 +117,13 @@ public class JeezExpressionParser {
       
       case THIS:
       case LEFT_PAR:
+        throw new RuntimeException("Not yet implemented.");
+        
       case NEW:
         return parseInstantiationExpression();
         
       case LEFT_BRACKET:
-        throw new RuntimeException("Not yet implemented");
+        throw new RuntimeException("Not yet implemented.");
       
       case IDENTIFIER:
         return parseVariableOrMethodExpression();
