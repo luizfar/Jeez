@@ -31,14 +31,14 @@ public class Method extends ClassMember {
   public MethodParameterList getParameters() {
     return parameters;
   }
-  
-  @Override
-  public void receive(JeezCodeVisitor visitor) {
-    visitor.visitMethod(this);
-  }
 
   @Override
   public Set<ClassMemberModifier> getAllowedModifiers() {
     return ALLOWED_MODIFIERS;
+  }
+  
+  @Override
+  public void receive(JeezCodeVisitor visitor) {
+    visitor.visitMethod(this);
   }
 }

@@ -7,7 +7,9 @@ public class JeezClass implements JeezSourceMember {
 
   private String name;
   
-  private List<ClassMember> members = new ArrayList<ClassMember>();
+  private List<InstanceVariable> instanceVariables = new ArrayList<InstanceVariable>();
+  
+  private List<Method> methods = new ArrayList<Method>();
 
   public String getName() {
     return name;
@@ -18,13 +20,29 @@ public class JeezClass implements JeezSourceMember {
   }
   
   public void addMember(ClassMember member) {
-    members.add(member);
+    if (member instanceof InstanceVariable) {
+      instanceVariables.add((InstanceVariable) member);
+    } else if (member instanceof Method) {
+      methods.add((Method) member);
+    }
   }
   
   public List<ClassMember> getMembers() {
+    List<ClassMember> members = new ArrayList<ClassMember>();
+    members.addAll(instanceVariables);
+    members.addAll(methods);
+    
     return members;
   }
-
+  
+  public List<InstanceVariable> getInstanceVariables() {
+    return instanceVariables;
+  }
+  
+  public List<Method> getMethods() {
+    return methods;
+  }
+  
   @Override
   public void receive(JeezCodeVisitor visitor) {
     visitor.visitClass(this);

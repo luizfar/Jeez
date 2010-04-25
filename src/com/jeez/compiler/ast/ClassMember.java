@@ -9,7 +9,7 @@ import com.jeez.compiler.ast.modifier.ClassMemberModifier;
 import com.jeez.compiler.ast.modifier.visibility.VisibilityModifier;
 
 public abstract class ClassMember implements ASTNode {
-
+  
   private Set<ClassMemberModifier> modifiers = new HashSet<ClassMemberModifier>();
   
   private Type type;
