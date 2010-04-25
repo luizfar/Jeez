@@ -10,6 +10,8 @@ import com.jeez.compiler.ast.modifier.visibility.VisibilityModifier;
 
 public abstract class ClassMember implements ASTNode {
   
+  private JeezClass owner;
+  
   private Set<ClassMemberModifier> modifiers = new HashSet<ClassMemberModifier>();
   
   private Type type;
@@ -21,6 +23,14 @@ public abstract class ClassMember implements ASTNode {
   private boolean isStatic;
   
   private boolean isAbstract;
+  
+  public JeezClass getOwner() {
+    return owner;
+  }
+  
+  public void setOwner(JeezClass owner) {
+    this.owner = owner;
+  }
   
   abstract public Set<ClassMemberModifier> getAllowedModifiers();
   

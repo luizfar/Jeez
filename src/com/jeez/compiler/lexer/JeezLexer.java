@@ -7,7 +7,7 @@ public class JeezLexer {
 
   public Symbol token;
   private String stringValue, literalStringValue;
-  private int numberValue;
+  private int integerValue;
 
   private int  tokenPos;
   
@@ -128,12 +128,12 @@ public class JeezLexer {
     }
     
     try {
-      numberValue = Integer.valueOf(number.toString()).intValue();
+      integerValue = Integer.valueOf(number.toString()).intValue();
     } catch (NumberFormatException e) {
       throw new JeezLexerException("Number out of limits", lineNumber);
     }
     
-    token = Symbol.NUMBER;
+    token = Symbol.INTEGER;
   }
 
   private void parseLiteralString() {
@@ -268,8 +268,8 @@ public class JeezLexer {
     return stringValue;
   }
 
-  public int getNumberValue() {
-    return numberValue;
+  public int getIntegerValue() {
+    return integerValue;
   }
 
   public String getLiteralStringValue() {

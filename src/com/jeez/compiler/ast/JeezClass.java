@@ -43,6 +43,17 @@ public class JeezClass implements JeezSourceMember {
     return methods;
   }
   
+  public List<Method> getMethod(String name, int argumentCount) {
+    List<Method> results = new ArrayList<Method>();
+    for (Method method : methods) {
+      if (method.getName().equals(name)
+          && method.getParameters().getSize() == argumentCount) {
+        results.add(method);
+      }
+    }
+    return results;
+  }
+  
   @Override
   public void receive(JeezCodeVisitor visitor) {
     visitor.visitClass(this);

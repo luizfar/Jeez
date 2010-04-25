@@ -69,6 +69,10 @@ public class JeezParser {
     return lexer.getLiteralStringValue();
   }
   
+  int getIntegerValue() {
+    return lexer.getIntegerValue();
+  }
+  
   int getLineNumber() {
     return lexer.getLineNumber();
   }

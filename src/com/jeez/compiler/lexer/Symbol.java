@@ -4,7 +4,7 @@ public enum Symbol {
   
   EOF,
   IDENTIFIER,
-  NUMBER,
+  INTEGER,
   PLUS,
   MINUS,
   MULTIPLIER,

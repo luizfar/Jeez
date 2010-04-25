@@ -68,8 +68,8 @@ public class LexerTests {
     lexer.nextToken();
     lexer.nextToken();
     lexer.nextToken();
-    assertEquals(Symbol.NUMBER, lexer.token);
-    assertEquals(123, lexer.getNumberValue());
+    assertEquals(Symbol.INTEGER, lexer.token);
+    assertEquals(123, lexer.getIntegerValue());
     lexer.nextToken();
     assertEquals(Symbol.EOF, lexer.token);
   }

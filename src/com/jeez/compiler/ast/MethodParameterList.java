@@ -14,6 +14,10 @@ public class MethodParameterList implements ASTNode {
   public List<MethodParameter> getParameters() {
     return parameters;
   }
+  
+  public int getSize() {
+    return parameters.size();
+  }
 
   @Override
   public void receive(JeezCodeVisitor visitor) {

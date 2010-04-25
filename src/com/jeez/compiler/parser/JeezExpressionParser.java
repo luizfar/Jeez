@@ -1,30 +1,44 @@
 package com.jeez.compiler.parser;
 
-import static com.jeez.compiler.lexer.Symbol.AND;
-import static com.jeez.compiler.lexer.Symbol.DIVISOR;
-import static com.jeez.compiler.lexer.Symbol.MINUS;
-import static com.jeez.compiler.lexer.Symbol.MULTIPLIER;
-import static com.jeez.compiler.lexer.Symbol.NOT;
-import static com.jeez.compiler.lexer.Symbol.OR;
-import static com.jeez.compiler.lexer.Symbol.PLUS;
-import static com.jeez.compiler.lexer.Symbol.REMAINDER;
+import static com.jeez.compiler.lexer.Symbol.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.jeez.compiler.ast.JeezClass;
+import com.jeez.compiler.ast.Method;
+import com.jeez.compiler.ast.SymbolTable;
+import com.jeez.compiler.ast.Variable;
 import com.jeez.compiler.ast.expr.AddExpression;
 import com.jeez.compiler.ast.expr.AndExpression;
 import com.jeez.compiler.ast.expr.Expression;
+import com.jeez.compiler.ast.expr.InstantiationExpression;
+import com.jeez.compiler.ast.expr.IntegerExpression;
+import com.jeez.compiler.ast.expr.LiteralBooleanExpression;
 import com.jeez.compiler.ast.expr.LiteralStringExpression;
+import com.jeez.compiler.ast.expr.MessageSendToThisExpression;
 import com.jeez.compiler.ast.expr.MultiplyExpression;
 import com.jeez.compiler.ast.expr.NullExpression;
 import com.jeez.compiler.ast.expr.OrExpression;
 import com.jeez.compiler.ast.expr.UnaryExpression;
+import com.jeez.compiler.ast.expr.VariableExpression;
 import com.jeez.compiler.lexer.Symbol;
 
 public class JeezExpressionParser {
 
   private JeezParser jeezParser;
   
-  public JeezExpressionParser(JeezParser jeezParser) {
+  private Method currentMethod;
+  
+  private SymbolTable symbolTable;
+  
+  public JeezExpressionParser(JeezParser jeezParser, SymbolTable symbolTable) {
     this.jeezParser = jeezParser;
+    this.symbolTable = symbolTable;
+  }
+  
+  public void setCurrentMethod(Method currentMethod) {
+    this.currentMethod = currentMethod;
   }
   
   public Expression parseExpression() {
@@ -104,11 +118,20 @@ public class JeezExpressionParser {
       case THIS:
       case LEFT_PAR:
       case NEW:
+        return parseInstantiationExpression();
+        
       case LEFT_BRACKET:
         throw new RuntimeException("Not yet implemented");
       
       case IDENTIFIER:
         return parseVariableOrMethodExpression();
+      
+      case TRUE:
+      case FALSE:
+        return parseLiteralBooleanExpression();
+        
+      case INTEGER:
+        return parseIntegerExpression();
       
       case LITERAL_STRING:
         return parseLiteralStringExpression();
@@ -116,9 +139,100 @@ public class JeezExpressionParser {
     
     throw new RuntimeException("Should throw an error here");
   }
+  
+  private Expression parseInstantiationExpression() {
+    jeezParser.expect(NEW);
+    
+    String identifier = jeezParser.parseIdentifier();
+    JeezClass clazz = symbolTable.getFromGlobalScope(identifier);
+    
+    if (clazz == null) {
+      throw new JeezParserException("Could not find class with name '"
+          + identifier + "'", jeezParser.getLineNumber());
+    }
+    
+    jeezParser.expect(LEFT_PAR);
+    // TODO luiz parse constructor arguments    
+    jeezParser.expect(RIGHT_PAR);
+    
+    return new InstantiationExpression(clazz);
+  }
 
   private Expression parseVariableOrMethodExpression() {
-    throw new RuntimeException("Not yet implemented.");
+    String identifier = jeezParser.getStringValue();
+    jeezParser.nextToken();
+    
+    Expression expression;
+    
+    if (jeezParser.getToken() == LEFT_PAR) {
+      expression = parseMessageSendToThisExpression(identifier);
+    } else {
+      expression = parseVariableExpression(identifier);
+    }
+    
+    if (jeezParser.getToken() == LEFT_BRACKET) {
+//      expression = parseListOrMapIndexExpression();
+      throw new RuntimeException("Not yet implemented.");
+    }
+    
+    return expression;
+  }
+  
+  private Expression parseMessageSendToThisExpression(String messageName) {    
+    jeezParser.expect(LEFT_PAR);
+    
+    List<Expression> arguments = new ArrayList<Expression>();
+    boolean parseArgument = jeezParser.getToken() != RIGHT_PAR;
+    while (parseArgument) {
+      arguments.add(parseExpression());
+      if (jeezParser.getToken() == COMMA) {
+        jeezParser.nextToken();
+      } else {
+        parseArgument = false;
+      }
+    }
+    jeezParser.expect(RIGHT_PAR);
+    
+    JeezClass clazz = currentMethod.getOwner();
+    List<Method> matches = clazz.getMethod(messageName, arguments.size());
+    
+    if (matches.size() == 0) {
+      throw new JeezParserException("Could not find matching method for name '"
+          + messageName + "'", jeezParser.getLineNumber());
+    }
+    
+    if (matches.size() > 1) {
+      throw new RuntimeException("Not yet implemented.");
+    }
+    
+    Method method = matches.get(0);
+    
+    return new MessageSendToThisExpression(method, arguments);
+  }
+  
+  private Expression parseVariableExpression(String identifier) {
+    Variable variable = symbolTable.getFromLocalScope(identifier);
+    
+    if (variable == null) {
+      throw new JeezParserException("Variable '" + identifier
+          + "' not declared.", jeezParser.getLineNumber());
+    }
+    
+    return new VariableExpression(variable);
+  }
+  
+  private Expression parseLiteralBooleanExpression() {
+    boolean value = jeezParser.getToken() == TRUE;
+    jeezParser.nextToken();
+    
+    return new LiteralBooleanExpression(value);
+  }
+  
+  private Expression parseIntegerExpression() {
+    int value = jeezParser.getIntegerValue();
+    jeezParser.nextToken();
+    
+    return new IntegerExpression(value);
   }
   
   private Expression parseLiteralStringExpression() {

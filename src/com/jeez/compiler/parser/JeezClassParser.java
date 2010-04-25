@@ -46,7 +46,7 @@ public class JeezClassParser {
     jeezParser.expect(LEFT_CUR_BRACKET);
     
     while (jeezParser.getToken() != RIGHT_CUR_BRACKET) {
-      clazz.addMember(parseClassMember());
+      clazz.addMember(parseClassMember(clazz));
     }
     
     jeezParser.expect(RIGHT_CUR_BRACKET);
@@ -54,7 +54,7 @@ public class JeezClassParser {
     return clazz;
   }
 
-  ClassMember parseClassMember() {
+  ClassMember parseClassMember(JeezClass clazz) {
     Set<ClassMemberModifier> modifiers = new HashSet<ClassMemberModifier>();
     while (isClassMemberModifier(jeezParser.getToken())) {
       modifiers.add(parseClassMemberModifier());
@@ -70,6 +70,7 @@ public class JeezClassParser {
       member = new InstanceVariable();
     }
     
+    member.setOwner(clazz);
     member.setType(type);
     member.setName(name);
     
