@@ -22,6 +22,7 @@ import com.jeez.compiler.lexer.Symbol;
 public class JeezClassParser {
   
   private static final Map<Symbol, ClassMemberModifier> MEMBER_MODIFIERS = new HashMap<Symbol, ClassMemberModifier>();
+  
   static {
     MEMBER_MODIFIERS.put(PUBLIC, PUBLIC_MODIFIER);
     MEMBER_MODIFIERS.put(PROTECTED, PROTECTED_MODIFIER);

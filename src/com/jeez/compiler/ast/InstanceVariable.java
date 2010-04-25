@@ -34,5 +34,5 @@ public class InstanceVariable extends ClassMember {
   @Override
   public Set<ClassMemberModifier> getAllowedModifiers() {
     return ALLOWED_MODIFIERS;
-  }  
+  }
 }
