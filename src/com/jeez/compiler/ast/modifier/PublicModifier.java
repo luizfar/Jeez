@@ -6,7 +6,7 @@ import com.jeez.compiler.ast.modifier.visibility.VisibilityModifier;
 public class PublicModifier implements VisibilityModifier {
 
   @Override
-  public void accept(JeezCodeVisitor visitor) {
+  public void receive(JeezCodeVisitor visitor) {
     visitor.visitPublicModifier(this);
   }
 

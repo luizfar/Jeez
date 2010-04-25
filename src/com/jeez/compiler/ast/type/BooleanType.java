@@ -6,7 +6,7 @@ import com.jeez.compiler.ast.Type;
 public class BooleanType implements Type {
 
   @Override
-  public void accept(JeezCodeVisitor visitor) {
+  public void receive(JeezCodeVisitor visitor) {
     visitor.visitBoolean(this);
   }  
 }

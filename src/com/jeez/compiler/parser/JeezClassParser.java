@@ -73,7 +73,12 @@ public class JeezClassParser {
     member.setName(name);
     
     for (ClassMemberModifier modifier : modifiers) {
-      member.addModifier(modifier);
+      if (member.accepts(modifier)) {
+        member.addModifier(modifier);
+      } else {
+        throw new JeezParserException("Invalid modifier for member", jeezParser
+            .getLineNumber());
+      }
     }
     
     return member;

@@ -32,7 +32,7 @@ public class JavaGeneratorVisitor implements JeezCodeVisitor {
   @Override
   public void visitSourceUnit(JeezSource sourceUnit) {
     for (JeezSourceMember member : sourceUnit.getMembers()) {
-      member.accept(this);
+      member.receive(this);
     }
   }
   
@@ -42,7 +42,7 @@ public class JavaGeneratorVisitor implements JeezCodeVisitor {
     printWriter.add();
     
     for (ClassMember member : clazz.getMembers()) {
-      member.accept(this);
+      member.receive(this);
     }
     
     printWriter.sub();
@@ -53,12 +53,12 @@ public class JavaGeneratorVisitor implements JeezCodeVisitor {
   public void visitMethod(Method method) {
     printWriter.print("");
     for (ClassMemberModifier modifier : method.getModifiers()) {
-      modifier.accept(this);
+      modifier.receive(this);
     }
     
-    method.getType().accept(this);
+    method.getType().receive(this);
     printWriter.append(" " + method.getName() + " ");
-    method.getParameters().accept(this);
+    method.getParameters().receive(this);
     printWriter.appendln(" {");
     printWriter.add();
     
@@ -70,22 +70,22 @@ public class JavaGeneratorVisitor implements JeezCodeVisitor {
   public void visitInstanceVariable(InstanceVariable variable) {
     printWriter.print("");
     for (ClassMemberModifier modifier : variable.getModifiers()) {
-      modifier.accept(this);
+      modifier.receive(this);
     }
     
-    variable.getType().accept(this);
+    variable.getType().receive(this);
     printWriter.appendln(" " + variable.getName() + ";");
   }
 
   @Override
   public void visitMethodParameter(MethodParameter parameter) {
-    parameter.getType().accept(this);
+    parameter.getType().receive(this);
     printWriter.append(" " + parameter.getName());
   }
   
   @Override
   public void visitVariable(Variable variable) {
-    variable.getType().accept(this);
+    variable.getType().receive(this);
     printWriter.appendln(" " + variable.getName() + ";");
   }
 
@@ -109,7 +109,7 @@ public class JavaGeneratorVisitor implements JeezCodeVisitor {
     printWriter.append("(");
     for (int i = 0; i < methodParameterList.getParameters().size(); i++) {
       MethodParameter parameter = methodParameterList.getParameters().get(i);
-      parameter.accept(this);
+      parameter.receive(this);
       if (i != methodParameterList.getParameters().size() - 1) {
         printWriter.append(", ");
       }

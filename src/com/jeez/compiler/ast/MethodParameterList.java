@@ -16,7 +16,7 @@ public class MethodParameterList implements ASTNode {
   }
 
   @Override
-  public void accept(JeezCodeVisitor visitor) {
+  public void receive(JeezCodeVisitor visitor) {
     visitor.visitMethodParameterList(this);
   }
 }

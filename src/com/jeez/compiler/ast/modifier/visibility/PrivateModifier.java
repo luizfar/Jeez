@@ -5,7 +5,7 @@ import com.jeez.compiler.ast.JeezCodeVisitor;
 public class PrivateModifier implements VisibilityModifier {
 
   @Override
-  public void accept(JeezCodeVisitor visitor) {
+  public void receive(JeezCodeVisitor visitor) {
     visitor.visitPrivateModifier(this);
   }
 

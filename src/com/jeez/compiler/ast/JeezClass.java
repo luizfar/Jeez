@@ -26,7 +26,7 @@ public class JeezClass implements JeezSourceMember {
   }
 
   @Override
-  public void accept(JeezCodeVisitor visitor) {
+  public void receive(JeezCodeVisitor visitor) {
     visitor.visitClass(this);
   }
 }

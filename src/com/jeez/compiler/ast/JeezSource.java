@@ -16,7 +16,7 @@ public class JeezSource implements ASTNode {
   }
 
   @Override
-  public void accept(JeezCodeVisitor visitor) {
+  public void receive(JeezCodeVisitor visitor) {
     visitor.visitSourceUnit(this);
   }
 }

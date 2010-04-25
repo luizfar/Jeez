@@ -31,11 +31,9 @@ public class JeezCompiler {
   
   private void outputToScreen(JeezSource root) {
     JeezPrintWriter printWriter = new JeezPrintWriter();
-    printWriter.set(new PrintWriter(System.out));
+    printWriter.set(new PrintWriter(System.out, true));
     
     JavaGeneratorVisitor visitor = new JavaGeneratorVisitor(printWriter);
     visitor.visitSourceUnit(root);
-    
-    printWriter.out.flush();
   }
 }

@@ -1,6 +1,6 @@
 package com.jeez.compiler.ast;
 
-import java.util.HashSet;
+import java.util.HashSet; 
 import java.util.Set;
 
 import com.jeez.compiler.ast.modifier.ClassMemberModifier;
@@ -12,6 +12,12 @@ public abstract class ClassMember implements ASTNode {
   private Type type;
   
   private String name;
+  
+  abstract public Set<ClassMemberModifier> getAllowedModifiers();
+  
+  public boolean accepts(ClassMemberModifier modifier) {
+    return getAllowedModifiers().contains(modifier);
+  }
   
   public void addModifier(ClassMemberModifier modifier) {
     modifiers.add(modifier);
