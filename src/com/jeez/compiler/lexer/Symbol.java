@@ -56,5 +56,7 @@ public enum Symbol {
   NOT,
   STATIC,
   ABSTRACT,
+  PRINT,
+  PRINTLN,
   LastSymbol;
 }

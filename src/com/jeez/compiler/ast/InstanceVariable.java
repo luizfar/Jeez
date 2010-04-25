@@ -8,7 +8,7 @@ import java.util.Set;
 
 import com.jeez.compiler.ast.modifier.ClassMemberModifier;
 
-public class InstanceVariable extends ClassMember {
+public class InstanceVariable extends ClassMember implements Variable {
   
   private static final Set<ClassMemberModifier> ALLOWED_MODIFIERS = new HashSet<ClassMemberModifier>();
 

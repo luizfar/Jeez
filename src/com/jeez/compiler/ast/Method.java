@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.jeez.compiler.ast.modifier.ClassMemberModifier;
+import com.jeez.compiler.ast.stmt.StatementList;
 
 public class Method extends ClassMember {
   
@@ -22,7 +23,11 @@ public class Method extends ClassMember {
     ALLOWED_MODIFIERS.add(ABSTRACT_MODIFIER);
   }
   
+  private int bodyLocation;
+  
   private MethodParameterList parameters;
+  
+  private StatementList statementList;
   
   public void setParameters(MethodParameterList parameters) {
     this.parameters = parameters;
@@ -37,6 +42,22 @@ public class Method extends ClassMember {
     return ALLOWED_MODIFIERS;
   }
   
+  public int getBodyLocation() {
+    return bodyLocation;
+  }
+
+  public void setBodyLocation(int bodyLocation) {
+    this.bodyLocation = bodyLocation;
+  }
+
+  public StatementList getStatementList() {
+    return statementList;
+  }
+
+  public void setStatementList(StatementList statementList) {
+    this.statementList = statementList;
+  }
+
   @Override
   public void receive(JeezCodeVisitor visitor) {
     visitor.visitMethod(this);

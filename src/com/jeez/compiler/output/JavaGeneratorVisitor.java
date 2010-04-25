@@ -10,6 +10,8 @@ import com.jeez.compiler.ast.MethodParameterList;
 import com.jeez.compiler.ast.JeezSource;
 import com.jeez.compiler.ast.JeezSourceMember;
 import com.jeez.compiler.ast.Variable;
+import com.jeez.compiler.ast.expr.Expression;
+import com.jeez.compiler.ast.expr.LiteralStringExpression;
 import com.jeez.compiler.ast.modifier.AbstractModifier;
 import com.jeez.compiler.ast.modifier.ClassMemberModifier;
 import com.jeez.compiler.ast.modifier.PublicModifier;
@@ -17,6 +19,7 @@ import com.jeez.compiler.ast.modifier.StaticModifier;
 import com.jeez.compiler.ast.modifier.visibility.PackageModifier;
 import com.jeez.compiler.ast.modifier.visibility.PrivateModifier;
 import com.jeez.compiler.ast.modifier.visibility.ProtectedModifier;
+import com.jeez.compiler.ast.stmt.PrintStatement;
 import com.jeez.compiler.ast.type.BooleanType;
 import com.jeez.compiler.ast.type.IntegerType;
 import com.jeez.compiler.ast.type.VoidType;
@@ -62,7 +65,10 @@ public class JavaGeneratorVisitor implements JeezCodeVisitor {
     printWriter.appendln(" {");
     printWriter.add();
     
+    method.getStatementList().receive(this);
+    
     printWriter.sub();
+    printWriter.println("");
     printWriter.println("}");
   }
   
@@ -145,5 +151,22 @@ public class JavaGeneratorVisitor implements JeezCodeVisitor {
   @Override
   public void visitAbstractModifier(AbstractModifier abstractModifier) {
     printWriter.append("abstract ");
+  }
+
+  @Override
+  public void visitLiteralStringExpr(
+      LiteralStringExpression literalStringExpression) {
+    printWriter.append("\"");
+    printWriter.append(literalStringExpression.getValue());
+    printWriter.append("\"");
+  }
+
+  @Override
+  public void visitPrintStatement(PrintStatement printStatement) {
+    printWriter.print("System.out.print(");
+    for (Expression e : printStatement.getExpressionList()) {
+      e.receive(this);
+    }
+    printWriter.append(");");
   }
 }

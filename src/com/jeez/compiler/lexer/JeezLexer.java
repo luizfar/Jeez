@@ -43,6 +43,8 @@ public class JeezLexer {
     KEYWORDS.put("private", Symbol.PRIVATE);
     KEYWORDS.put("extends", Symbol.EXTENDS);
     KEYWORDS.put("abstract", Symbol.ABSTRACT);
+    KEYWORDS.put("print", Symbol.PRINT);
+    KEYWORDS.put("println", Symbol.PRINTLN);
     
     OPERATORS.put("+", Symbol.PLUS);
     OPERATORS.put("-", Symbol.MINUS);
@@ -272,6 +274,14 @@ public class JeezLexer {
 
   public String getLiteralStringValue() {
     return literalStringValue;
+  }
+  
+  public int getTokenPosition() {
+    return tokenPos;
+  }
+  
+  public void resetTo(int position) {
+    tokenPos = position;
   }
   
   public char[] getInput() {

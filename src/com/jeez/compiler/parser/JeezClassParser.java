@@ -89,6 +89,7 @@ public class JeezClassParser {
     Method method = new Method();
     
     method.setParameters(parseParameterList());
+    method.setBodyLocation(jeezParser.getTokenPosition());
     
     jeezParser.expect(LEFT_CUR_BRACKET);
     
