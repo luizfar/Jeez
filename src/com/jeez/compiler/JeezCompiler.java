@@ -18,6 +18,7 @@ public class JeezCompiler {
     "class Dog {\n" +
     "  private int age\n" +
     "  public boolean alive\n" +
+    "  private Person owner\n" +
     "  static void bark(int volume) {\n" +
     "    if (volume <= 10) {\n" +
     "      print \"woof\"\n" +

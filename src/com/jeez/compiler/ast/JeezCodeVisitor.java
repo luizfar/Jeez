@@ -16,6 +16,7 @@ import com.jeez.compiler.ast.stmt.IfStatement;
 import com.jeez.compiler.ast.stmt.PrintStatement;
 import com.jeez.compiler.ast.type.BooleanType;
 import com.jeez.compiler.ast.type.IntegerType;
+import com.jeez.compiler.ast.type.JeezClassType;
 import com.jeez.compiler.ast.type.VoidType;
 
 public interface JeezCodeVisitor {
@@ -67,4 +68,6 @@ public interface JeezCodeVisitor {
   void visitIntegerExpression(IntegerExpression integerExpression);
 
   void visitBinaryOperator(BinaryOperator binaryOperator);
+
+  void visitJeezClassType(JeezClassType jeezClassType);
 }

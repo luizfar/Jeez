@@ -130,7 +130,7 @@ public class JeezParser {
         result = Type.VOID_TYPE; break;
         
       case IDENTIFIER:
-        result = parseIdentifierAsType();
+        result = parseIdentifierAsType(); break;
         
       default:
         throw new JeezParserException("'int', 'boolean', 'void' or type expected", lexer.getLineNumber());  

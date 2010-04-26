@@ -18,6 +18,6 @@ public class JeezClassType implements Type {
   
   @Override
   public void receive(JeezCodeVisitor visitor) {
-    // TODO luiz
+    visitor.visitJeezClassType(this);
   }
 }

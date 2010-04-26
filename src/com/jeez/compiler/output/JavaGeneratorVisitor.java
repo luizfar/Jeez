@@ -29,6 +29,7 @@ import com.jeez.compiler.ast.stmt.PrintStatement;
 import com.jeez.compiler.ast.stmt.Statement;
 import com.jeez.compiler.ast.type.BooleanType;
 import com.jeez.compiler.ast.type.IntegerType;
+import com.jeez.compiler.ast.type.JeezClassType;
 import com.jeez.compiler.ast.type.VoidType;
 
 public class JavaGeneratorVisitor implements JeezCodeVisitor {
@@ -242,5 +243,10 @@ public class JavaGeneratorVisitor implements JeezCodeVisitor {
     }
     
     printWriter.append(operatorCode.toString());
+  }
+
+  @Override
+  public void visitJeezClassType(JeezClassType jeezClassType) {
+    printWriter.append(jeezClassType.getClazz().getName());
   }
 }
