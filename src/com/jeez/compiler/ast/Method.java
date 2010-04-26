@@ -25,16 +25,16 @@ public class Method extends ClassMember {
   
   private int bodyLocation;
   
-  private MethodParameterList parameters;
+  private MethodParameterList parameterList;
   
   private StatementList statementList;
   
-  public void setParameters(MethodParameterList parameters) {
-    this.parameters = parameters;
+  public void setParameterList(MethodParameterList parameterList) {
+    this.parameterList = parameterList;
   }
 
-  public MethodParameterList getParameters() {
-    return parameters;
+  public MethodParameterList getParameterList() {
+    return parameterList;
   }
 
   @Override

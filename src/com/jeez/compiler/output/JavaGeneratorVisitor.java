@@ -61,7 +61,7 @@ public class JavaGeneratorVisitor implements JeezCodeVisitor {
     
     method.getType().receive(this);
     printWriter.append(" " + method.getName() + " ");
-    method.getParameters().receive(this);
+    method.getParameterList().receive(this);
     printWriter.appendln(" {");
     printWriter.add();
     

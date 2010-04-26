@@ -1,7 +1,21 @@
 package com.jeez.compiler.parser;
 
-import static com.jeez.compiler.ast.modifier.visibility.VisibilityModifier.*;
-import static com.jeez.compiler.lexer.Symbol.*;
+import static com.jeez.compiler.ast.modifier.ClassMemberModifier.ABSTRACT_MODIFIER;
+import static com.jeez.compiler.ast.modifier.ClassMemberModifier.STATIC_MODIFIER;
+import static com.jeez.compiler.ast.modifier.visibility.VisibilityModifier.PRIVATE_MODIFIER;
+import static com.jeez.compiler.ast.modifier.visibility.VisibilityModifier.PROTECTED_MODIFIER;
+import static com.jeez.compiler.ast.modifier.visibility.VisibilityModifier.PUBLIC_MODIFIER;
+import static com.jeez.compiler.lexer.Symbol.ABSTRACT;
+import static com.jeez.compiler.lexer.Symbol.CLASS;
+import static com.jeez.compiler.lexer.Symbol.COMMA;
+import static com.jeez.compiler.lexer.Symbol.LEFT_CUR_BRACKET;
+import static com.jeez.compiler.lexer.Symbol.LEFT_PAR;
+import static com.jeez.compiler.lexer.Symbol.PRIVATE;
+import static com.jeez.compiler.lexer.Symbol.PROTECTED;
+import static com.jeez.compiler.lexer.Symbol.PUBLIC;
+import static com.jeez.compiler.lexer.Symbol.RIGHT_CUR_BRACKET;
+import static com.jeez.compiler.lexer.Symbol.RIGHT_PAR;
+import static com.jeez.compiler.lexer.Symbol.STATIC;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,7 +25,6 @@ import java.util.Set;
 import com.jeez.compiler.ast.ClassMember;
 import com.jeez.compiler.ast.InstanceVariable;
 import com.jeez.compiler.ast.JeezClass;
-import com.jeez.compiler.ast.JeezSourceMember;
 import com.jeez.compiler.ast.Method;
 import com.jeez.compiler.ast.MethodParameter;
 import com.jeez.compiler.ast.MethodParameterList;
@@ -37,7 +50,7 @@ public class JeezClassParser {
     this.jeezParser = jeezParser;
   }
   
-  JeezSourceMember parseClass() {
+  JeezClass parseClass() {
     jeezParser.expect(CLASS);
     
     JeezClass clazz = new JeezClass();
@@ -89,15 +102,21 @@ public class JeezClassParser {
   Method parseMethod() {
     Method method = new Method();
     
-    method.setParameters(parseParameterList());
+    method.setParameterList(parseParameterList());
     method.setBodyLocation(jeezParser.getTokenPosition());
     
     jeezParser.expect(LEFT_CUR_BRACKET);
     
-    while (jeezParser.getToken() != RIGHT_CUR_BRACKET) {
+    int rightCurBracketsExpected = 1;
+    while (rightCurBracketsExpected > 0) {
+      if (jeezParser.getToken() == LEFT_CUR_BRACKET) {
+        rightCurBracketsExpected++;
+      }
+      if (jeezParser.getToken() == RIGHT_CUR_BRACKET) {
+        rightCurBracketsExpected--;
+      }
       jeezParser.nextToken();
     }
-    jeezParser.nextToken();
     
     return method;
   }

@@ -11,11 +11,19 @@ import com.jeez.compiler.parser.JeezParser;
 public class JeezCompiler {
   
   private static final String CODE = 
+    "class Person {\n" +
+    "  public int name\n" +
+    "}\n" +
+    "\n" +
     "class Dog {\n" +
     "  private int age\n" +
     "  public boolean alive\n" +
     "  static void bark(int volume) {\n" +
-    "    print \"woof\"\n" +
+    "    if (volume <= 10) {\n" +
+    "      print \"woof\"\n" +
+    "    } else {\n" +
+    "      print \"WOOF\"\n" +
+    "    }\n" +
     "  }\n" +
     " }";
   

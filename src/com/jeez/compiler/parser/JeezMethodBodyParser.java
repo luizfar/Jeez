@@ -1,8 +1,17 @@
 package com.jeez.compiler.parser;
 
-import static com.jeez.compiler.lexer.Symbol.*;
+import static com.jeez.compiler.lexer.Symbol.COMMA;
+import static com.jeez.compiler.lexer.Symbol.ELSE;
+import static com.jeez.compiler.lexer.Symbol.IF;
+import static com.jeez.compiler.lexer.Symbol.LEFT_CUR_BRACKET;
+import static com.jeez.compiler.lexer.Symbol.LEFT_PAR;
+import static com.jeez.compiler.lexer.Symbol.PRINT;
+import static com.jeez.compiler.lexer.Symbol.RIGHT_CUR_BRACKET;
+import static com.jeez.compiler.lexer.Symbol.RIGHT_PAR;
+import static com.jeez.compiler.lexer.Symbol.WHILE;
 
 import com.jeez.compiler.ast.Method;
+import com.jeez.compiler.ast.MethodParameter;
 import com.jeez.compiler.ast.SymbolTable;
 import com.jeez.compiler.ast.stmt.CompositeStatement;
 import com.jeez.compiler.ast.stmt.IfStatement;
@@ -19,15 +28,18 @@ public class JeezMethodBodyParser {
   
   private SymbolTable symbolTable;
   
-  public JeezMethodBodyParser(JeezParser jeezParser) {
-    symbolTable = new SymbolTable();
-    
+  public JeezMethodBodyParser(JeezParser jeezParser, SymbolTable symbolTable) {
     this.jeezParser = jeezParser;
+    this.symbolTable = symbolTable;
     exprParser = new JeezExpressionParser(jeezParser, symbolTable);
   }
 
   public void parseMethodBody(Method method) {
     exprParser.setCurrentMethod(method);
+    symbolTable.clearLocalScope();
+    for (MethodParameter parameter : method.getParameterList().getParameters()) {
+      symbolTable.putInLocalScope(parameter);
+    }
     method.setStatementList(parseStatementList());
   }
   

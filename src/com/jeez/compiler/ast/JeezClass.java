@@ -47,7 +47,7 @@ public class JeezClass implements JeezSourceMember {
     List<Method> results = new ArrayList<Method>();
     for (Method method : methods) {
       if (method.getName().equals(name)
-          && method.getParameters().getSize() == argumentCount) {
+          && method.getParameterList().getSize() == argumentCount) {
         results.add(method);
       }
     }

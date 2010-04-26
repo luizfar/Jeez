@@ -6,7 +6,10 @@ import com.jeez.compiler.ast.JeezClass;
 import com.jeez.compiler.ast.JeezSource;
 import com.jeez.compiler.ast.JeezSourceMember;
 import com.jeez.compiler.ast.Method;
+import com.jeez.compiler.ast.SymbolTable;
 import com.jeez.compiler.ast.Type;
+import com.jeez.compiler.ast.type.JavaClassType;
+import com.jeez.compiler.ast.type.JeezClassType;
 import com.jeez.compiler.lexer.JeezLexer;
 import com.jeez.compiler.lexer.Symbol;
 
@@ -16,14 +19,19 @@ public class JeezParser {
   
   private JeezSource source;
   
+  private SymbolTable symbolTable;
+  
   private JeezClassParser classParser;
   
   private JeezMethodBodyParser methodBodyParser;
   
   public JeezParser(JeezLexer lexer) {
     this.lexer = lexer;
+    
+    symbolTable = new SymbolTable();
+    
     classParser = new JeezClassParser(this);
-    methodBodyParser = new JeezMethodBodyParser(this);
+    methodBodyParser = new JeezMethodBodyParser(this, symbolTable);
     
     source = new JeezSource();
   }
@@ -32,7 +40,9 @@ public class JeezParser {
     lexer.nextToken();
     
     while (lexer.token == CLASS) {
-      source.addMember(classParser.parseClass());
+      JeezClass clazz = classParser.parseClass();
+      symbolTable.putInGlobalScope(clazz);
+      source.addMember(clazz);
     }
     
     parseMethodBodies(source);
@@ -120,7 +130,7 @@ public class JeezParser {
         result = Type.VOID_TYPE; break;
         
       case IDENTIFIER:
-        throw new RuntimeException("Not yet implemented");
+        result = parseIdentifierAsType();
         
       default:
         throw new JeezParserException("'int', 'boolean', 'void' or type expected", lexer.getLineNumber());  
@@ -128,5 +138,19 @@ public class JeezParser {
     lexer.nextToken();
     
     return result;
+  }
+  
+  private Type parseIdentifierAsType() {
+    String className = lexer.getStringValue();
+    JeezClass jeezClass = symbolTable.getFromGlobalScope(className);
+    if (jeezClass == null) {
+      try {
+        return new JavaClassType(Class.forName(className));
+      } catch (ClassNotFoundException exception) {
+        throw new JeezParserException("Class '" + className + "' not found", lexer.getLineNumber());
+      }
+    }
+    
+    return new JeezClassType(jeezClass);
   }
 }
