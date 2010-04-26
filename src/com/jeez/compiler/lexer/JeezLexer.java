@@ -45,6 +45,7 @@ public class JeezLexer {
     KEYWORDS.put("abstract", Symbol.ABSTRACT);
     KEYWORDS.put("print", Symbol.PRINT);
     KEYWORDS.put("println", Symbol.PRINTLN);
+    KEYWORDS.put("is", Symbol.IS);
     
     OPERATORS.put("+", Symbol.PLUS);
     OPERATORS.put("-", Symbol.MINUS);
@@ -70,6 +71,9 @@ public class JeezLexer {
     OPERATORS.put(".", Symbol.DOT);
     OPERATORS.put("&&", Symbol.AND);
     OPERATORS.put("||", Symbol.OR);
+    OPERATORS.put("&", Symbol.SHORT_AND);
+    OPERATORS.put("|", Symbol.SHORT_OR);
+    OPERATORS.put("^", Symbol.XOR);
   }
   
   public JeezLexer(char[] originalInput) {

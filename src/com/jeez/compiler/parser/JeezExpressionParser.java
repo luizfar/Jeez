@@ -9,17 +9,15 @@ import com.jeez.compiler.ast.JeezClass;
 import com.jeez.compiler.ast.Method;
 import com.jeez.compiler.ast.SymbolTable;
 import com.jeez.compiler.ast.Variable;
-import com.jeez.compiler.ast.expr.AddExpression;
-import com.jeez.compiler.ast.expr.AndExpression;
+import com.jeez.compiler.ast.expr.BinaryExpression;
+import com.jeez.compiler.ast.expr.BinaryOperator;
 import com.jeez.compiler.ast.expr.Expression;
 import com.jeez.compiler.ast.expr.InstantiationExpression;
 import com.jeez.compiler.ast.expr.IntegerExpression;
 import com.jeez.compiler.ast.expr.LiteralBooleanExpression;
 import com.jeez.compiler.ast.expr.LiteralStringExpression;
 import com.jeez.compiler.ast.expr.MessageSendToThisExpression;
-import com.jeez.compiler.ast.expr.MultiplyExpression;
 import com.jeez.compiler.ast.expr.NullExpression;
-import com.jeez.compiler.ast.expr.OrExpression;
 import com.jeez.compiler.ast.expr.UnaryExpression;
 import com.jeez.compiler.ast.expr.VariableExpression;
 import com.jeez.compiler.lexer.Symbol;
@@ -51,19 +49,85 @@ public class JeezExpressionParser {
     while (jeezParser.getToken() == OR) {
       jeezParser.nextToken();
       Expression right = parseAndExpression();
-      expr = new OrExpression(expr, right);
+      expr = new BinaryExpression(new BinaryOperator(OR), expr, right);
     }
     
     return expr;
   }
   
   private Expression parseAndExpression() {
-    Expression expr = parseAddExpression();
+    Expression expr = parseShortOrExpression();
     
     while (jeezParser.getToken() == AND) {
       jeezParser.nextToken();
+      Expression right = parseShortOrExpression();
+      expr = new BinaryExpression(new BinaryOperator(AND), expr, right);
+    }
+    
+    return expr;
+  }
+  
+  private Expression parseShortOrExpression() {
+    Expression expr = parseXorExpression();
+    
+    while (jeezParser.getToken() == SHORT_OR) {
+      jeezParser.nextToken();
+      Expression right = parseXorExpression();
+      expr = new BinaryExpression(new BinaryOperator(SHORT_OR), expr, right);
+    }
+    
+    return expr;
+  }
+  
+  private Expression parseXorExpression() {
+    Expression expr = parseShortAndExpression();
+    
+    while (jeezParser.getToken() == XOR) {
+      jeezParser.nextToken();
+      Expression right = parseShortAndExpression();
+      expr = new BinaryExpression(new BinaryOperator(XOR), expr, right);
+    }
+    
+    return expr;
+  }
+  
+  private Expression parseShortAndExpression() {
+    Expression expr = parseEqualExpression();
+    
+    while (jeezParser.getToken() == SHORT_AND) {
+      jeezParser.nextToken();
+      Expression right = parseEqualExpression();
+      expr = new BinaryExpression(new BinaryOperator(SHORT_AND), expr, right);
+    }
+    
+    return expr;
+  }
+  
+  private Expression parseEqualExpression() {
+    Expression expr = parseRelationalExpression();
+    
+    while (jeezParser.getToken() == EQUAL || jeezParser.getToken() == NOT_EQUAL) {
+      BinaryOperator operator = new BinaryOperator(jeezParser.getToken());
+      jeezParser.nextToken();
+      Expression right = parseRelationalExpression();
+      expr = new BinaryExpression(operator, expr, right);
+    }
+    
+    return expr;
+  }
+  
+  private Expression parseRelationalExpression() {
+    Expression expr = parseAddExpression();
+    
+    while (jeezParser.getToken() == GREATER_THAN ||
+           jeezParser.getToken() == GREATER_EQUAL ||
+           jeezParser.getToken() == LESS_THAN ||
+           jeezParser.getToken() == LESS_EQUAL ||
+           jeezParser.getToken() == IS) {
+      BinaryOperator operator = new BinaryOperator(jeezParser.getToken());
+      jeezParser.nextToken();
       Expression right = parseAddExpression();
-      expr = new AndExpression(expr, right);
+      expr = new BinaryExpression(operator, expr, right);
     }
     
     return expr;
@@ -73,11 +137,11 @@ public class JeezExpressionParser {
     Expression expr = parseMultiplyExpression();
     
     while (jeezParser.getToken() == PLUS || jeezParser.getToken() == MINUS) {
-      Symbol operator = jeezParser.getToken();
+      BinaryOperator operator = new BinaryOperator(jeezParser.getToken());
       jeezParser.nextToken();
       
       Expression right = parseMultiplyExpression();
-      expr = new AddExpression(expr, right, operator);
+      expr = new BinaryExpression(operator, expr, right);
     }
     
     return expr;
@@ -89,11 +153,11 @@ public class JeezExpressionParser {
     while (jeezParser.getToken() == MULTIPLIER
         || jeezParser.getToken() == DIVISOR
         || jeezParser.getToken() == REMAINDER) {
-      Symbol operator = jeezParser.getToken();
+      BinaryOperator operator = new BinaryOperator(jeezParser.getToken());
       jeezParser.nextToken();
       
       Expression right = parseUnaryExpression();
-      expr = new MultiplyExpression(expr, right, operator);
+      expr = new BinaryExpression(operator, expr, right);
     }
     
     return expr;
