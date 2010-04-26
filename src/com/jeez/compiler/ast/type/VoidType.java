@@ -7,6 +7,6 @@ public class VoidType implements Type {
 
   @Override
   public void receive(JeezCodeVisitor visitor) {
-    visitor.visitVoid(this);
+    visitor.visitVoidType(this);
   }
 }

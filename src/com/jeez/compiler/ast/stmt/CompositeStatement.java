@@ -16,6 +16,6 @@ public class CompositeStatement implements Statement {
   
   @Override
   public void receive(JeezCodeVisitor visitor) {
-    // TODO luiz
+    visitor.visitCompositeStatement(this);
   }
 }

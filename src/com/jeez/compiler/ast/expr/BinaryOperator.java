@@ -18,6 +18,6 @@ public class BinaryOperator implements ASTNode {
   
   @Override
   public void receive(JeezCodeVisitor visitor) {
-    // TODO luiz
+    visitor.visitBinaryOperator(this);
   }
 }

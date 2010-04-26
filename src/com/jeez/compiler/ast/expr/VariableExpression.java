@@ -17,6 +17,6 @@ public class VariableExpression implements Expression {
   
   @Override
   public void receive(JeezCodeVisitor visitor) {
-    // TODO luiz
+    visitor.visitVariableExpression(this);
   }
 }

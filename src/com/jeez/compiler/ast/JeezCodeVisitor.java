@@ -1,12 +1,18 @@
 package com.jeez.compiler.ast;
 
+import com.jeez.compiler.ast.expr.BinaryExpression;
+import com.jeez.compiler.ast.expr.BinaryOperator;
+import com.jeez.compiler.ast.expr.IntegerExpression;
 import com.jeez.compiler.ast.expr.LiteralStringExpression;
+import com.jeez.compiler.ast.expr.VariableExpression;
 import com.jeez.compiler.ast.modifier.AbstractModifier;
 import com.jeez.compiler.ast.modifier.PublicModifier;
 import com.jeez.compiler.ast.modifier.StaticModifier;
 import com.jeez.compiler.ast.modifier.visibility.PackageModifier;
 import com.jeez.compiler.ast.modifier.visibility.PrivateModifier;
 import com.jeez.compiler.ast.modifier.visibility.ProtectedModifier;
+import com.jeez.compiler.ast.stmt.CompositeStatement;
+import com.jeez.compiler.ast.stmt.IfStatement;
 import com.jeez.compiler.ast.stmt.PrintStatement;
 import com.jeez.compiler.ast.type.BooleanType;
 import com.jeez.compiler.ast.type.IntegerType;
@@ -24,11 +30,11 @@ public interface JeezCodeVisitor {
 
   void visitMethodParameter(MethodParameter methodParameter);
 
-  void visitInteger(IntegerType integerType);
+  void visitIntegerType(IntegerType integerType);
 
-  void visitBoolean(BooleanType booleanType);
+  void visitBooleanType(BooleanType booleanType);
 
-  void visitVoid(VoidType voidType);
+  void visitVoidType(VoidType voidType);
 
   void visitVariable(Variable variable);
 
@@ -49,4 +55,16 @@ public interface JeezCodeVisitor {
   void visitPrintStatement(PrintStatement printStatement);
 
   void visitLiteralStringExpr(LiteralStringExpression literalStringExpression);
+
+  void visitIfStatement(IfStatement ifStatement);
+
+  void visitCompositeStatement(CompositeStatement compositeStatement);
+
+  void visitBinaryExpression(BinaryExpression binaryExpression);
+
+  void visitVariableExpression(VariableExpression variableExpression);
+
+  void visitIntegerExpression(IntegerExpression integerExpression);
+
+  void visitBinaryOperator(BinaryOperator binaryOperator);
 }

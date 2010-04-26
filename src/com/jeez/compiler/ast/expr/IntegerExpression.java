@@ -16,6 +16,6 @@ public class IntegerExpression implements Expression {
   
   @Override
   public void receive(JeezCodeVisitor visitor) {
-    // TODO luiz
+    visitor.visitIntegerExpression(this);
   }
 }

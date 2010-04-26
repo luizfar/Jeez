@@ -7,6 +7,6 @@ public class BooleanType implements Type {
 
   @Override
   public void receive(JeezCodeVisitor visitor) {
-    visitor.visitBoolean(this);
+    visitor.visitBooleanType(this);
   }  
 }

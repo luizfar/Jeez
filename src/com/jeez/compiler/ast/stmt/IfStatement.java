@@ -36,6 +36,6 @@ public class IfStatement implements Statement {
 
   @Override
   public void receive(JeezCodeVisitor visitor) {
-    // TODO luiz
+    visitor.visitIfStatement(this);
   }
 }

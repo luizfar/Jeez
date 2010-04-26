@@ -4,14 +4,18 @@ import com.jeez.compiler.ast.ClassMember;
 import com.jeez.compiler.ast.InstanceVariable;
 import com.jeez.compiler.ast.JeezClass;
 import com.jeez.compiler.ast.JeezCodeVisitor;
+import com.jeez.compiler.ast.JeezSource;
+import com.jeez.compiler.ast.JeezSourceMember;
 import com.jeez.compiler.ast.Method;
 import com.jeez.compiler.ast.MethodParameter;
 import com.jeez.compiler.ast.MethodParameterList;
-import com.jeez.compiler.ast.JeezSource;
-import com.jeez.compiler.ast.JeezSourceMember;
 import com.jeez.compiler.ast.Variable;
+import com.jeez.compiler.ast.expr.BinaryExpression;
+import com.jeez.compiler.ast.expr.BinaryOperator;
 import com.jeez.compiler.ast.expr.Expression;
+import com.jeez.compiler.ast.expr.IntegerExpression;
 import com.jeez.compiler.ast.expr.LiteralStringExpression;
+import com.jeez.compiler.ast.expr.VariableExpression;
 import com.jeez.compiler.ast.modifier.AbstractModifier;
 import com.jeez.compiler.ast.modifier.ClassMemberModifier;
 import com.jeez.compiler.ast.modifier.PublicModifier;
@@ -19,7 +23,10 @@ import com.jeez.compiler.ast.modifier.StaticModifier;
 import com.jeez.compiler.ast.modifier.visibility.PackageModifier;
 import com.jeez.compiler.ast.modifier.visibility.PrivateModifier;
 import com.jeez.compiler.ast.modifier.visibility.ProtectedModifier;
+import com.jeez.compiler.ast.stmt.CompositeStatement;
+import com.jeez.compiler.ast.stmt.IfStatement;
 import com.jeez.compiler.ast.stmt.PrintStatement;
+import com.jeez.compiler.ast.stmt.Statement;
 import com.jeez.compiler.ast.type.BooleanType;
 import com.jeez.compiler.ast.type.IntegerType;
 import com.jeez.compiler.ast.type.VoidType;
@@ -68,7 +75,6 @@ public class JavaGeneratorVisitor implements JeezCodeVisitor {
     method.getStatementList().receive(this);
     
     printWriter.sub();
-    printWriter.println("");
     printWriter.println("}");
   }
   
@@ -96,17 +102,17 @@ public class JavaGeneratorVisitor implements JeezCodeVisitor {
   }
 
   @Override
-  public void visitBoolean(BooleanType booleanType) {
+  public void visitBooleanType(BooleanType booleanType) {
     printWriter.append("boolean");
   }
 
   @Override
-  public void visitInteger(IntegerType integerType) {
+  public void visitIntegerType(IntegerType integerType) {
     printWriter.append("int");
   }
   
   @Override
-  public void visitVoid(VoidType voidType) {
+  public void visitVoidType(VoidType voidType) {
     printWriter.append("void");
   }
 
@@ -167,6 +173,74 @@ public class JavaGeneratorVisitor implements JeezCodeVisitor {
     for (Expression e : printStatement.getExpressionList()) {
       e.receive(this);
     }
-    printWriter.append(");");
+    printWriter.appendln(");");
+  }
+
+  @Override
+  public void visitIfStatement(IfStatement ifStatement) {
+    printWriter.print("if (");
+    ifStatement.getExpression().receive(this);
+    printWriter.appendln(") {");
+    printWriter.add();
+    ifStatement.getIfStatement().receive(this);
+    printWriter.sub();
+    printWriter.println("}");
+    
+    if (ifStatement.getElseStatement() != null) {
+      printWriter.println("else {");
+      printWriter.add();
+      ifStatement.getElseStatement().receive(this);
+      printWriter.sub();
+      printWriter.println("}");
+    }
+  }
+
+  @Override
+  public void visitCompositeStatement(CompositeStatement compositeStatement) {
+    printWriter.println("{");
+    printWriter.add();
+    for (Statement statement : compositeStatement.getStatementList().getStatements()) {
+      statement.receive(this);
+    }
+    printWriter.sub();
+    printWriter.println("}");
+  }
+
+  @Override
+  public void visitBinaryExpression(BinaryExpression binaryExpression) {
+    binaryExpression.getLeftSide().receive(this);
+    binaryExpression.getOperator().receive(this);
+    binaryExpression.getRightSide().receive(this);
+  }
+
+  @Override
+  public void visitVariableExpression(VariableExpression variableExpression) {
+    printWriter.append(variableExpression.getVariable().getName());
+  }
+
+  @Override
+  public void visitIntegerExpression(IntegerExpression integerExpression) {
+    printWriter.append(Integer.toString(integerExpression.getValue()));
+  }
+
+  @Override
+  public void visitBinaryOperator(BinaryOperator binaryOperator) {
+    // TODO luiz refactor this
+    String operatorCode = null;
+    switch (binaryOperator.getSymbol()) {
+      case GREATER_THAN:
+        operatorCode = " > "; break;
+      
+      case GREATER_EQUAL:
+        operatorCode = " >= "; break;
+        
+      case LESS_THAN:
+        operatorCode = " < "; break;
+        
+      case LESS_EQUAL:
+        operatorCode = " <= "; break;
+    }
+    
+    printWriter.append(operatorCode.toString());
   }
 }

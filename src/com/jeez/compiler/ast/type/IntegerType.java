@@ -7,6 +7,6 @@ public class IntegerType implements Type {
 
   @Override
   public void receive(JeezCodeVisitor visitor) {
-    visitor.visitInteger(this);
+    visitor.visitIntegerType(this);
   }
 }

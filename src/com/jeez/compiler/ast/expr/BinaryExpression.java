@@ -30,6 +30,6 @@ public class BinaryExpression implements Expression {
 
   @Override
   public void receive(JeezCodeVisitor visitor) {
-    // TODO luiz
+    visitor.visitBinaryExpression(this);
   }
 }
