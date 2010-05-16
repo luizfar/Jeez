@@ -31,8 +31,6 @@ public class JeezLexer {
     KEYWORDS.put("read", Symbol.READ);
     KEYWORDS.put("write", Symbol.WRITE);
     KEYWORDS.put("break", Symbol.BREAK);
-    KEYWORDS.put("int", Symbol.INT);
-    KEYWORDS.put("boolean", Symbol.BOOLEAN);
     KEYWORDS.put("return", Symbol.RETURN);
     KEYWORDS.put("class", Symbol.CLASS);
     KEYWORDS.put("super", Symbol.SUPER);
@@ -46,6 +44,8 @@ public class JeezLexer {
     KEYWORDS.put("print", Symbol.PRINT);
     KEYWORDS.put("println", Symbol.PRINTLN);
     KEYWORDS.put("is", Symbol.IS);
+    KEYWORDS.put("def", Symbol.DEF);
+    KEYWORDS.put("module", Symbol.MODULE);
     
     OPERATORS.put("+", Symbol.PLUS);
     OPERATORS.put("-", Symbol.MINUS);

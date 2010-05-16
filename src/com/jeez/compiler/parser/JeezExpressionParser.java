@@ -1,42 +1,31 @@
 package com.jeez.compiler.parser;
 
 import static com.jeez.compiler.lexer.Symbol.*;
+import jeez.lang.Method;
+import jeez.lang.expression.BinaryExpression;
+import jeez.lang.expression.BinaryOperator;
+import jeez.lang.expression.Expression;
+import jeez.lang.expression.InstantiationExpression;
+import jeez.lang.expression.IntegerExpression;
+import jeez.lang.expression.LiteralBooleanExpression;
+import jeez.lang.expression.LiteralStringExpression;
+import jeez.lang.expression.NullExpression;
+import jeez.lang.expression.UnaryExpression;
+import jeez.lang.expression.VariableExpression;
+import jeez.lang.java.JeezInteger;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.jeez.compiler.ast.JeezClass;
-import com.jeez.compiler.ast.Method;
-import com.jeez.compiler.ast.SymbolTable;
-import com.jeez.compiler.ast.Variable;
-import com.jeez.compiler.ast.expr.BinaryExpression;
-import com.jeez.compiler.ast.expr.BinaryOperator;
-import com.jeez.compiler.ast.expr.Expression;
-import com.jeez.compiler.ast.expr.InstantiationExpression;
-import com.jeez.compiler.ast.expr.IntegerExpression;
-import com.jeez.compiler.ast.expr.LiteralBooleanExpression;
-import com.jeez.compiler.ast.expr.LiteralStringExpression;
-import com.jeez.compiler.ast.expr.MessageSendToThisExpression;
-import com.jeez.compiler.ast.expr.NullExpression;
-import com.jeez.compiler.ast.expr.UnaryExpression;
-import com.jeez.compiler.ast.expr.VariableExpression;
 import com.jeez.compiler.lexer.Symbol;
 
 public class JeezExpressionParser {
 
   private JeezParser jeezParser;
   
-  private Method currentMethod;
-  
-  private SymbolTable symbolTable;
-  
-  public JeezExpressionParser(JeezParser jeezParser, SymbolTable symbolTable) {
+  public JeezExpressionParser(JeezParser jeezParser) {
     this.jeezParser = jeezParser;
-    this.symbolTable = symbolTable;
   }
   
-  public void setCurrentMethod(Method currentMethod) {
-    this.currentMethod = currentMethod;
+  public void setCurrentFunction(Method currentMethod) {
+    
   }
   
   public Expression parseExpression() {
@@ -208,20 +197,11 @@ public class JeezExpressionParser {
   
   private Expression parseInstantiationExpression() {
     jeezParser.expect(NEW);
-    
-    String identifier = jeezParser.parseIdentifier();
-    JeezClass clazz = symbolTable.getFromGlobalScope(identifier);
-    
-    if (clazz == null) {
-      throw new JeezParserException("Could not find class with name '"
-          + identifier + "'", jeezParser.getLineNumber());
-    }
-    
+    String clazzName = jeezParser.parseIdentifier();
     jeezParser.expect(LEFT_PAR);
-    // TODO luiz parse constructor arguments    
     jeezParser.expect(RIGHT_PAR);
     
-    return new InstantiationExpression(clazz);
+    return new InstantiationExpression(clazzName);
   }
 
   private Expression parseVariableOrMethodExpression() {
@@ -245,46 +225,11 @@ public class JeezExpressionParser {
   }
   
   private Expression parseMessageSendToThisExpression(String messageName) {    
-    jeezParser.expect(LEFT_PAR);
-    
-    List<Expression> arguments = new ArrayList<Expression>();
-    boolean parseArgument = jeezParser.getToken() != RIGHT_PAR;
-    while (parseArgument) {
-      arguments.add(parseExpression());
-      if (jeezParser.getToken() == COMMA) {
-        jeezParser.nextToken();
-      } else {
-        parseArgument = false;
-      }
-    }
-    jeezParser.expect(RIGHT_PAR);
-    
-    JeezClass clazz = currentMethod.getOwner();
-    List<Method> matches = clazz.getMethod(messageName, arguments.size());
-    
-    if (matches.size() == 0) {
-      throw new JeezParserException("Could not find matching method for name '"
-          + messageName + "'", jeezParser.getLineNumber());
-    }
-    
-    if (matches.size() > 1) {
-      throw new RuntimeException("Not yet implemented.");
-    }
-    
-    Method method = matches.get(0);
-    
-    return new MessageSendToThisExpression(method, arguments);
+    return null;
   }
   
   private Expression parseVariableExpression(String identifier) {
-    Variable variable = symbolTable.getFromLocalScope(identifier);
-    
-    if (variable == null) {
-      throw new JeezParserException("Variable '" + identifier
-          + "' not declared.", jeezParser.getLineNumber());
-    }
-    
-    return new VariableExpression(variable);
+    return new VariableExpression(identifier);
   }
   
   private Expression parseLiteralBooleanExpression() {
@@ -298,7 +243,7 @@ public class JeezExpressionParser {
     int value = jeezParser.getIntegerValue();
     jeezParser.nextToken();
     
-    return new IntegerExpression(value);
+    return new IntegerExpression(new JeezInteger(value));
   }
   
   private Expression parseLiteralStringExpression() {

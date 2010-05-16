@@ -33,8 +33,6 @@ public enum Symbol {
   READ,
   WRITE,
   BREAK,
-  INT,
-  BOOLEAN,
   RETURN,
   CLASS,
   EXTENDS,
@@ -62,5 +60,7 @@ public enum Symbol {
   ABSTRACT,
   PRINT,
   PRINTLN,
+  DEF,
+  MODULE,
   LastSymbol;
 }

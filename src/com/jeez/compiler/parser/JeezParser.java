@@ -1,15 +1,18 @@
 package com.jeez.compiler.parser;
 
-import static com.jeez.compiler.lexer.Symbol.*;
+import static com.jeez.compiler.lexer.Symbol.CLASS;
+import static com.jeez.compiler.lexer.Symbol.IDENTIFIER;
+import static com.jeez.compiler.lexer.Symbol.MODULE;
+import static jeez.lang.Module.ANONYMOUS_FUNCTION_NAME;
+import static jeez.lang.Type.VOID;
 
-import com.jeez.compiler.ast.JeezClass;
-import com.jeez.compiler.ast.JeezSource;
-import com.jeez.compiler.ast.JeezSourceMember;
-import com.jeez.compiler.ast.Method;
-import com.jeez.compiler.ast.SymbolTable;
-import com.jeez.compiler.ast.Type;
-import com.jeez.compiler.ast.type.JavaClassType;
-import com.jeez.compiler.ast.type.JeezClassType;
+import jeez.lang.Block;
+import jeez.lang.Clazz;
+import jeez.lang.Function;
+import jeez.lang.Module;
+import jeez.lang.Type;
+import jeez.lang.context.ExecutionContext;
+
 import com.jeez.compiler.lexer.JeezLexer;
 import com.jeez.compiler.lexer.Symbol;
 
@@ -17,50 +20,46 @@ public class JeezParser {
   
   private JeezLexer lexer;
   
-  private JeezSource source;
+  private ClassParser classParser;
   
-  private SymbolTable symbolTable;
+  private ModuleParser moduleParser;
   
-  private JeezClassParser classParser;
+  private ExecutionContext context;
   
-  private JeezMethodBodyParser methodBodyParser;
+  private String anonymousModuleName;
   
-  public JeezParser(JeezLexer lexer) {
+  public JeezParser(String sourceFileName, JeezLexer lexer, ExecutionContext context) {
     this.lexer = lexer;
+    this.context = context;
+    this.anonymousModuleName = sourceFileName + "_module";
     
-    symbolTable = new SymbolTable();
-    
-    classParser = new JeezClassParser(this);
-    methodBodyParser = new JeezMethodBodyParser(this, symbolTable);
-    
-    source = new JeezSource();
+    classParser = new ClassParser(this, context);
+    moduleParser = new ModuleParser(this);
   }
   
-  public JeezSource start() {
+  public void start() {
     lexer.nextToken();
     
-    while (lexer.token == CLASS) {
-      JeezClass clazz = classParser.parseClass();
-      symbolTable.putInGlobalScope(clazz);
-      source.addMember(clazz);
-    }
-    
-    parseMethodBodies(source);
-    
-    return source;
-  }
-  
-  private void parseMethodBodies(JeezSource source) {
-    for (JeezSourceMember member : source.getMembers()) {
-      if (member instanceof JeezClass) {
-        JeezClass clazz = (JeezClass) member;
-        for (Method method : clazz.getMethods()) {
-          lexer.resetTo(method.getBodyLocation());
-          lexer.nextToken();
-          methodBodyParser.parseMethodBody(method);
+    while (lexer.token != Symbol.EOF) {
+      if (lexer.token == CLASS) {
+        context.addClass(classParser.parseClass());
+      } if (lexer.token == MODULE) {
+        context.addModule(moduleParser.parseModule());
+      } else {
+        Module anonymous = context.getModule(anonymousModuleName);
+        if (anonymous == null) {
+          anonymous = createAnonymousModule(anonymousModuleName);
+          context.addModule(anonymous);
         }
+        moduleParser.parseAnonymousModule(anonymous);
       }
     }
+  }
+  
+  private Module createAnonymousModule(String anonymousModuleName) {
+    Module module = new Module(anonymousModuleName);
+    module.addToFunctions(new Function(VOID, ANONYMOUS_FUNCTION_NAME, new Block()));
+    return module;
   }
   
   Symbol getToken() {
@@ -110,7 +109,7 @@ public class JeezParser {
   
   public Type parseTypeExcludesVoid() {
     Type type = parseType();
-    if (type == Type.VOID_TYPE) {
+    if (type == Type.VOID) {
       throw new JeezParserException("'void' is not a valid variable type", lexer.getLineNumber());
     }
     return type;
@@ -120,14 +119,13 @@ public class JeezParser {
     Type result;
     
     switch (lexer.token) {
-      case INT:
-        result = Type.INT_TYPE; break;
-      
-      case BOOLEAN:
-        result = Type.BOOLEAN_TYPE; break;
-        
       case VOID:
-        result = Type.VOID_TYPE; break;
+        result = Type.VOID;
+        break;
+        
+      case DEF:
+        result = Type.DUCK;
+        break;
         
       case IDENTIFIER:
         result = parseIdentifierAsType(); break;
@@ -140,17 +138,7 @@ public class JeezParser {
     return result;
   }
   
-  private Type parseIdentifierAsType() {
-    String className = lexer.getStringValue();
-    JeezClass jeezClass = symbolTable.getFromGlobalScope(className);
-    if (jeezClass == null) {
-      try {
-        return new JavaClassType(Class.forName(className));
-      } catch (ClassNotFoundException exception) {
-        throw new JeezParserException("Class '" + className + "' not found", lexer.getLineNumber());
-      }
-    }
-    
-    return new JeezClassType(jeezClass);
+  private Clazz parseIdentifierAsType() {
+    return new Clazz(lexer.getStringValue());
   }
 }
