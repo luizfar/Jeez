@@ -5,7 +5,6 @@ import static com.jeez.compiler.lexer.Symbol.IDENTIFIER;
 import static com.jeez.compiler.lexer.Symbol.MODULE;
 import static jeez.lang.Module.ANONYMOUS_FUNCTION_NAME;
 import static jeez.lang.Type.VOID;
-import jeez.lang.Clazz;
 import jeez.lang.Function;
 import jeez.lang.Module;
 import jeez.lang.Type;
@@ -117,16 +116,9 @@ public class JeezParser {
     Type result;
     
     switch (lexer.token) {
-      case VOID:
-        result = Type.VOID;
-        break;
-        
       case DEF:
         result = Type.DUCK;
         break;
-        
-      case IDENTIFIER:
-        result = parseIdentifierAsType(); break;
         
       default:
         throw new ParserException("'int', 'boolean', 'void' or type expected", lexer.getLineNumber());  
@@ -134,9 +126,5 @@ public class JeezParser {
     lexer.nextToken();
     
     return result;
-  }
-  
-  private Clazz parseIdentifierAsType() {
-    return new Clazz(lexer.getStringValue());
   }
 }

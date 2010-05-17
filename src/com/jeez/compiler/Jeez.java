@@ -15,6 +15,28 @@ public class Jeez {
   
   static final String MODULE_NAME = "main.jz";
   
+  
+
+  static final String CODE =
+    "class Dog {\n" +
+    "  def name\n" +
+    "  static def dogCount = 0\n" +
+    "  def setName(n) {\n" +
+    "    name = n\n" +
+    "  }\n" +
+    "  def getName() {\n" +
+    "    return name\n" +
+    "  }\n" +
+    "  def bark() {\n" +
+    "    println \"woof woof\"\n" +
+    "  }\n" +
+    "  static def getCount(){\n" +
+    "    return dogCount\n" +
+    "  }\n" +
+    "}\n" +
+    "" +
+    "println Dog.getCount()";
+  
   private JeezLexer lexer;
   
   private JeezParser parser;
@@ -22,7 +44,7 @@ public class Jeez {
   private ExecutionContext context = new ExecutionContext();
   
   public static void main(String[] args) {
-    
+    new Jeez().run(CODE.toCharArray());
   }
   
   public void run(char[] input) {
@@ -34,6 +56,7 @@ public class Jeez {
   }
   
   private void runScript() {
+    context.prepare();
     Module module = context.getModule(MODULE_NAME + "_module");
     Function function = module.getFunction(Module.ANONYMOUS_FUNCTION_NAME);
     function.execute(new JeezObject(), new ArrayList<Expression>(), context);

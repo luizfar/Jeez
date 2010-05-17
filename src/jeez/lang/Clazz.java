@@ -12,7 +12,7 @@ public class Clazz extends JeezObject implements Type, MessageReceiver {
 
   private String name;
   
-  private Map<String, Variable> classAttributes = new HashMap<String, Variable>();
+  private Map<String, ClassAttribute> classAttributes = new HashMap<String, ClassAttribute>();
   
   private Map<String, Method> classMethods = new HashMap<String, Method>();
   
@@ -40,15 +40,15 @@ public class Clazz extends JeezObject implements Type, MessageReceiver {
     return attributes.values();
   }
   
-  public void addToClassAttributes(Variable attribute) {
-    classAttributes.put(attribute.getName(), attribute);
+  public void addToClassAttributes(ClassAttribute attribute) {
+    classAttributes.put(attribute.getVariable().getName(), attribute);
   }
   
-  public Variable getClassAttribute(String name) {
+  public ClassAttribute getClassAttribute(String name) {
     return classAttributes.get(name);
   }
   
-  public Collection<Variable> getClassAttributes() {
+  public Collection<ClassAttribute> getClassAttributes() {
     return classAttributes.values();
   }
   

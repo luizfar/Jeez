@@ -22,8 +22,8 @@ public class Method extends Function {
   public JeezObject execute(JeezObject target, List<Expression> arguments, ExecutionContext context) {
     context.addLocalContext();
     
-    for (Variable var : owner.getClassAttributes()) {
-      context.addToLocalContext(var);
+    for (ClassAttribute attr : owner.getClassAttributes()) {
+      context.addToLocalContext(attr.getVariable());
     }
     for (Variable var : target.getInstanceVariables()) {
       context.addToLocalContext(var);

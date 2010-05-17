@@ -5,10 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import jeez.lang.ClassAttribute;
 import jeez.lang.Clazz;
 import jeez.lang.MessageReceiver;
 import jeez.lang.Module;
 import jeez.lang.Variable;
+import jeez.lang.bootstrap.Classes;
 
 public class ExecutionContext {
   
@@ -20,6 +22,7 @@ public class ExecutionContext {
   
   public ExecutionContext() {
     addLocalContext();
+    addClass(Classes.CLASS);
   }
   
   public void addClass(Clazz clazz) {
@@ -69,5 +72,13 @@ public class ExecutionContext {
       receiver = getModule(name);
     }
     return receiver;
+  }
+  
+  public void prepare() {
+    for (Clazz clazz : classes.values()) {
+      for (ClassAttribute attr : clazz.getClassAttributes()) {
+        attr.init(this);
+      }
+    }
   }
 }

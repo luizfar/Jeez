@@ -15,8 +15,8 @@ public class ClassMethod extends Method {
   public JeezObject execute(JeezObject target, List<Expression> arguments, ExecutionContext context) {
     context.addLocalContext();
     
-    for (Variable var : getOwner().getClassAttributes()) {
-      context.addToLocalContext(var);
+    for (ClassAttribute attr : getOwner().getClassAttributes()) {
+      context.addToLocalContext(attr.getVariable());
     }
     JeezObject result = super.execute(target, arguments, context);
     context.removeLocalContext();
