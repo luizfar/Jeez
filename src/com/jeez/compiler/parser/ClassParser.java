@@ -66,6 +66,9 @@ public class ClassParser {
       jeezParser.nextToken();
     }
     
-    return new Method(currentClass, type, methodName, new Block());
+    Method method = new Method(currentClass, type, methodName);
+    method.setBlock(new Block());
+    
+    return method;
   }
 }

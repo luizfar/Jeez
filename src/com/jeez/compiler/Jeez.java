@@ -1,8 +1,11 @@
 package com.jeez.compiler;
 
+import java.util.ArrayList;
+
 import jeez.lang.Function;
 import jeez.lang.Module;
 import jeez.lang.context.ExecutionContext;
+import jeez.lang.expression.Expression;
 
 import com.jeez.compiler.lexer.JeezLexer;
 import com.jeez.compiler.parser.JeezParser;
@@ -11,6 +14,7 @@ public class Jeez {
   
   static final String MODULE_NAME = "main.jz";
   
+  // TODO luiz implement stack for returned values and so on
   static final String CODE = 
     "def i = 0\n" +
     "println i\n" +
@@ -20,7 +24,25 @@ public class Jeez {
     "println i\n" +
     "def j = i + i + 2\n" +
     "println j\n" +
-    "println j == i\n";
+    "println j == i\n" +
+    "module Math {\n" +
+    "  def add(i, b) {\n" +
+    "    print \"adding \"\n" +
+    "    print i\n" +
+    "    print \" and \"\n" +
+    "    println b\n" +
+    "    println i + b\n" +
+    "  }\n" +
+    "  def sub(a, b) {\n" +
+    "    return a - b\n" +
+    "  }\n" +
+    "}\n" +
+    "print \"i before: \"\n" +
+    "println i\n" +
+    "Math.add(12, 2)\n" +
+    "print \"i after: \"\n" +
+    "println i\n" +
+    "println Math.sub(5, 3)\n";
   
   private JeezLexer lexer;
   
@@ -43,6 +65,6 @@ public class Jeez {
   private void runScript() {
     Module module = context.getModule(MODULE_NAME + "_module");
     Function function = module.getFunction(Module.ANONYMOUS_FUNCTION_NAME);
-    function.execute(new Object(), context);
+    function.execute(new Object(), new ArrayList<Expression>(), context);
   }
 }

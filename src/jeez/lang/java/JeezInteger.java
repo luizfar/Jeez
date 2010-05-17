@@ -22,4 +22,11 @@ public class JeezInteger extends JeezNumber {
     }
     return null;
   }
+  
+  public JeezNumber sub(JeezNumber number) {
+    if (number instanceof JeezInteger) {
+      return new JeezInteger(value - ((JeezInteger) number).getValue());
+    }
+    return null;
+  }
 }

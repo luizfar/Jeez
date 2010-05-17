@@ -4,5 +4,5 @@ import jeez.lang.context.ExecutionContext;
 
 public interface Statement {
 
-  public void execute(ExecutionContext symbolTable);
+  public void execute(ExecutionContext context);
 }

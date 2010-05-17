@@ -1,7 +1,30 @@
 package com.jeez.compiler.parser;
 
-import static com.jeez.compiler.lexer.Symbol.*;
-import jeez.lang.Method;
+import static com.jeez.compiler.lexer.Symbol.AND;
+import static com.jeez.compiler.lexer.Symbol.COMMA;
+import static com.jeez.compiler.lexer.Symbol.DIVISOR;
+import static com.jeez.compiler.lexer.Symbol.DOT;
+import static com.jeez.compiler.lexer.Symbol.EQUAL;
+import static com.jeez.compiler.lexer.Symbol.GREATER_EQUAL;
+import static com.jeez.compiler.lexer.Symbol.GREATER_THAN;
+import static com.jeez.compiler.lexer.Symbol.IS;
+import static com.jeez.compiler.lexer.Symbol.LEFT_BRACKET;
+import static com.jeez.compiler.lexer.Symbol.LEFT_PAR;
+import static com.jeez.compiler.lexer.Symbol.LESS_EQUAL;
+import static com.jeez.compiler.lexer.Symbol.LESS_THAN;
+import static com.jeez.compiler.lexer.Symbol.MINUS;
+import static com.jeez.compiler.lexer.Symbol.MULTIPLIER;
+import static com.jeez.compiler.lexer.Symbol.NEW;
+import static com.jeez.compiler.lexer.Symbol.NOT;
+import static com.jeez.compiler.lexer.Symbol.NOT_EQUAL;
+import static com.jeez.compiler.lexer.Symbol.OR;
+import static com.jeez.compiler.lexer.Symbol.PLUS;
+import static com.jeez.compiler.lexer.Symbol.REMAINDER;
+import static com.jeez.compiler.lexer.Symbol.RIGHT_PAR;
+import static com.jeez.compiler.lexer.Symbol.SHORT_AND;
+import static com.jeez.compiler.lexer.Symbol.SHORT_OR;
+import static com.jeez.compiler.lexer.Symbol.TRUE;
+import static com.jeez.compiler.lexer.Symbol.XOR;
 import jeez.lang.expression.BinaryExpression;
 import jeez.lang.expression.BinaryOperator;
 import jeez.lang.expression.Expression;
@@ -9,23 +32,21 @@ import jeez.lang.expression.InstantiationExpression;
 import jeez.lang.expression.IntegerExpression;
 import jeez.lang.expression.LiteralBooleanExpression;
 import jeez.lang.expression.LiteralStringExpression;
+import jeez.lang.expression.MessageSendExpression;
 import jeez.lang.expression.NullExpression;
 import jeez.lang.expression.UnaryExpression;
 import jeez.lang.expression.VariableExpression;
 import jeez.lang.java.JeezInteger;
+import jeez.lang.statement.MessageSend;
 
 import com.jeez.compiler.lexer.Symbol;
 
-public class JeezExpressionParser {
+public class ExpressionParser {
 
   private JeezParser jeezParser;
   
-  public JeezExpressionParser(JeezParser jeezParser) {
+  public ExpressionParser(JeezParser jeezParser) {
     this.jeezParser = jeezParser;
-  }
-  
-  public void setCurrentFunction(Method currentMethod) {
-    
   }
   
   public Expression parseExpression() {
@@ -212,6 +233,8 @@ public class JeezExpressionParser {
     
     if (jeezParser.getToken() == LEFT_PAR) {
       expression = parseMessageSendToThisExpression(identifier);
+    } else if (jeezParser.getToken() == DOT) {
+      expression = parseMessageSendExpression(identifier);
     } else {
       expression = parseVariableExpression(identifier);
     }
@@ -226,6 +249,23 @@ public class JeezExpressionParser {
   
   private Expression parseMessageSendToThisExpression(String messageName) {    
     return null;
+  }
+  
+  private Expression parseMessageSendExpression(String receiver) {
+    jeezParser.expect(DOT);
+    // TODO luiz extract message send parser for statement and expression
+    MessageSend messageSend = new MessageSend(receiver, jeezParser.parseIdentifier());
+    
+    jeezParser.expect(LEFT_PAR);
+    while (jeezParser.getToken() != RIGHT_PAR) {
+      messageSend.addToArguments(parseExpression());
+      if (jeezParser.getToken() == COMMA) {
+        jeezParser.nextToken();
+      }
+    }
+    jeezParser.nextToken();
+    
+    return new MessageSendExpression(messageSend);
   }
   
   private Expression parseVariableExpression(String identifier) {

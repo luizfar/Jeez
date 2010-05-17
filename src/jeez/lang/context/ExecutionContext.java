@@ -1,9 +1,12 @@
 package jeez.lang.context;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import jeez.lang.Clazz;
+import jeez.lang.MessageReceiver;
 import jeez.lang.Module;
 import jeez.lang.Variable;
 
@@ -13,7 +16,11 @@ public class ExecutionContext {
   
   private Map<String, Module> modules = new HashMap<String, Module>();
   
-  private Map<String, Variable> localContext = new HashMap<String, Variable>();
+  private List<Map<String, Variable>> localContexts = new ArrayList<Map<String, Variable>>();
+  
+  public ExecutionContext() {
+    addLocalContext();
+  }
   
   public void addClass(Clazz clazz) {
     classes.put(clazz.getName(), clazz);
@@ -32,10 +39,28 @@ public class ExecutionContext {
   }
   
   public void addToLocalContext(Variable variable) {
-    localContext.put(variable.getName(), variable);
+    localContexts.get(localContexts.size() - 1).put(variable.getName(), variable);
   }
   
   public Variable getFromLocalContext(String name) {
-    return localContext.get(name);
+    for (int i = localContexts.size() - 1; i >= 0; i--) {
+      Variable var = localContexts.get(i).get(name);
+      if (var != null) {
+        return var;
+      }
+    }
+    return null;
+  }
+  
+  public void addLocalContext() {
+    localContexts.add(new HashMap<String, Variable>());
+  }
+  
+  public void removeLocalContext() {
+    localContexts.remove(localContexts.size() - 1);
+  }
+  
+  public MessageReceiver getMessageReceiver(String name) {
+    return getModule(name);
   }
 }

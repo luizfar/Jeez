@@ -1,6 +1,11 @@
 package jeez.lang;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jeez.lang.context.ExecutionContext;
+import jeez.lang.expression.Expression;
+import jeez.lang.statement.ReturnStatement;
 import jeez.lang.statement.Statement;
 
 public class Function {
@@ -9,12 +14,13 @@ public class Function {
   
   private String name;
   
-  private Block block;
+  private List<Variable> parameters = new ArrayList<Variable>();
   
-  public Function(Type type, String name, Block block) {
+  private Block block = new Block();
+  
+  public Function(Type type, String name) {
     this.type = type;
     this.name = name;
-    this.block = block;
   }
 
   public Type getType() {
@@ -25,13 +31,37 @@ public class Function {
     return name;
   }
   
+  public void addToParameters(Variable variable) {
+    parameters.add(variable);
+  }
+  
+  public void setBlock(Block block) {
+    this.block = block;
+  }
+  
   public Block getBlock() {
     return block;
   }
   
-  public void execute(Object target, ExecutionContext context) {
+  public Object execute(Object target, List<Expression> arguments, ExecutionContext context) {
+    context.addLocalContext();
+    
+    for (int i = 0; i < parameters.size(); i++) {
+      Variable argument = parameters.get(i);
+      argument.setValue(arguments.get(i).evaluate(context));
+      context.addToLocalContext(argument);
+    }
+    
+    Object result = null;
     for (Statement statement : block.getStatements()) {
       statement.execute(context);
+      if (statement instanceof ReturnStatement) {
+        result = ((ReturnStatement) statement).getResult();
+      }
     }
+    
+    context.removeLocalContext();
+    
+    return result;
   }
 }

@@ -5,8 +5,6 @@ import static com.jeez.compiler.lexer.Symbol.IDENTIFIER;
 import static com.jeez.compiler.lexer.Symbol.MODULE;
 import static jeez.lang.Module.ANONYMOUS_FUNCTION_NAME;
 import static jeez.lang.Type.VOID;
-
-import jeez.lang.Block;
 import jeez.lang.Clazz;
 import jeez.lang.Function;
 import jeez.lang.Module;
@@ -58,7 +56,7 @@ public class JeezParser {
   
   private Module createAnonymousModule(String anonymousModuleName) {
     Module module = new Module(anonymousModuleName);
-    module.addToFunctions(new Function(VOID, ANONYMOUS_FUNCTION_NAME, new Block()));
+    module.addToFunctions(new Function(VOID, ANONYMOUS_FUNCTION_NAME));
     return module;
   }
   
@@ -92,14 +90,14 @@ public class JeezParser {
   
   public void expect(Symbol symbol) {
     if (lexer.token != symbol) {
-      throw new JeezParserException("'" + symbol + "' expected", lexer.getLineNumber());
+      throw new ParserException("'" + symbol + "' expected", lexer.getLineNumber());
     }
     lexer.nextToken();
   }
   
   public String parseIdentifier() {
     if (lexer.token != IDENTIFIER) {
-      throw new JeezParserException("Identifier expected", lexer.getLineNumber());
+      throw new ParserException("Identifier expected", lexer.getLineNumber());
     }
     String identifier = lexer.getStringValue();
     lexer.nextToken();
@@ -110,7 +108,7 @@ public class JeezParser {
   public Type parseTypeExcludesVoid() {
     Type type = parseType();
     if (type == Type.VOID) {
-      throw new JeezParserException("'void' is not a valid variable type", lexer.getLineNumber());
+      throw new ParserException("'void' is not a valid variable type", lexer.getLineNumber());
     }
     return type;
   }
@@ -131,7 +129,7 @@ public class JeezParser {
         result = parseIdentifierAsType(); break;
         
       default:
-        throw new JeezParserException("'int', 'boolean', 'void' or type expected", lexer.getLineNumber());  
+        throw new ParserException("'int', 'boolean', 'void' or type expected", lexer.getLineNumber());  
     }
     lexer.nextToken();
     

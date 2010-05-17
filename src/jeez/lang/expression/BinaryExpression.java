@@ -1,6 +1,7 @@
 package jeez.lang.expression;
 
 import static com.jeez.compiler.lexer.Symbol.EQUAL;
+import static com.jeez.compiler.lexer.Symbol.MINUS;
 import static com.jeez.compiler.lexer.Symbol.PLUS;
 import jeez.lang.context.ExecutionContext;
 import jeez.lang.java.JeezNumber;
@@ -37,10 +38,14 @@ public class BinaryExpression implements Expression {
       return leftSide.evaluate(context).equals(rightSide.evaluate(context));
     }
     if (operator.getSymbol() == PLUS) {
-      Object l1 = leftSide.evaluate(context);
-      JeezNumber left = (JeezNumber) l1;
+      JeezNumber left = (JeezNumber) leftSide.evaluate(context);
       JeezNumber right = (JeezNumber) rightSide.evaluate(context);
       return left.add(right);
+    }
+    if (operator.getSymbol() == MINUS) {
+      JeezNumber left = (JeezNumber) leftSide.evaluate(context);
+      JeezNumber right = (JeezNumber) rightSide.evaluate(context);
+      return left.sub(right);
     }
     
     return null;
