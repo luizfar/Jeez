@@ -43,7 +43,7 @@ public class Function {
     return block;
   }
   
-  public Object execute(Object target, List<Expression> arguments, ExecutionContext context) {
+  public JeezObject execute(JeezObject target, List<Expression> arguments, ExecutionContext context) {
     context.addLocalContext();
     
     for (int i = 0; i < parameters.size(); i++) {
@@ -52,7 +52,7 @@ public class Function {
       context.addToLocalContext(argument);
     }
     
-    Object result = null;
+    JeezObject result = null;
     for (Statement statement : block.getStatements()) {
       statement.execute(context);
       if (statement instanceof ReturnStatement) {

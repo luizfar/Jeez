@@ -1,14 +1,18 @@
 package com.jeez.compiler.parser;
 
 import static com.jeez.compiler.lexer.Symbol.CLASS;
+import static com.jeez.compiler.lexer.Symbol.COMMA;
 import static com.jeez.compiler.lexer.Symbol.LEFT_CUR_BRACKET;
 import static com.jeez.compiler.lexer.Symbol.LEFT_PAR;
 import static com.jeez.compiler.lexer.Symbol.RIGHT_CUR_BRACKET;
+import static com.jeez.compiler.lexer.Symbol.RIGHT_PAR;
 import jeez.lang.Attribute;
 import jeez.lang.Block;
 import jeez.lang.Clazz;
+import jeez.lang.DynamicVariable;
 import jeez.lang.Method;
-import jeez.lang.context.ExecutionContext;
+import jeez.lang.Type;
+import jeez.lang.Variable;
 
 public class ClassParser {
   
@@ -16,11 +20,11 @@ public class ClassParser {
   
   private Clazz currentClass;
   
-  private ExecutionContext context;
+  private BlockParser blockParser;
   
-  public ClassParser(JeezParser jeezParser, ExecutionContext context) {
+  public ClassParser(JeezParser jeezParser) {
     this.jeezParser = jeezParser;
-    this.context = context;
+    this.blockParser = new BlockParser(jeezParser);
   }
   
   Clazz parseClass() {
@@ -40,8 +44,7 @@ public class ClassParser {
   }
 
   private void parseMember() {
-    String typeName = jeezParser.parseIdentifier();
-    Clazz type = context.getClass(typeName);
+    Type type = jeezParser.parseType();
     
     String memberName = jeezParser.parseIdentifier();
     
@@ -52,23 +55,30 @@ public class ClassParser {
     }
   }    
   
-  private Method parseMethod(Clazz type, String methodName) {
-    jeezParser.expect(LEFT_CUR_BRACKET);
-    
-    int rightCurBracketsExpected = 1;
-    while (rightCurBracketsExpected > 0) {
-      if (jeezParser.getToken() == LEFT_CUR_BRACKET) {
-        rightCurBracketsExpected++;
-      }
-      if (jeezParser.getToken() == RIGHT_CUR_BRACKET) {
-        rightCurBracketsExpected--;
-      }
-      jeezParser.nextToken();
-    }
-    
+  private Method parseMethod(Type type, String methodName) {
     Method method = new Method(currentClass, type, methodName);
-    method.setBlock(new Block());
+    
+    jeezParser.expect(LEFT_PAR);
+    if (jeezParser.getToken() != RIGHT_PAR) {
+      parseParameterListFor(method);
+    }
+    jeezParser.nextToken();
+    
+    Block block = blockParser.parseBlock();
+    method.setBlock(block);
     
     return method;
+  }
+
+  private void parseParameterListFor(Method method) {
+    method.addToParameters(parseParameter());
+    while (jeezParser.getToken() == COMMA) {
+      jeezParser.nextToken();
+      method.addToParameters(parseParameter());
+    }
+  }
+  
+  private Variable parseParameter() {
+    return new DynamicVariable(jeezParser.parseIdentifier());
   }
 }

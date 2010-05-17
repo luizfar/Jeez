@@ -7,7 +7,7 @@ import java.util.Map;
 import jeez.lang.context.ExecutionContext;
 import jeez.lang.expression.Expression;
 
-public class Module implements MessageReceiver {
+public class Module extends JeezObject implements MessageReceiver {
   
   public static final String ANONYMOUS_FUNCTION_NAME = "__main";
   
@@ -32,7 +32,7 @@ public class Module implements MessageReceiver {
   }
 
   @Override
-  public Object receiveMessage(String messageName, List<Expression> arguments, ExecutionContext context) {
+  public JeezObject receiveMessage(String messageName, List<Expression> arguments, ExecutionContext context) {
     Function function = functions.get(messageName);
     if (function == null) {
       throw new RuntimeException("Could not find message named '" + messageName + "'");

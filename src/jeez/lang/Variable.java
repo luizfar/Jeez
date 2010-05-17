@@ -1,10 +1,10 @@
 package jeez.lang;
 
-public abstract class Variable {
+public abstract class Variable implements MessageReceiver {
 
   private String name;
   
-  private Object value;
+  private JeezObject value;
   
   public Variable(String name) {
     this.name = name;
@@ -14,11 +14,11 @@ public abstract class Variable {
     return name;
   }
   
-  public void setValue(Object value) {
+  public void setValue(JeezObject value) {
     this.value = value;
   }
   
-  public Object getValue() {
+  public JeezObject getValue() {
     return value;
   }
 }

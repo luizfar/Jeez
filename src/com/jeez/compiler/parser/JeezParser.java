@@ -31,7 +31,7 @@ public class JeezParser {
     this.context = context;
     this.anonymousModuleName = sourceFileName + "_module";
     
-    classParser = new ClassParser(this, context);
+    classParser = new ClassParser(this);
     moduleParser = new ModuleParser(this);
   }
   
@@ -41,7 +41,7 @@ public class JeezParser {
     while (lexer.token != Symbol.EOF) {
       if (lexer.token == CLASS) {
         context.addClass(classParser.parseClass());
-      } if (lexer.token == MODULE) {
+      } else if (lexer.token == MODULE) {
         context.addModule(moduleParser.parseModule());
       } else {
         Module anonymous = context.getModule(anonymousModuleName);

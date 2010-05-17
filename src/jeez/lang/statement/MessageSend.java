@@ -3,6 +3,7 @@ package jeez.lang.statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import jeez.lang.JeezObject;
 import jeez.lang.MessageReceiver;
 import jeez.lang.context.ExecutionContext;
 import jeez.lang.expression.Expression;
@@ -15,7 +16,7 @@ public class MessageSend implements Statement {
   
   private List<Expression> arguments = new ArrayList<Expression>();
   
-  private Object result;
+  private JeezObject result;
   
   public MessageSend(String receiverName, String messageName) {
     this.receiverName = receiverName;
@@ -32,7 +33,7 @@ public class MessageSend implements Statement {
     result = receiver.receiveMessage(messageName, arguments, context);
   }
   
-  public Object getReturnedValue() {
+  public JeezObject getReturnedValue() {
     return result;
   }
 }

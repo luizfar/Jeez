@@ -1,5 +1,6 @@
 package jeez.lang.expression;
 
+import jeez.lang.JeezObject;
 import jeez.lang.context.ExecutionContext;
 import jeez.lang.statement.MessageSend;
 
@@ -12,7 +13,7 @@ public class MessageSendExpression implements Expression {
   }
   
   @Override
-  public Object evaluate(ExecutionContext context) {
+  public JeezObject evaluate(ExecutionContext context) {
     messageSend.execute(context);
     return messageSend.getReturnedValue();
   }

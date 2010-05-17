@@ -1,8 +1,9 @@
 package jeez.lang.expression;
 
+import jeez.lang.JeezObject;
 import jeez.lang.context.ExecutionContext;
 
 public interface Expression {
   
-  public Object evaluate(ExecutionContext context);
+  public JeezObject evaluate(ExecutionContext context);
 }

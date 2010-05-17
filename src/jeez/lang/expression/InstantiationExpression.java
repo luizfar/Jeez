@@ -1,6 +1,7 @@
 package jeez.lang.expression;
 
 import jeez.lang.Clazz;
+import jeez.lang.JeezObject;
 import jeez.lang.context.ExecutionContext;
 
 public class InstantiationExpression implements Expression {
@@ -12,8 +13,8 @@ public class InstantiationExpression implements Expression {
   }
   
   @Override
-  public Object evaluate(ExecutionContext symbolTable) {
-    Clazz clazz = symbolTable.getClass(clazzName);
+  public JeezObject evaluate(ExecutionContext context) {
+    Clazz clazz = context.getClass(clazzName);
     if (clazz == null) {
       throw new RuntimeException("Can't find class " + clazzName);
     }

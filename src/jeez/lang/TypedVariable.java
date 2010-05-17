@@ -5,17 +5,16 @@ import java.util.List;
 import jeez.lang.context.ExecutionContext;
 import jeez.lang.expression.Expression;
 
-public class DynamicVariable extends Variable {
+public class TypedVariable extends Variable {
 
   private Clazz type;
   
-  public DynamicVariable(String name) {
+  public TypedVariable(Clazz type, String name) {
     super(name);
   }
   
-  public void setValue(JeezObject value) {
-    super.setValue(value);
-    type = ((JeezObject) value).getClazz();
+  public Clazz getType() {
+    return type;
   }
 
   @Override

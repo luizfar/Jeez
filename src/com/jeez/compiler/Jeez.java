@@ -3,6 +3,7 @@ package com.jeez.compiler;
 import java.util.ArrayList;
 
 import jeez.lang.Function;
+import jeez.lang.JeezObject;
 import jeez.lang.Module;
 import jeez.lang.context.ExecutionContext;
 import jeez.lang.expression.Expression;
@@ -42,7 +43,19 @@ public class Jeez {
     "Math.add(12, 2)\n" +
     "print \"i after: \"\n" +
     "println i\n" +
-    "println Math.sub(5, 3)\n";
+    "println Math.sub(5, 3)\n" +
+    "class Dog {\n" +
+    "  def name\n" +
+    "  def setName(n) {\n" +
+    "    name = n\n" +
+    "  }\n" +
+    "  def getName() {\n" +
+    "    return name\n" +
+    "  }\n" +
+    "}\n" +
+    "def d = new Dog()\n" +
+    "d.setName(\"Rex\")\n" +
+    "println d.getName()";
   
   private JeezLexer lexer;
   
@@ -65,6 +78,6 @@ public class Jeez {
   private void runScript() {
     Module module = context.getModule(MODULE_NAME + "_module");
     Function function = module.getFunction(Module.ANONYMOUS_FUNCTION_NAME);
-    function.execute(new Object(), new ArrayList<Expression>(), context);
+    function.execute(new JeezObject(), new ArrayList<Expression>(), context);
   }
 }

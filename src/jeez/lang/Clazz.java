@@ -1,5 +1,6 @@
 package jeez.lang;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,6 +28,10 @@ public class Clazz implements Type {
     return attributes.get(name);
   }
   
+  public Collection<Attribute> getAttributes() {
+    return attributes.values();
+  }
+  
   public void addToMethods(Method method) {
     methods.put(method.getName(), method);
   }
@@ -36,7 +41,7 @@ public class Clazz implements Type {
   }
   
   public JeezObject newObject() {
-    return new JeezObject();
+    return new JeezObject(this);
   }
   
   public boolean equals(Object object) {

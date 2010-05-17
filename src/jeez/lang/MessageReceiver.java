@@ -7,5 +7,5 @@ import jeez.lang.expression.Expression;
 
 public interface MessageReceiver {
 
-  public Object receiveMessage(String messageName, List<Expression> arguments, ExecutionContext context);
+  public JeezObject receiveMessage(String messageName, List<Expression> arguments, ExecutionContext context);
 }

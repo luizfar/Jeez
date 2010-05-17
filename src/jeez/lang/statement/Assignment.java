@@ -19,8 +19,9 @@ public class Assignment implements Statement {
   public void execute(ExecutionContext context) {
     Variable variable = context.getFromLocalContext(variableName);
     if (variable == null) {
-      throw new RuntimeException("Could not find variable " + variableName);
+      throw new RuntimeException("Could not find variable '" + variableName + "'");
     }
+    
     variable.setValue(expression.evaluate(context));
   }
 }

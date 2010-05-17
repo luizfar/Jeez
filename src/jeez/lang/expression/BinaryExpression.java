@@ -3,7 +3,9 @@ package jeez.lang.expression;
 import static com.jeez.compiler.lexer.Symbol.EQUAL;
 import static com.jeez.compiler.lexer.Symbol.MINUS;
 import static com.jeez.compiler.lexer.Symbol.PLUS;
+import jeez.lang.JeezObject;
 import jeez.lang.context.ExecutionContext;
+import jeez.lang.java.JeezBoolean;
 import jeez.lang.java.JeezNumber;
 
 public class BinaryExpression implements Expression {
@@ -33,9 +35,9 @@ public class BinaryExpression implements Expression {
   }
 
   @Override
-  public Object evaluate(ExecutionContext context) {
+  public JeezObject evaluate(ExecutionContext context) {
     if (operator.getSymbol() == EQUAL) {
-      return leftSide.evaluate(context).equals(rightSide.evaluate(context));
+      return new JeezBoolean(leftSide.evaluate(context).equals(rightSide.evaluate(context)));
     }
     if (operator.getSymbol() == PLUS) {
       JeezNumber left = (JeezNumber) leftSide.evaluate(context);

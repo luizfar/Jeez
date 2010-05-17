@@ -1,5 +1,6 @@
 package jeez.lang.expression;
 
+import jeez.lang.JeezObject;
 import jeez.lang.context.ExecutionContext;
 import jeez.lang.java.JeezInteger;
 
@@ -12,7 +13,7 @@ public class IntegerExpression implements Expression {
   }
 
   @Override
-  public Object evaluate(ExecutionContext symbolTable) {
+  public JeezObject evaluate(ExecutionContext symbolTable) {
     return value;
   }
 }

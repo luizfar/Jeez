@@ -1,7 +1,7 @@
 package jeez.lang.statement;
 
 import jeez.lang.Clazz;
-import jeez.lang.StaticVariable;
+import jeez.lang.TypedVariable;
 import jeez.lang.Variable;
 import jeez.lang.context.ExecutionContext;
 
@@ -23,7 +23,7 @@ public class VariableDeclaration implements Statement {
       throw new RuntimeException("Could not find class '" + typeName + "'");
     }
     
-    Variable variable = new StaticVariable(clazz, variableName);
+    Variable variable = new TypedVariable(clazz, variableName);
     context.addToLocalContext(variable);
   }
 }
