@@ -1,8 +1,6 @@
 package jeez.lang.builder;
 
 import static jeez.lang.Type.DUCK;
-import static jeez.lang.Type.JEEZ_BOOLEAN;
-import static jeez.lang.Type.JEEZ_STRING;
 
 import java.util.List;
 
@@ -32,7 +30,7 @@ public class ClassBuilder {
   public Clazz buildClass(String name) {
     final Clazz clazz = new Clazz(name);
     
-    Method getName = new ClassMethod(clazz, JEEZ_STRING, "getName") {
+    Method getName = new ClassMethod(clazz, DUCK, "getName") {
       @Override
       public JeezObject execute(JeezObject target, List<Expression> arguments, ExecutionContext context) {
         return new JeezString(clazz.getName());
@@ -57,7 +55,7 @@ public class ClassBuilder {
     clazz.addToClassMethods(newObject);
     clazz.addToClassMethods(getClassesClass);
     
-    Method understands = new Method(clazz, JEEZ_BOOLEAN, "understands") {
+    Method understands = new Method(clazz, DUCK, "understands") {
       @Override
       public JeezObject execute(JeezObject target, List<Expression> arguments, ExecutionContext context) {
         String methodName = arguments.get(0).evaluate(context).toString();
