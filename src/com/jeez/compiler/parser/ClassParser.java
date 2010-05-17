@@ -11,7 +11,9 @@ import static com.jeez.compiler.lexer.Symbol.STATIC;
 import jeez.lang.Attribute;
 import jeez.lang.Block;
 import jeez.lang.ClassAttribute;
+import jeez.lang.ClassMethod;
 import jeez.lang.Clazz;
+import jeez.lang.Function;
 import jeez.lang.Method;
 import jeez.lang.Type;
 import jeez.lang.Variable;
@@ -59,7 +61,7 @@ public class ClassParser {
     String name = jeezParser.parseIdentifier();
     
     if (jeezParser.getToken() == LEFT_PAR) {
-      currentClass.addToClassMethods(parseMethod(type, name));
+      currentClass.addToClassMethods(parseClassMethod(type, name));
     } else {
       ClassAttribute attribute = new ClassAttribute(name);
       if (jeezParser.getToken() == ASSIGN) {
@@ -83,24 +85,32 @@ public class ClassParser {
   
   private Method parseMethod(Type type, String methodName) {
     Method method = new Method(currentClass, type, methodName);
-    
+    parseParametersAndBodyFor(method);
+    return method;
+  }  
+  
+  private ClassMethod parseClassMethod(Type type, String methodName) {
+    ClassMethod method = new ClassMethod(currentClass, type, methodName);
+    parseParametersAndBodyFor(method);
+    return method;
+  }
+  
+  private void parseParametersAndBodyFor(Function function) {
     jeezParser.expect(LEFT_PAR);
     if (jeezParser.getToken() != RIGHT_PAR) {
-      parseParameterListFor(method);
+      parseParameterListFor(function);
     }
     jeezParser.nextToken();
     
     Block block = blockParser.parseBlock();
-    method.setBlock(block);
-    
-    return method;
+    function.setBlock(block);
   }
 
-  private void parseParameterListFor(Method method) {
-    method.addToParameters(parseParameter());
+  private void parseParameterListFor(Function function) {
+    function.addToParameters(parseParameter());
     while (jeezParser.getToken() == COMMA) {
       jeezParser.nextToken();
-      method.addToParameters(parseParameter());
+      function.addToParameters(parseParameter());
     }
   }
   

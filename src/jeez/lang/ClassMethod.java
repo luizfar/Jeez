@@ -5,10 +5,17 @@ import java.util.List;
 import jeez.lang.context.ExecutionContext;
 import jeez.lang.expression.Expression;
 
-public class ClassMethod extends Method {
+public class ClassMethod extends Function {
 
+  private Clazz owner;
+  
   public ClassMethod(Clazz owner, Type type, String name) {
-    super(owner, type, name);
+    super(type, name);
+    this.owner = owner;
+  }
+  
+  public Clazz getOwner() {
+    return owner;
   }
   
   @Override

@@ -67,11 +67,17 @@ public class StatementParser {
   
   private Statement parseIfStatement() {
     jeezParser.expect(IF);
-    jeezParser.expect(LEFT_PAR);
+    
+    boolean foundPar = jeezParser.getToken() == LEFT_PAR;
+    if (foundPar) {
+      jeezParser.nextToken();
+    }
     
     Expression expr = exprParser.parseExpression();
     
-    jeezParser.expect(RIGHT_PAR);
+    if (foundPar) {
+      jeezParser.expect(RIGHT_PAR);
+    }
     
     Statement ifStatement = parseStatement();
     Statement elseStatement = null;

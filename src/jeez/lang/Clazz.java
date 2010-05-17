@@ -14,7 +14,7 @@ public class Clazz extends JeezObject implements Type, MessageReceiver {
   
   private Map<String, ClassAttribute> classAttributes = new HashMap<String, ClassAttribute>();
   
-  private Map<String, Method> classMethods = new HashMap<String, Method>();
+  private Map<String, ClassMethod> classMethods = new HashMap<String, ClassMethod>();
   
   private Map<String, Attribute> attributes = new HashMap<String, Attribute>();
   
@@ -60,11 +60,11 @@ public class Clazz extends JeezObject implements Type, MessageReceiver {
     return methods.get(name);
   }
   
-  public void addToClassMethods(Method method) {
+  public void addToClassMethods(ClassMethod method) {
     classMethods.put(method.getName(), method);
   }
   
-  public Method getClassMethod(String name) {
+  public ClassMethod getClassMethod(String name) {
     return classMethods.get(name);
   }
   
@@ -86,7 +86,7 @@ public class Clazz extends JeezObject implements Type, MessageReceiver {
 
   @Override
   public JeezObject receiveMessage(String messageName, List<Expression> arguments, ExecutionContext context) {
-    Method method = classMethods.get(messageName);
+    ClassMethod method = classMethods.get(messageName);
     return method.execute(this, arguments, context);
   }
   

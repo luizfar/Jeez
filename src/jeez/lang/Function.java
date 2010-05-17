@@ -35,6 +35,10 @@ public class Function {
     parameters.add(variable);
   }
   
+  public int getParametersCount() {
+    return parameters.size();
+  }
+  
   public void setBlock(Block block) {
     this.block = block;
   }
@@ -45,6 +49,12 @@ public class Function {
   
   public JeezObject execute(JeezObject target, List<Expression> arguments, ExecutionContext context) {
     context.addLocalContext();
+
+    if (getParametersCount() != arguments.size()) {
+      throw new RuntimeException("Wrong number of arguments for method '"
+          + getName() + "' . Expected: " + getParametersCount()
+          + ", received: " + arguments.size());
+    }
     
     for (int i = 0; i < parameters.size(); i++) {
       Variable argument = parameters.get(i);

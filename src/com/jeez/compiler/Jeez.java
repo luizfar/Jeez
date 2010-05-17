@@ -21,21 +21,33 @@ public class Jeez {
     "class Dog {\n" +
     "  def name\n" +
     "  static def dogCount = 0\n" +
+    "  def new(n) {\n" +
+    "    name = n" +
+    "    dogCount = dogCount + 1\n" +
+    "    println \"inside of Dog's init\"\n" +
+    "  }\n" +
+    "" +
     "  def setName(n) {\n" +
     "    name = n\n" +
     "  }\n" +
+    "" +
     "  def getName() {\n" +
     "    return name\n" +
     "  }\n" +
+    "" +
     "  def bark() {\n" +
     "    println \"woof woof\"\n" +
     "  }\n" +
+    "" +
     "  static def getCount(){\n" +
     "    return dogCount\n" +
     "  }\n" +
     "}\n" +
     "" +
-    "println Dog.getCount()";
+    "println Dog.getCount()\n" +
+    "def d = Dog.new(\"Totó\")\n" +
+    "println Dog.getCount()\n" +
+    "println d.getName()";
   
   private JeezLexer lexer;
   
@@ -58,7 +70,7 @@ public class Jeez {
   private void runScript() {
     context.prepare();
     Module module = context.getModule(MODULE_NAME + "_module");
-    Function function = module.getFunction(Module.ANONYMOUS_FUNCTION_NAME);
+    Function function = module.getFunction(Module.ANONYMOUS_FUNCTION_NAME);    
     function.execute(new JeezObject(), new ArrayList<Expression>(), context);
   }
 }
