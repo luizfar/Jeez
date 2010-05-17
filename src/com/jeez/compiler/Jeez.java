@@ -15,7 +15,8 @@ public class Jeez {
   
   static final String MODULE_NAME = "main.jz";
   
-  // TODO luiz implement stack for returned values and so on
+  
+
   static final String CODE = 
     "def i = 0\n" +
     "println i\n" +
@@ -46,16 +47,43 @@ public class Jeez {
     "println Math.sub(5, 3)\n" +
     "class Dog {\n" +
     "  def name\n" +
+    "  static def dogCount\n" +
     "  def setName(n) {\n" +
     "    name = n\n" +
     "  }\n" +
     "  def getName() {\n" +
     "    return name\n" +
     "  }\n" +
+    "  def bark() {\n" +
+    "    println \"woof woof\"\n" +
+    "  }\n" +
+    "  static def getCount(){\n" +
+    "    return dogCount\n" +
+    "  }\n" +
     "}\n" +
-    "def d = new Dog()\n" +
+    "def d = Dog.new()\n" +
     "d.setName(\"Rex\")\n" +
-    "println d.getName()";
+    "println d.getName()\n" +
+    "println Dog.getCount()\n" +
+    "println Dog.getName()\n" +
+    "if (d.understands(\"bark\")) {\n" +
+    "  d.bark()\n" +
+    "} else {\n" +
+    "  println \"This dog can't bark\"\n" +
+    "}\n" +
+    "def D = d.getClass()\n" +
+    "def C = D.getClass()\n" +
+    "println C\n" +
+    "def C1 = C.getClass()\n" +
+    "println C1\n" +
+    "\n" +
+    "def clazz = C.new()\n" +
+    "println clazz\n" +
+    "if (clazz.understands(\"getName\")) {\n" +
+    "  println clazz.getName()\n" +
+    "} else {\n" +
+    "  println \"doesnt understand\"\n" +
+    "}\n";
   
   private JeezLexer lexer;
   

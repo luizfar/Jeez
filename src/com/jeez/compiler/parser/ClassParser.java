@@ -6,13 +6,14 @@ import static com.jeez.compiler.lexer.Symbol.LEFT_CUR_BRACKET;
 import static com.jeez.compiler.lexer.Symbol.LEFT_PAR;
 import static com.jeez.compiler.lexer.Symbol.RIGHT_CUR_BRACKET;
 import static com.jeez.compiler.lexer.Symbol.RIGHT_PAR;
+import static com.jeez.compiler.lexer.Symbol.STATIC;
 import jeez.lang.Attribute;
 import jeez.lang.Block;
 import jeez.lang.Clazz;
-import jeez.lang.DynamicVariable;
 import jeez.lang.Method;
 import jeez.lang.Type;
 import jeez.lang.Variable;
+import jeez.lang.builder.ClassBuilder;
 
 public class ClassParser {
   
@@ -30,7 +31,7 @@ public class ClassParser {
   Clazz parseClass() {
     jeezParser.expect(CLASS);
     
-    currentClass = new Clazz(jeezParser.parseIdentifier());
+    currentClass = ClassBuilder.get().buildClass(jeezParser.parseIdentifier());
     
     jeezParser.expect(LEFT_CUR_BRACKET);
     
@@ -44,14 +45,28 @@ public class ClassParser {
   }
 
   private void parseMember() {
+    boolean isStatic = false;
+    if (jeezParser.getToken() == STATIC) {
+      isStatic = true;
+      jeezParser.nextToken();
+    }
+    
     Type type = jeezParser.parseType();
     
     String memberName = jeezParser.parseIdentifier();
     
-    if (jeezParser.getToken() == LEFT_PAR) {      
-      currentClass.addToMethods(parseMethod(type, memberName));
+    if (jeezParser.getToken() == LEFT_PAR) {
+      if (isStatic) {
+        currentClass.addToClassMethods(parseMethod(type, memberName));
+      } else {
+        currentClass.addToMethods(parseMethod(type, memberName));
+      }
     } else {
-      currentClass.addToAttributes(new Attribute(type, memberName));
+      if (isStatic) {
+        currentClass.addToClassAttributes(new Variable(memberName));
+      } else {
+        currentClass.addToAttributes(new Attribute(type, memberName));
+      }
     }
   }    
   
@@ -79,6 +94,6 @@ public class ClassParser {
   }
   
   private Variable parseParameter() {
-    return new DynamicVariable(jeezParser.parseIdentifier());
+    return new Variable(jeezParser.parseIdentifier());
   }
 }

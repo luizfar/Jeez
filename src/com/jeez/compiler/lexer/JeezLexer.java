@@ -35,7 +35,6 @@ public class JeezLexer {
     KEYWORDS.put("class", Symbol.CLASS);
     KEYWORDS.put("super", Symbol.SUPER);
     KEYWORDS.put("this", Symbol.THIS);
-    KEYWORDS.put("new", Symbol.NEW);
     KEYWORDS.put("public", Symbol.PUBLIC);
     KEYWORDS.put("protected", Symbol.PROTECTED);
     KEYWORDS.put("private", Symbol.PRIVATE);

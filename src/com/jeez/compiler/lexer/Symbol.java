@@ -39,7 +39,6 @@ public enum Symbol {
   IMPLEMENTS,
   SUPER,
   THIS,
-  NEW,
   PUBLIC,
   PROTECTED,
   PRIVATE,

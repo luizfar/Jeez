@@ -63,6 +63,9 @@ public class ExecutionContext {
   public MessageReceiver getMessageReceiver(String name) {
     MessageReceiver receiver = getFromLocalContext(name);
     if (receiver == null) {
+      receiver = getClass(name);
+    }
+    if (receiver == null) {
       receiver = getModule(name);
     }
     return receiver;

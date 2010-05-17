@@ -14,7 +14,6 @@ import static com.jeez.compiler.lexer.Symbol.LESS_EQUAL;
 import static com.jeez.compiler.lexer.Symbol.LESS_THAN;
 import static com.jeez.compiler.lexer.Symbol.MINUS;
 import static com.jeez.compiler.lexer.Symbol.MULTIPLIER;
-import static com.jeez.compiler.lexer.Symbol.NEW;
 import static com.jeez.compiler.lexer.Symbol.NOT;
 import static com.jeez.compiler.lexer.Symbol.NOT_EQUAL;
 import static com.jeez.compiler.lexer.Symbol.OR;
@@ -28,7 +27,6 @@ import static com.jeez.compiler.lexer.Symbol.XOR;
 import jeez.lang.expression.BinaryExpression;
 import jeez.lang.expression.BinaryOperator;
 import jeez.lang.expression.Expression;
-import jeez.lang.expression.InstantiationExpression;
 import jeez.lang.expression.IntegerExpression;
 import jeez.lang.expression.LiteralBooleanExpression;
 import jeez.lang.expression.LiteralStringExpression;
@@ -193,9 +191,6 @@ public class ExpressionParser {
       case LEFT_PAR:
         throw new RuntimeException("Not yet implemented.");
         
-      case NEW:
-        return parseInstantiationExpression();
-        
       case LEFT_BRACKET:
         throw new RuntimeException("Not yet implemented.");
       
@@ -214,15 +209,6 @@ public class ExpressionParser {
     }
     
     throw new RuntimeException("Should throw an error here");
-  }
-  
-  private Expression parseInstantiationExpression() {
-    jeezParser.expect(NEW);
-    String clazzName = jeezParser.parseIdentifier();
-    jeezParser.expect(LEFT_PAR);
-    jeezParser.expect(RIGHT_PAR);
-    
-    return new InstantiationExpression(clazzName);
   }
 
   private Expression parseVariableOrMethodExpression() {

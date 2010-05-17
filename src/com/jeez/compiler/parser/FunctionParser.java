@@ -6,7 +6,6 @@ import static com.jeez.compiler.lexer.Symbol.LEFT_PAR;
 import static com.jeez.compiler.lexer.Symbol.RIGHT_PAR;
 import static jeez.lang.Type.DUCK;
 import jeez.lang.Block;
-import jeez.lang.DynamicVariable;
 import jeez.lang.Function;
 import jeez.lang.Variable;
 
@@ -46,6 +45,6 @@ public class FunctionParser {
   }
   
   private Variable parseParameter() {
-    return new DynamicVariable(jeezParser.parseIdentifier());
+    return new Variable(jeezParser.parseIdentifier());
   }
 }

@@ -1,6 +1,11 @@
 package jeez.lang;
 
-public abstract class Variable implements MessageReceiver {
+import java.util.List;
+
+import jeez.lang.context.ExecutionContext;
+import jeez.lang.expression.Expression;
+
+public class Variable implements MessageReceiver {
 
   private String name;
   
@@ -20,5 +25,10 @@ public abstract class Variable implements MessageReceiver {
   
   public JeezObject getValue() {
     return value;
+  }
+
+  @Override
+  public JeezObject receiveMessage(String messageName, List<Expression> arguments, ExecutionContext context) {
+    return getValue().receiveMessage(messageName, arguments, context);
   }
 }

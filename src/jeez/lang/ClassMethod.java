@@ -5,30 +5,19 @@ import java.util.List;
 import jeez.lang.context.ExecutionContext;
 import jeez.lang.expression.Expression;
 
-public class Method extends Function {
+public class ClassMethod extends Method {
 
-  private Clazz owner;
-  
-  public Method(Clazz owner, Type type, String name) {
-    super(type, name);
-    this.owner = owner;
-  }
-  
-  public Clazz getOwner() {
-    return owner;
+  public ClassMethod(Clazz owner, Type type, String name) {
+    super(owner, type, name);
   }
   
   @Override
   public JeezObject execute(JeezObject target, List<Expression> arguments, ExecutionContext context) {
     context.addLocalContext();
     
-    for (Variable var : owner.getClassAttributes()) {
+    for (Variable var : getOwner().getClassAttributes()) {
       context.addToLocalContext(var);
     }
-    for (Variable var : target.getInstanceVariables()) {
-      context.addToLocalContext(var);
-    }
-    
     JeezObject result = super.execute(target, arguments, context);
     context.removeLocalContext();
     

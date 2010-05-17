@@ -5,16 +5,17 @@ import static com.jeez.compiler.lexer.Symbol.COMMA;
 import static com.jeez.compiler.lexer.Symbol.DEF;
 import static com.jeez.compiler.lexer.Symbol.DOT;
 import static com.jeez.compiler.lexer.Symbol.ELSE;
-import static com.jeez.compiler.lexer.Symbol.IDENTIFIER;
 import static com.jeez.compiler.lexer.Symbol.IF;
+import static com.jeez.compiler.lexer.Symbol.LEFT_CUR_BRACKET;
 import static com.jeez.compiler.lexer.Symbol.LEFT_PAR;
 import static com.jeez.compiler.lexer.Symbol.PRINT;
 import static com.jeez.compiler.lexer.Symbol.PRINTLN;
 import static com.jeez.compiler.lexer.Symbol.RETURN;
+import static com.jeez.compiler.lexer.Symbol.RIGHT_CUR_BRACKET;
 import static com.jeez.compiler.lexer.Symbol.RIGHT_PAR;
 import jeez.lang.expression.Expression;
 import jeez.lang.statement.Assignment;
-import jeez.lang.statement.DynamicVariableDeclaration;
+import jeez.lang.statement.CompositeStatement;
 import jeez.lang.statement.IfStatement;
 import jeez.lang.statement.MessageSend;
 import jeez.lang.statement.PrintStatement;
@@ -55,9 +56,12 @@ public class StatementParser {
         
       case RETURN:
         return parseReturnStatement();
+        
+      case LEFT_CUR_BRACKET:
+        return parseCompositeStatement();
     }
     
-    throw new ParserException("'if', 'print' expected.", 
+    throw new ParserException("'if', 'print', 'def', 'return', '{' or identifier expected.", 
         jeezParser.getLineNumber());
   }
   
@@ -66,6 +70,8 @@ public class StatementParser {
     jeezParser.expect(LEFT_PAR);
     
     Expression expr = exprParser.parseExpression();
+    
+    jeezParser.expect(RIGHT_PAR);
     
     Statement ifStatement = parseStatement();
     Statement elseStatement = null;
@@ -100,9 +106,9 @@ public class StatementParser {
       return parseAssignment(id1);
     }
     
-    if (jeezParser.getToken() == IDENTIFIER) {
-      return parseDeclaration(id1);
-    }
+//    if (jeezParser.getToken() == IDENTIFIER) {
+//      return parseDeclaration(id1);
+//    }
     
     if (jeezParser.getToken() == DOT) {
       return parseMessageSend(id1);
@@ -118,24 +124,10 @@ public class StatementParser {
     return new Assignment(variableName, expr);
   }
   
-  private Statement parseDeclaration(String typeName) {
-    String variableName = jeezParser.parseIdentifier();
-    Statement statement = new VariableDeclaration(typeName, variableName);
-    
-    if (jeezParser.getToken() == ASSIGN) {
-      StatementList list = new StatementList();
-      list.addStatement(statement);
-      list.addStatement(parseAssignment(variableName));
-      statement = list;
-    }
-    
-    return statement;
-  }
-  
   private Statement parseDynamicDeclaration() {
     jeezParser.expect(DEF);
     String variableName = jeezParser.parseIdentifier();
-    Statement statement = new DynamicVariableDeclaration(variableName);
+    Statement statement = new VariableDeclaration(variableName);
     
     if (jeezParser.getToken() == ASSIGN) {
       StatementList list = new StatementList();
@@ -166,5 +158,16 @@ public class StatementParser {
   private Statement parseReturnStatement() {
     jeezParser.expect(RETURN);
     return new ReturnStatement(exprParser.parseExpression());
+  }
+  
+  private Statement parseCompositeStatement() {
+    jeezParser.expect(LEFT_CUR_BRACKET);
+    CompositeStatement compositeStatement = new CompositeStatement();
+    while (jeezParser.getToken() != RIGHT_CUR_BRACKET) {
+      compositeStatement.addToStatementList(parseStatement());
+    }
+    jeezParser.nextToken();
+    
+    return compositeStatement;
   }
 }
