@@ -17,4 +17,16 @@ public class JeezString extends JeezObject {
   public String toString() {
     return value;
   }
+  
+  public boolean equals(Object o) {
+    if (o instanceof JeezString) {
+      return value.equals(((JeezString) o).value); 
+    }
+    
+    if (o instanceof String) {
+      return value.equals((String)o);
+    }
+    
+    return false;
+  }
 }

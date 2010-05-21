@@ -41,12 +41,13 @@ import jeez.lang.expression.IfExpression;
 import jeez.lang.expression.IntegerExpression;
 import jeez.lang.expression.LiteralBooleanExpression;
 import jeez.lang.expression.LiteralStringExpression;
-import jeez.lang.expression.MessageSendExpression;
+import jeez.lang.expression.MessageSend;
 import jeez.lang.expression.NullExpression;
 import jeez.lang.expression.PrintExpression;
 import jeez.lang.expression.PrintlnExpression;
 import jeez.lang.expression.ReturnExpression;
 import jeez.lang.expression.SelfExpression;
+import jeez.lang.expression.TypedVariableDeclaration;
 import jeez.lang.expression.UnaryExpression;
 import jeez.lang.expression.VariableDeclaration;
 import jeez.lang.expression.VariableExpression;
@@ -72,6 +73,7 @@ public class ExpressionParser {
         expression = parseAssignmentExpression(expression);
       }
     }
+    
     return expression;
   }
   
@@ -112,9 +114,7 @@ public class ExpressionParser {
   
   private Expression parseIfExpression() {
     jeezParser.expect(IF);
-    jeezParser.expect(LEFT_PAR);
     IfExpression ifExpression = new IfExpression(parseExpression());
-    jeezParser.expect(RIGHT_PAR);
     
     ifExpression.setIfExpression(parseExpression());
     if (jeezParser.getToken() == ELSE) {
@@ -138,6 +138,20 @@ public class ExpressionParser {
     jeezParser.expect(DEF);
     String variableName = jeezParser.parseIdentifier();
     Expression expression = new VariableDeclaration(variableName);
+    
+    if (jeezParser.getToken() == ASSIGN) {
+      ExpressionList list = new ExpressionList();
+      list.addToExpressions(expression);
+      list.addToExpressions(parseAssignmentExpression(variableName));
+      expression = list;
+    }
+    
+    return expression;
+  }
+  
+  private Expression parseTypedDeclaration(String className) {
+    String variableName = jeezParser.parseIdentifier();
+    Expression expression = new TypedVariableDeclaration(className, variableName);
     
     if (jeezParser.getToken() == ASSIGN) {
       ExpressionList list = new ExpressionList();
@@ -326,7 +340,7 @@ public class ExpressionParser {
         throw new RuntimeException("Not yet implemented.");
       
       case IDENTIFIER:
-        return parseVariableOrMethodExpression();
+        return parseDeclarationOrVariableOrMethodExpression();
       
       case TRUE:
       case FALSE:
@@ -339,28 +353,30 @@ public class ExpressionParser {
         return parseLiteralStringExpression();
     }
     
-    System.out.println(jeezParser.getToken());
-    System.out.println(jeezParser.getStringValue());
-    jeezParser.nextToken();
-    System.out.println(jeezParser.getToken());
-    System.out.println(jeezParser.getStringValue());
-    
     throw new RuntimeException(jeezParser.getLineNumber() + ": Should throw an error here");
   }
 
-  private Expression parseVariableOrMethodExpression() {
+  private Expression parseDeclarationOrVariableOrMethodExpression() {
     String identifier = jeezParser.getStringValue();
     jeezParser.nextToken();
     
-    if (jeezParser.getToken() == LEFT_PAR) {
-      return parseMessageSendToThisExpression(identifier);
-    } else {
-      return parseVariableExpression(identifier);
+    switch (jeezParser.getToken()) {
+      case IDENTIFIER:
+        if (jeezParser.foundEndOfExpression()) {
+          return parseVariableExpression(identifier);
+        }
+        return parseTypedDeclaration(identifier);
+        
+      case LEFT_PAR:
+        return parseMessageSendToThis(identifier);
+        
+      default:
+        return parseVariableExpression(identifier);
     }
   }
   
-  private Expression parseMessageSendToThisExpression(String messageName) {
-    MessageSendExpression messageSend = new MessageSendExpression(new SelfExpression(), messageName);
+  private Expression parseMessageSendToThis(String messageName) {
+    MessageSend messageSend = new MessageSend(new SelfExpression(), messageName);
     jeezParser.expect(LEFT_PAR);
     while (jeezParser.getToken() != RIGHT_PAR) {
       messageSend.addToArguments(parseExpression());
@@ -375,7 +391,7 @@ public class ExpressionParser {
   
   private Expression parseMessageSendExpression(Expression receiver) {
     jeezParser.expect(DOT);
-    MessageSendExpression messageSend = new MessageSendExpression(receiver, jeezParser.parseIdentifier());
+    MessageSend messageSend = new MessageSend(receiver, jeezParser.parseIdentifier());
     jeezParser.expect(LEFT_PAR);
     while (jeezParser.getToken() != RIGHT_PAR) {
       messageSend.addToArguments(parseExpression());

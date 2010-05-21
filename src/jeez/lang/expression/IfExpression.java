@@ -27,9 +27,9 @@ public class IfExpression implements Expression {
   @Override
   public JeezObject evaluate(ExecutionContext context) {
     if (JeezBoolean.TRUE.equals(booleanExpression.evaluate(context))) {
-      ifExpression.evaluate(context);
+      return ifExpression.evaluate(context);
     } else if (elseExpression != null) {
-      elseExpression.evaluate(context);
+      return elseExpression.evaluate(context);
     }
     
     return null;

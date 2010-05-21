@@ -15,30 +15,32 @@ public class Jeez {
     "    name = n\n" +
     "    dogCount = dogCount + 1\n" +
     "  }\n" +
-    "" +
+    "  \n" +
     "  def setName(n) {\n" +
     "    print \"Setting new name. Old name was: \"\n" +
     "    println getName()\n" +
     "    name = n\n" +
     "  }\n" +
-    "" +
+    "  \n" +
     "  def getName() {\n" +
     "    return name\n" +
     "  }\n" +
-    "" +
+    "  \n" +
     "  def bark() {\n" +
     "    println \"woof woof\"\n" +
     "  }\n" +
-    "" +
-    "  static def getCount(){\n" +
+    "  \n" +
+    "  static def getCount() {\n" +
     "    return dogCount\n" +
     "  }\n" +
     "}\n" +
-    "" +
-    "def d = Dog.new(\"Rex\")\n" +
-    "d.setName(\"Totó\")\n" +
-    "def d2 = Dog.new(\"Floquinho\")\n" +
-    "d2.setName(\"Rex\")\n";
+    "\n" +
+    "Dog d = Dog.new(\"Rex\")\n" +
+    "String name = d.getName()\n" +
+    "println name\n" +
+    "def v = if name == \"Rex\" \"equals\"\n" +
+    "println v\n" +
+    "// println name.indexOf(\"e\")\n";
   
   public static void main(String[] args) {
     new Jeez().run(CODE.toCharArray());
