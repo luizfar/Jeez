@@ -3,17 +3,17 @@ package jeez.lang;
 import java.util.ArrayList;
 import java.util.List;
 
-import jeez.lang.statement.Statement;
+import jeez.lang.expression.Expression;
 
 public class Block {
 
-  private List<Statement> statements = new ArrayList<Statement>();
+  private List<Expression> expressions = new ArrayList<Expression>();
   
-  public void addToStatements(Statement statement) {
-    statements.add(statement);
+  public void addToExpressions(Expression expression) {
+    expressions.add(expression);
   }
   
-  public List<Statement> getStatements() {
-    return statements;
+  public List<Expression> getExpressions() {
+    return expressions;
   }
 }

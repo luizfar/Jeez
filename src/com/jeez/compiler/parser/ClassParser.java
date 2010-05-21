@@ -51,7 +51,7 @@ public class ClassParser {
     }
     
     jeezParser.expect(RIGHT_CUR_BRACKET);
-    
+
     return currentClass;
   }
   

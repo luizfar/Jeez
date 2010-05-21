@@ -8,11 +8,11 @@ public class BlockParser {
 
   private JeezParser jeezParser;
   
-  private StatementParser statementParser;
+  private ExpressionParser expressionParser;
   
   public BlockParser(JeezParser jeezParser) {
     this.jeezParser = jeezParser;
-    this.statementParser = new StatementParser(jeezParser);
+    this.expressionParser = new ExpressionParser(jeezParser);
   }
   
   public Block parseBlock() {
@@ -20,7 +20,7 @@ public class BlockParser {
     
     jeezParser.expect(LEFT_CUR_BRACKET);
     while (jeezParser.getToken() != RIGHT_CUR_BRACKET) {
-      block.addToStatements(statementParser.parseStatement());
+      block.addToExpressions(expressionParser.parseExpression());
     }
     jeezParser.nextToken();
     

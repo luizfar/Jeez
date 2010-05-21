@@ -5,8 +5,7 @@ import java.util.List;
 
 import jeez.lang.context.ExecutionContext;
 import jeez.lang.expression.Expression;
-import jeez.lang.statement.ReturnStatement;
-import jeez.lang.statement.Statement;
+import jeez.lang.expression.ReturnExpression;
 
 public class Function {
 
@@ -49,6 +48,7 @@ public class Function {
   
   public JeezObject execute(JeezObject target, List<Expression> arguments, ExecutionContext context) {
     context.addLocalContext();
+    context.setSelfContext(target);
 
     if (getParametersCount() != arguments.size()) {
       throw new RuntimeException("Wrong number of arguments for method '"
@@ -63,13 +63,15 @@ public class Function {
     }
     
     JeezObject result = null;
-    for (Statement statement : block.getStatements()) {
-      statement.execute(context);
-      if (statement instanceof ReturnStatement) {
-        result = ((ReturnStatement) statement).getResult();
+    for (Expression expression : block.getExpressions()) {
+      JeezObject value = expression.evaluate(context);
+      if (expression instanceof ReturnExpression) {
+        result = value;
+        break;
       }
     }
-    
+
+    context.setSelfContext(null);
     context.removeLocalContext();
     
     return result;

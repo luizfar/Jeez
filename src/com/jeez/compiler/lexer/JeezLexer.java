@@ -19,6 +19,8 @@ public class JeezLexer {
   
   private static final Hashtable<String, Symbol> OPERATORS = new Hashtable<String, Symbol>();
   
+  private boolean foundEndOfExpression = false;
+  
   static {
     KEYWORDS.put("true", Symbol.TRUE);
     KEYWORDS.put("false", Symbol.FALSE);
@@ -34,7 +36,7 @@ public class JeezLexer {
     KEYWORDS.put("return", Symbol.RETURN);
     KEYWORDS.put("class", Symbol.CLASS);
     KEYWORDS.put("super", Symbol.SUPER);
-    KEYWORDS.put("this", Symbol.THIS);
+    KEYWORDS.put("self", Symbol.SELF);
     KEYWORDS.put("public", Symbol.PUBLIC);
     KEYWORDS.put("protected", Symbol.PROTECTED);
     KEYWORDS.put("private", Symbol.PRIVATE);
@@ -66,7 +68,6 @@ public class JeezLexer {
     OPERATORS.put("[", Symbol.LEFT_BRACKET);
     OPERATORS.put("]", Symbol.RIGHT_BRACKET);
     OPERATORS.put(",", Symbol.COMMA);
-    OPERATORS.put(";", Symbol.SEMICOLON);
     OPERATORS.put(".", Symbol.DOT);
     OPERATORS.put("&&", Symbol.AND);
     OPERATORS.put("||", Symbol.OR);
@@ -84,6 +85,7 @@ public class JeezLexer {
   }
 
   public void nextToken() {
+    foundEndOfExpression = false;
     char ch;
     
     ch = findNextChar();
@@ -107,6 +109,10 @@ public class JeezLexer {
         parseOperator();
       }
     }
+  }
+  
+  public boolean foundEndOfExpression() {
+    return foundEndOfExpression;
   }
 
   private void parseKeywordOrIdentifier() {
@@ -217,9 +223,13 @@ public class JeezLexer {
 
   private char findNextChar() {
     char ch = input[tokenPos];
-    while (ch == ' ' || ch == '\r' || ch == '\t' || ch == '\n') {
+    while (ch == ' ' || ch == '\r' || ch == '\t' || ch == '\n' || ch == ';') {
       if (ch == '\n') {
         lineNumber++;
+        foundEndOfExpression = true;
+      }
+      if (ch == ';') {
+        foundEndOfExpression = true;
       }
       tokenPos++;
       ch = input[tokenPos];

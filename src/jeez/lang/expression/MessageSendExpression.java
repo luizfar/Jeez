@@ -1,20 +1,31 @@
 package jeez.lang.expression;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jeez.lang.JeezObject;
 import jeez.lang.context.ExecutionContext;
-import jeez.lang.statement.MessageSend;
 
 public class MessageSendExpression implements Expression {
 
-  private MessageSend messageSend;
+  private Expression receiver;
   
-  public MessageSendExpression(MessageSend messageSend) {
-    this.messageSend = messageSend;
+  private String messageName;
+  
+  private List<Expression> arguments = new ArrayList<Expression>();
+  
+  public MessageSendExpression(Expression receiver, String messageName) {
+    this.receiver = receiver;
+    this.messageName = messageName;
+  }
+  
+  public void addToArguments(Expression expression) {
+    arguments.add(expression);
   }
   
   @Override
   public JeezObject evaluate(ExecutionContext context) {
-    messageSend.execute(context);
-    return messageSend.getReturnedValue();
+    JeezObject object = receiver.evaluate(context);
+    return object.receiveMessage(messageName, arguments, context);
   }
 }

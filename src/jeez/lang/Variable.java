@@ -29,6 +29,11 @@ public class Variable implements MessageReceiver {
 
   @Override
   public JeezObject receiveMessage(String messageName, List<Expression> arguments, ExecutionContext context) {
-    return getValue().receiveMessage(messageName, arguments, context);
+    try {
+      return getValue().receiveMessage(messageName, arguments, context);
+    } catch (UnknownMessageException unknownMessageException) {
+      unknownMessageException.setVariableName(name);
+      throw unknownMessageException;
+    }
   }
 }

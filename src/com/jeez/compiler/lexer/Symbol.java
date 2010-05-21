@@ -38,7 +38,7 @@ public enum Symbol {
   EXTENDS,
   IMPLEMENTS,
   SUPER,
-  THIS,
+  SELF,
   PUBLIC,
   PROTECTED,
   PRIVATE,

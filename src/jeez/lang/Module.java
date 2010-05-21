@@ -9,18 +9,16 @@ import jeez.lang.expression.Expression;
 
 public class Module extends JeezObject implements MessageReceiver {
   
-  public static final String ANONYMOUS_FUNCTION_NAME = "__main";
-  
-  private String __name;
+  private String name;
   
   private Map<String, Function> functions = new HashMap<String, Function>();
   
   public Module(String name) {
-    this.__name = name;
+    this.name = name;
   }
   
   public String getName() {
-    return __name;
+    return name;
   }
   
   public void addToFunctions(Function function) {

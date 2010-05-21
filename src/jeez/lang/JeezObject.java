@@ -37,6 +37,9 @@ public class JeezObject implements MessageReceiver {
   @Override
   public JeezObject receiveMessage(String messageName, List<Expression> arguments, ExecutionContext context) {
     Method method = clazz.getMethod(messageName);
+    if (method == null) {
+      throw new UnknownMessageException(clazz, messageName);
+    }
     return method.execute(this, arguments, context);
   }
 }

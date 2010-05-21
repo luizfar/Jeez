@@ -11,10 +11,14 @@ public class VariableExpression implements Expression {
   public VariableExpression(String variableName) {
     this.variableName = variableName;
   }
+  
+  public String getVariableName() {
+    return variableName;
+  }
 
   @Override
   public JeezObject evaluate(ExecutionContext context) {
-    Variable variable = context.getFromLocalContext(variableName);
+    Variable variable = context.getFromAnyContext(variableName);
     if (variable == null) {
       throw new RuntimeException("Could not find variable " + variableName);
     }

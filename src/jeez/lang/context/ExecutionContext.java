@@ -5,10 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import jeez.lang.ClassAttribute;
+import jeez.lang.ClassVariable;
 import jeez.lang.Clazz;
+import jeez.lang.JeezObject;
 import jeez.lang.MessageReceiver;
 import jeez.lang.Module;
+import jeez.lang.ModuleVariable;
 import jeez.lang.Variable;
 import jeez.lang.bootstrap.Classes;
 
@@ -20,6 +22,8 @@ public class ExecutionContext {
   
   private List<Map<String, Variable>> localContexts = new ArrayList<Map<String, Variable>>();
   
+  private JeezObject self;
+  
   public ExecutionContext() {
     addLocalContext();
     addClass(Classes.CLASS);
@@ -27,6 +31,8 @@ public class ExecutionContext {
   
   public void addClass(Clazz clazz) {
     classes.put(clazz.getName(), clazz);
+    clazz.load(this);
+    addToLocalContext(new ClassVariable(clazz));
   }
   
   public Clazz getClass(String name) {
@@ -35,6 +41,7 @@ public class ExecutionContext {
   
   public void addModule(Module module) {
     modules.put(module.getName(), module);
+    addToLocalContext(new ModuleVariable(module));
   }
   
   public Module getModule(String name) {
@@ -45,7 +52,7 @@ public class ExecutionContext {
     localContexts.get(localContexts.size() - 1).put(variable.getName(), variable);
   }
   
-  public Variable getFromLocalContext(String name) {
+  public Variable getFromAnyContext(String name) {
     for (int i = localContexts.size() - 1; i >= 0; i--) {
       Variable var = localContexts.get(i).get(name);
       if (var != null) {
@@ -64,7 +71,7 @@ public class ExecutionContext {
   }
   
   public MessageReceiver getMessageReceiver(String name) {
-    MessageReceiver receiver = getFromLocalContext(name);
+    MessageReceiver receiver = getFromAnyContext(name);
     if (receiver == null) {
       receiver = getClass(name);
     }
@@ -74,11 +81,11 @@ public class ExecutionContext {
     return receiver;
   }
   
-  public void prepare() {
-    for (Clazz clazz : classes.values()) {
-      for (ClassAttribute attr : clazz.getClassAttributes()) {
-        attr.init(this);
-      }
-    }
+  public void setSelfContext(JeezObject self) {
+    this.self = self;
+  }
+
+  public JeezObject getSelfContext() {
+    return self;
   }
 }

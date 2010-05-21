@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import jeez.lang.bootstrap.Classes;
 import jeez.lang.context.ExecutionContext;
 import jeez.lang.expression.Expression;
 
@@ -60,12 +61,20 @@ public class Clazz extends JeezObject implements Type, MessageReceiver {
     return methods.get(name);
   }
   
+  public Collection<Method> getMethods() {
+    return methods.values();
+  }
+  
   public void addToClassMethods(ClassMethod method) {
     classMethods.put(method.getName(), method);
   }
   
   public ClassMethod getClassMethod(String name) {
     return classMethods.get(name);
+  }
+  
+  public Collection<ClassMethod> getClassMethods() {
+    return classMethods.values();
   }
   
   public JeezObject newObject() {
@@ -87,10 +96,19 @@ public class Clazz extends JeezObject implements Type, MessageReceiver {
   @Override
   public JeezObject receiveMessage(String messageName, List<Expression> arguments, ExecutionContext context) {
     ClassMethod method = classMethods.get(messageName);
+    if (method == null) {
+      throw new UnknownMessageException(Classes.CLASS, messageName);
+    }
     return method.execute(this, arguments, context);
   }
   
   public String toString() {
     return "Class " + getName();
+  }
+  
+  public void load(ExecutionContext context) {
+    for (ClassAttribute attr : getClassAttributes()) {
+      attr.init(context);
+    }
   }
 }

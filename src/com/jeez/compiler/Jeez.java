@@ -1,33 +1,24 @@
 package com.jeez.compiler;
 
-import java.util.ArrayList;
-
-import jeez.lang.Function;
-import jeez.lang.JeezObject;
-import jeez.lang.Module;
-import jeez.lang.context.ExecutionContext;
-import jeez.lang.expression.Expression;
-
-import com.jeez.compiler.lexer.JeezLexer;
-import com.jeez.compiler.parser.JeezParser;
-
 public class Jeez {
-  
-  static final String MODULE_NAME = "main.jz";
-  
-  
 
-  static final String CODE =
+  
+  
+  
+  
+  
+    static final String CODE =
     "class Dog {\n" +
     "  def name\n" +
     "  static def dogCount = 0\n" +
     "  def new(n) {\n" +
-    "    name = n" +
+    "    name = n\n" +
     "    dogCount = dogCount + 1\n" +
-    "    println \"inside of Dog's init\"\n" +
     "  }\n" +
     "" +
     "  def setName(n) {\n" +
+    "    print \"Setting new name. Old name was: \"\n" +
+    "    println getName()\n" +
     "    name = n\n" +
     "  }\n" +
     "" +
@@ -44,33 +35,16 @@ public class Jeez {
     "  }\n" +
     "}\n" +
     "" +
-    "println Dog.getCount()\n" +
-    "def d = Dog.new(\"Totó\")\n" +
-    "println Dog.getCount()\n" +
-    "println d.getName()";
-  
-  private JeezLexer lexer;
-  
-  private JeezParser parser;
-  
-  private ExecutionContext context = new ExecutionContext();
+    "def d = Dog.new(\"Rex\")\n" +
+    "d.setName(\"Totó\")\n" +
+    "def d2 = Dog.new(\"Floquinho\")\n" +
+    "d2.setName(\"Rex\")\n";
   
   public static void main(String[] args) {
     new Jeez().run(CODE.toCharArray());
   }
   
   public void run(char[] input) {
-    lexer = new JeezLexer(input);
-    parser = new JeezParser(MODULE_NAME, lexer, context);
-    
-    parser.start();
-    runScript();
-  }
-  
-  private void runScript() {
-    context.prepare();
-    Module module = context.getModule(MODULE_NAME + "_module");
-    Function function = module.getFunction(Module.ANONYMOUS_FUNCTION_NAME);    
-    function.execute(new JeezObject(), new ArrayList<Expression>(), context);
+    new JeezInterpreter().start(input);
   }
 }

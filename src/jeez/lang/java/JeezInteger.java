@@ -29,4 +29,12 @@ public class JeezInteger extends JeezNumber {
     }
     return null;
   }
+  
+  public boolean equals(Object o) {
+    if (o instanceof JeezInteger) {
+      return value == ((JeezInteger) o).value;
+    }
+    
+    return false;
+  }
 }

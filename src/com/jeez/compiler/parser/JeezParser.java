@@ -1,14 +1,10 @@
 package com.jeez.compiler.parser;
 
 import static com.jeez.compiler.lexer.Symbol.CLASS;
+import static com.jeez.compiler.lexer.Symbol.EOF;
 import static com.jeez.compiler.lexer.Symbol.IDENTIFIER;
 import static com.jeez.compiler.lexer.Symbol.MODULE;
-import static jeez.lang.Module.ANONYMOUS_FUNCTION_NAME;
-import static jeez.lang.Type.VOID;
-import jeez.lang.Function;
-import jeez.lang.Module;
 import jeez.lang.Type;
-import jeez.lang.context.ExecutionContext;
 
 import com.jeez.compiler.lexer.JeezLexer;
 import com.jeez.compiler.lexer.Symbol;
@@ -21,42 +17,29 @@ public class JeezParser {
   
   private ModuleParser moduleParser;
   
-  private ExecutionContext context;
+  private ExpressionParser expressionParser;
   
-  private String anonymousModuleName;
-  
-  public JeezParser(String sourceFileName, JeezLexer lexer, ExecutionContext context) {
+  public JeezParser(JeezLexer lexer) {
     this.lexer = lexer;
-    this.context = context;
-    this.anonymousModuleName = sourceFileName + "_module";
     
     classParser = new ClassParser(this);
     moduleParser = new ModuleParser(this);
-  }
-  
-  public void start() {
-    lexer.nextToken();
+    expressionParser = new ExpressionParser(this);
     
-    while (lexer.token != Symbol.EOF) {
-      if (lexer.token == CLASS) {
-        context.addClass(classParser.parseClass());
-      } else if (lexer.token == MODULE) {
-        context.addModule(moduleParser.parseModule());
-      } else {
-        Module anonymous = context.getModule(anonymousModuleName);
-        if (anonymous == null) {
-          anonymous = createAnonymousModule(anonymousModuleName);
-          context.addModule(anonymous);
-        }
-        moduleParser.parseAnonymousModule(anonymous);
-      }
-    }
+    lexer.nextToken();
   }
   
-  private Module createAnonymousModule(String anonymousModuleName) {
-    Module module = new Module(anonymousModuleName);
-    module.addToFunctions(new Function(VOID, ANONYMOUS_FUNCTION_NAME));
-    return module;
+  public Object parseNext() {
+    if (lexer.token == CLASS) {
+      return classParser.parseClass();
+    }
+    if (lexer.token == MODULE) {
+      return moduleParser.parseModule();
+    }
+    if (lexer.token == EOF) {
+      return EOF;
+    }
+    return expressionParser.parseExpression();
   }
   
   Symbol getToken() {
@@ -65,6 +48,10 @@ public class JeezParser {
   
   void nextToken() {
     lexer.nextToken();
+  }
+  
+  boolean foundEndOfExpression() {
+    return lexer.foundEndOfExpression();
   }
 
   String getStringValue() {
