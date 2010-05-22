@@ -101,17 +101,19 @@ public class JeezParser {
   
   public Type parseType() {
     Type result;
-    
     switch (lexer.token) {
       case DEF:
         result = Type.DUCK;
         break;
         
+      case VOID:
+        result = Type.VOID;
+        break;
+        
       default:
-        throw new ParserException("'int', 'boolean', 'void' or type expected", lexer.getLineNumber());  
+        throw new ParserException("'def', 'void' or identifier expected", lexer.getLineNumber());  
     }
     lexer.nextToken();
-    
     return result;
   }
 }

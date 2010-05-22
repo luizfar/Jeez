@@ -1,5 +1,6 @@
 package jeez.interpreter.load;
 
+import static jeez.lang.Type.VOID;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -56,10 +57,11 @@ public class JavassistClassCreator implements ClassCreator {
 
   @Override
   public void createMethod(Method method) {
-    CtClass objectClass;
     try {
-      objectClass = ClassPool.getDefault().get("java.lang.Object");
-      CtMethod ctMethod = new CtMethod(objectClass, method.getName(), new CtClass[] {}, ctClass);
+      CtClass returnType = (method.getType() == VOID) ?
+          CtClass.voidType : ClassPool.getDefault().get("java.lang.Object");
+      
+      CtMethod ctMethod = new CtMethod(returnType, method.getName(), new CtClass[] {}, ctClass);
       ctMethod.setBody(generateBodyFor(method));
       ctClass.addMethod(ctMethod);
       
