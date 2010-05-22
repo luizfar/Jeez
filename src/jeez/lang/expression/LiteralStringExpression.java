@@ -1,5 +1,6 @@
 package jeez.lang.expression;
 
+import jeez.interpreter.load.ClassCreator;
 import jeez.lang.execution.ExecutionContext;
 
 public class LiteralStringExpression implements Expression {
@@ -17,5 +18,10 @@ public class LiteralStringExpression implements Expression {
   @Override
   public Object evaluate(ExecutionContext symbolTable) {
     return value;
+  }
+
+  @Override
+  public void accept(ClassCreator classCreator) {
+    classCreator.generateString(this);
   }
 }

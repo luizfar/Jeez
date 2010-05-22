@@ -1,5 +1,6 @@
 package jeez.lang.expression;
 
+import jeez.interpreter.load.ClassCreator;
 import jeez.lang.Variable;
 import jeez.lang.execution.ExecutionContext;
 
@@ -27,5 +28,10 @@ public class VariableDeclaration implements Expression {
     }
     
     return var.getValue();
+  }
+
+  @Override
+  public void accept(ClassCreator classCreator) {
+    classCreator.generateVariableDeclaration(this);
   }
 }

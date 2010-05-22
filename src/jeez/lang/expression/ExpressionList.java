@@ -3,6 +3,7 @@ package jeez.lang.expression;
 import java.util.ArrayList;
 import java.util.List;
 
+import jeez.interpreter.load.ClassCreator;
 import jeez.lang.execution.ExecutionContext;
 
 public class ExpressionList implements Expression {
@@ -19,7 +20,11 @@ public class ExpressionList implements Expression {
     for (Expression expression : expressions) {
       result = expression.evaluate(context);
     }
-    
     return result;
+  }
+
+  @Override
+  public void accept(ClassCreator classCreator) {
+    classCreator.generateExpressionList(this);
   }
 }

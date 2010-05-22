@@ -1,5 +1,6 @@
 package jeez.lang.expression;
 
+import jeez.interpreter.load.ClassCreator;
 import jeez.lang.Variable;
 import jeez.lang.execution.ExecutionContext;
 
@@ -22,5 +23,10 @@ public class VariableExpression implements Expression {
       throw new RuntimeException("Could not find variable " + variableName);
     }
     return variable.getValue();
+  }
+
+  @Override
+  public void accept(ClassCreator classCreator) {
+    classCreator.generateVariableExpression(this);
   }
 }

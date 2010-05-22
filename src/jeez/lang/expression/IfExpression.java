@@ -1,6 +1,7 @@
 package jeez.lang.expression;
 
 import static java.lang.Boolean.TRUE;
+import jeez.interpreter.load.ClassCreator;
 import jeez.lang.execution.ExecutionContext;
 
 public class IfExpression implements Expression {
@@ -32,5 +33,10 @@ public class IfExpression implements Expression {
     }
     
     return null;
+  }
+
+  @Override
+  public void accept(ClassCreator classCreator) {
+    classCreator.generateIf(this);
   }
 }
