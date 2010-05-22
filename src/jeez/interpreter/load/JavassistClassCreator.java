@@ -1,6 +1,9 @@
 package jeez.interpreter.load;
 
 import static jeez.lang.Type.VOID;
+
+import java.util.List;
+
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -8,11 +11,13 @@ import javassist.CtConstructor;
 import javassist.CtField;
 import javassist.CtMethod;
 import javassist.CtNewConstructor;
+import javassist.CtNewMethod;
 import javassist.NotFoundException;
 import jeez.lang.Attribute;
 import jeez.lang.Clazz;
 import jeez.lang.Method;
 import jeez.lang.Type;
+import jeez.lang.Variable;
 import jeez.lang.expression.AssignmentExpression;
 import jeez.lang.expression.Expression;
 import jeez.lang.expression.ExpressionList;
@@ -66,16 +71,14 @@ public class JavassistClassCreator implements ClassCreator {
     }
     
     try {
-      CtClass returnType = (method.getType() == VOID) ?
-          CtClass.voidType : ClassPool.getDefault().get("java.lang.Object");
+      String returnType = (method.getType() == VOID) ?
+          " void " : " Object ";
+      String parameterList = generateParameterListFor(method);
+      String body = generateBodyFor(method);
       
-      CtMethod ctMethod = new CtMethod(returnType, method.getName(), new CtClass[] {}, ctClass);
-      ctMethod.setBody(generateBodyFor(method));
+      CtMethod ctMethod = CtNewMethod.make("public " + returnType
+          + method.getName() + "(" + parameterList + ")" + body, ctClass);
       ctClass.addMethod(ctMethod);
-      
-    } catch (NotFoundException e) {
-      e.printStackTrace();
-      throw new RuntimeException(e);
     } catch (CannotCompileException e) {
       e.printStackTrace();
       throw new RuntimeException(e);
@@ -84,8 +87,12 @@ public class JavassistClassCreator implements ClassCreator {
   
   public void createConstructor(Method method) {
     try {
-      CtConstructor constructor = new CtConstructor(new CtClass[] {}, ctClass);
-      constructor.setBody(generateBodyFor(method));
+      String body = generateBodyFor(method);
+      String parameterList = generateParameterListFor(method);
+      
+      CtConstructor constructor = CtNewConstructor.make("public "
+          + ctClass.getName() + "(" + parameterList + ")" + body, ctClass);
+      
       ctClass.addConstructor(constructor);
     } catch (CannotCompileException e) {
       e.printStackTrace();
@@ -102,13 +109,26 @@ public class JavassistClassCreator implements ClassCreator {
     }
   }
   
+  private String generateParameterListFor(Method method) {
+    StringBuilder parametersString = new StringBuilder();
+    List<Variable> parameters = method.getParameters();
+    for (int i = 0; i < parameters.size(); i++) {
+      Variable var = parameters.get(i);
+      parametersString.append("Object " + var.getName());
+      if (i != parameters.size() - 1) {
+        parametersString.append(", ");
+      }
+    }
+    return parametersString.toString();
+  }
+  
   private String generateBodyFor(Method method) {
     code = new StringBuilder();
     code.append("{\n");
     for (Expression e : method.getBlock().getExpressions()) {
       e.accept(this);
     }
-    if (method.getType() == Type.DUCK) {
+    if (method.getType() == Type.DUCK && !"new".equals(method.getName())) {
       code.append("return null;");
     }
     code.append("}");
@@ -212,11 +232,12 @@ public class JavassistClassCreator implements ClassCreator {
   }
 
   @Override
-  public void generateVariableDeclaration(
-      VariableDeclaration variableDeclaration) {
+  public void generateVariableDeclaration(VariableDeclaration variableDeclaration) {
+    
   }
 
   @Override
   public void generateVariableExpression(VariableExpression variableExpression) {
+    code.append(variableExpression.getVariableName());
   }
 }

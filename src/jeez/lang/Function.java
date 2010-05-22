@@ -34,6 +34,10 @@ public class Function {
     parameters.add(variable);
   }
   
+  public List<Variable> getParameters() {
+    return parameters;
+  }
+  
   public int getParametersCount() {
     return parameters.size();
   }
