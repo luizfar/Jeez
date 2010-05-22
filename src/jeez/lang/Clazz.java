@@ -8,6 +8,8 @@ import jeez.interpreter.load.ClassCreator;
 
 public class Clazz extends Object implements Type {
 
+  public static final String NEW = "new";
+  
   private String name;
   
   private Map<String, ClassAttribute> classAttributes = new HashMap<String, ClassAttribute>();

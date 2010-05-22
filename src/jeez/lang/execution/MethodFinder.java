@@ -1,5 +1,7 @@
 package jeez.lang.execution;
 
+import static jeez.lang.Clazz.NEW;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
@@ -7,15 +9,8 @@ import jeez.lang.execution.exception.UnknownMessageException;
 
 public class MethodFinder {
 
-  private SpecialMethods jeezSpecialMethods = new SpecialMethods();
-  
   @SuppressWarnings("unchecked")
   public Method findMethod(Class clazz, String methodName, Object... arguments) {
-    Method specialMethod = jeezSpecialMethods.getMethod(clazz, methodName, arguments.length);
-    if (specialMethod != null) {
-      return specialMethod;
-    }
-    
     outerFor: for (Method method : clazz.getMethods()) {
       if (methodName.equals(method.getName())) {
         Class[] paramTypes = method.getParameterTypes();
@@ -49,6 +44,6 @@ public class MethodFinder {
       }
       return constructor;
     }
-    throw new UnknownMessageException(clazz, "new");
+    throw new UnknownMessageException(clazz, NEW);
   }
 }

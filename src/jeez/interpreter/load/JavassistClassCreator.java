@@ -1,5 +1,6 @@
 package jeez.interpreter.load;
 
+import static jeez.lang.Clazz.NEW;
 import static jeez.lang.Type.VOID;
 
 import java.util.List;
@@ -51,11 +52,9 @@ public class JavassistClassCreator implements ClassCreator {
   @Override
   public void createAttribute(Attribute attr) {
     try {
-      
       CtClass objectClass = ClassPool.getDefault().get("java.lang.Object");
       CtField field = new CtField(objectClass, attr.getName(), ctClass);
       ctClass.addField(field);
-      
     } catch (NotFoundException e) {
       throw new RuntimeException(e);
     } catch (CannotCompileException e) {
@@ -65,14 +64,13 @@ public class JavassistClassCreator implements ClassCreator {
 
   @Override
   public void createMethod(Method method) {
-    if ("new".equals(method.getName())) {
+    if (NEW.equals(method.getName())) {
       createConstructor(method);
       return;
     }
     
     try {
-      String returnType = (method.getType() == VOID) ?
-          " void " : " Object ";
+      String returnType = (method.getType() == VOID) ? " void " : " Object ";
       String parameterList = generateParameterListFor(method);
       String body = generateBodyFor(method);
       
@@ -128,7 +126,7 @@ public class JavassistClassCreator implements ClassCreator {
     for (Expression e : method.getBlock().getExpressions()) {
       e.accept(this);
     }
-    if (method.getType() == Type.DUCK && !"new".equals(method.getName())) {
+    if (method.getType() == Type.DUCK && !NEW.equals(method.getName())) {
       code.append("return null;");
     }
     code.append("}");

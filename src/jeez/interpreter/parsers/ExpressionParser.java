@@ -114,7 +114,18 @@ public class ExpressionParser {
   
   private Expression parseIfExpression() {
     jeezParser.expect(IF);
+    
+    boolean parenthesisUsed = false;
+    if (jeezParser.getToken() == LEFT_PAR) {
+      jeezParser.nextToken();
+      parenthesisUsed = true;
+    }
+    
     IfExpression ifExpression = new IfExpression(parseExpression());
+    
+    if (parenthesisUsed) {
+      jeezParser.expect(RIGHT_PAR);
+    }
     
     ifExpression.setIfExpression(parseExpression());
     if (jeezParser.getToken() == ELSE) {
@@ -331,7 +342,7 @@ public class ExpressionParser {
         return new SelfExpression();
         
       case LEFT_PAR:
-        throw new RuntimeException("Not yet implemented.");
+        throw new RuntimeException(jeezParser.getLineNumber() + ": Not yet implemented.");
         
       case LEFT_BRACKET:
         throw new RuntimeException("Not yet implemented.");
