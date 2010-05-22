@@ -25,6 +25,8 @@ public interface ClassCreator {
   public void startClassCreation(Clazz clazz);
 
   public void createAttribute(Attribute attr);
+  
+  public void createConstructor(Method method);
 
   public void createMethod(Method method);
 

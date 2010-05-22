@@ -14,6 +14,10 @@ public class ExpressionList implements Expression {
     expressions.add(expression);
   }
   
+  public List<Expression> getExpressions() {
+    return expressions;
+  }
+  
   @Override
   public Object evaluate(ExecutionContext context) {
     Object result = null;

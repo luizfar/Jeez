@@ -15,6 +15,14 @@ public class AssignmentExpression implements Expression {
     this.expression = expression;
   }
   
+  public String getVariableName() {
+    return variableName;
+  }
+  
+  public Expression getExpression() {
+    return expression;
+  }
+  
   @Override
   public Object evaluate(ExecutionContext context) {
     Variable var = context.getFromAnyContext(variableName);

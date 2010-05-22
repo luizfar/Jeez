@@ -24,6 +24,18 @@ public class IfExpression implements Expression {
     this.elseExpression = elseExpression;
   }
   
+  public Expression getBooleanExpression() {
+    return booleanExpression;
+  }
+
+  public Expression getIfExpression() {
+    return ifExpression;
+  }
+
+  public Expression getElseExpression() {
+    return elseExpression;
+  }
+
   @Override
   public Object evaluate(ExecutionContext context) {
     if (TRUE.equals(booleanExpression.evaluate(context))) {

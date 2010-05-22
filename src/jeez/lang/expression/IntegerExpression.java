@@ -11,6 +11,10 @@ public class IntegerExpression implements Expression {
   public IntegerExpression(Integer value) {
     this.value = value;
   }
+  
+  public Integer getValue() {
+    return value;
+  }
 
   @Override
   public Object evaluate(ExecutionContext symbolTable) {

@@ -24,6 +24,18 @@ public class MessageSend implements Expression {
     arguments.add(expression);
   }
   
+  public Expression getReceiver() {
+    return receiver;
+  }
+
+  public String getMessageName() {
+    return messageName;
+  }
+
+  public List<Expression> getArguments() {
+    return arguments;
+  }
+
   @Override
   public Object evaluate(ExecutionContext context) {
     Object target = receiver.evaluate(context);
