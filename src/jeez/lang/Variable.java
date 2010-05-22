@@ -1,15 +1,10 @@
 package jeez.lang;
 
-import java.util.List;
-
-import jeez.lang.context.ExecutionContext;
-import jeez.lang.expression.Expression;
-
-public class Variable implements MessageReceiver {
+public class Variable {
 
   private String name;
   
-  private JeezObject value;
+  private Object value;
   
   public Variable(String name) {
     this.name = name;
@@ -19,21 +14,11 @@ public class Variable implements MessageReceiver {
     return name;
   }
   
-  public void setValue(JeezObject value) {
+  public void setValue(Object value) {
     this.value = value;
   }
   
-  public JeezObject getValue() {
+  public Object getValue() {
     return value;
-  }
-
-  @Override
-  public JeezObject receiveMessage(String messageName, List<Expression> arguments, ExecutionContext context) {
-    try {
-      return getValue().receiveMessage(messageName, arguments, context);
-    } catch (UnknownMessageException unknownMessageException) {
-      unknownMessageException.setVariableName(name);
-      throw unknownMessageException;
-    }
   }
 }

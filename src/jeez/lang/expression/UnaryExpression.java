@@ -1,9 +1,8 @@
 package jeez.lang.expression;
 
-import jeez.lang.JeezObject;
-import jeez.lang.context.ExecutionContext;
+import jeez.interpreter.lexer.Symbol;
+import jeez.lang.execution.ExecutionContext;
 
-import com.jeez.compiler.lexer.Symbol;
 
 public class UnaryExpression implements Expression {
 
@@ -25,7 +24,7 @@ public class UnaryExpression implements Expression {
   }
 
   @Override
-  public JeezObject evaluate(ExecutionContext symbolTable) {
+  public Object evaluate(ExecutionContext symbolTable) {
     return null;
   }
 }

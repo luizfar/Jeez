@@ -3,7 +3,7 @@ package jeez.lang;
 import java.util.ArrayList;
 import java.util.List;
 
-import jeez.lang.context.ExecutionContext;
+import jeez.lang.execution.ExecutionContext;
 import jeez.lang.expression.Expression;
 import jeez.lang.expression.ReturnExpression;
 
@@ -46,7 +46,7 @@ public class Function {
     return block;
   }
   
-  public JeezObject execute(JeezObject target, List<Expression> arguments, ExecutionContext context) {
+  public Object execute(Object target, List<Expression> arguments, ExecutionContext context) {
     context.addLocalContext();
     context.setSelfContext(target);
 
@@ -62,9 +62,9 @@ public class Function {
       context.addToLocalContext(argument);
     }
     
-    JeezObject result = null;
+    Object result = null;
     for (Expression expression : block.getExpressions()) {
-      JeezObject value = expression.evaluate(context);
+      Object value = expression.evaluate(context);
       if (expression instanceof ReturnExpression) {
         result = value;
         break;

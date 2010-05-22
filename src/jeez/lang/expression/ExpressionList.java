@@ -3,8 +3,7 @@ package jeez.lang.expression;
 import java.util.ArrayList;
 import java.util.List;
 
-import jeez.lang.JeezObject;
-import jeez.lang.context.ExecutionContext;
+import jeez.lang.execution.ExecutionContext;
 
 public class ExpressionList implements Expression {
 
@@ -15,8 +14,8 @@ public class ExpressionList implements Expression {
   }
   
   @Override
-  public JeezObject evaluate(ExecutionContext context) {
-    JeezObject result = null;
+  public Object evaluate(ExecutionContext context) {
+    Object result = null;
     for (Expression expression : expressions) {
       result = expression.evaluate(context);
     }

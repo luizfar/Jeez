@@ -1,12 +1,11 @@
 package jeez.lang.expression;
 
-import jeez.lang.JeezObject;
-import jeez.lang.context.ExecutionContext;
+import jeez.lang.execution.ExecutionContext;
 
 public class NullExpression implements Expression {
 
   @Override
-  public JeezObject evaluate(ExecutionContext symbolTable) {
+  public Object evaluate(ExecutionContext symbolTable) {
     return null;
   }
 }

@@ -1,8 +1,7 @@
 package jeez.lang.expression;
 
-import jeez.lang.JeezObject;
 import jeez.lang.Variable;
-import jeez.lang.context.ExecutionContext;
+import jeez.lang.execution.ExecutionContext;
 
 public class AssignmentExpression implements Expression {
 
@@ -16,7 +15,7 @@ public class AssignmentExpression implements Expression {
   }
   
   @Override
-  public JeezObject evaluate(ExecutionContext context) {
+  public Object evaluate(ExecutionContext context) {
     Variable var = context.getFromAnyContext(variableName);
     var.setValue(expression.evaluate(context));
     

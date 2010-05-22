@@ -2,7 +2,8 @@ package jeez.lang;
 
 public class ClassVariable extends Variable {
 
-  public ClassVariable(Clazz clazz) {
+  @SuppressWarnings("unchecked")
+  public ClassVariable(Class clazz) {
     super(clazz.getName());
     setValue(clazz);
   }

@@ -1,21 +1,31 @@
 package jeez.lang.expression;
 
-import jeez.lang.JeezObject;
 import jeez.lang.Variable;
-import jeez.lang.context.ExecutionContext;
+import jeez.lang.execution.ExecutionContext;
 
 public class VariableDeclaration implements Expression {
 
-  private String variableName;
+  protected String variableName;
+  
+  protected Expression initExpression;
   
   public VariableDeclaration(String variableName) {
     this.variableName = variableName;
   }
   
+  public void setInitExpression(Expression initExpression) {
+    this.initExpression = initExpression;
+  }
+  
   @Override
-  public JeezObject evaluate(ExecutionContext context) {
+  public Object evaluate(ExecutionContext context) {
     Variable var = new Variable(variableName);
     context.addToLocalContext(var);
-    return null;
+    
+    if (initExpression != null) {
+      var.setValue(initExpression.evaluate(context));
+    }
+    
+    return var.getValue();
   }
 }

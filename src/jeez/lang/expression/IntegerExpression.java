@@ -1,19 +1,18 @@
 package jeez.lang.expression;
 
-import jeez.lang.JeezObject;
-import jeez.lang.context.ExecutionContext;
-import jeez.lang.java.JeezInteger;
+import jeez.lang.execution.ExecutionContext;
+import jeez.lang.Integer;
 
 public class IntegerExpression implements Expression {
 
-  private JeezInteger value;
+  private Integer value;
   
-  public IntegerExpression(JeezInteger value) {
+  public IntegerExpression(Integer value) {
     this.value = value;
   }
 
   @Override
-  public JeezObject evaluate(ExecutionContext symbolTable) {
+  public Object evaluate(ExecutionContext symbolTable) {
     return value;
   }
 }

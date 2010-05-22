@@ -1,8 +1,7 @@
 package jeez.lang.expression;
 
-import jeez.lang.JeezObject;
-import jeez.lang.context.ExecutionContext;
-import jeez.lang.java.JeezBoolean;
+import static java.lang.Boolean.TRUE;
+import jeez.lang.execution.ExecutionContext;
 
 public class IfExpression implements Expression {
 
@@ -25,8 +24,8 @@ public class IfExpression implements Expression {
   }
   
   @Override
-  public JeezObject evaluate(ExecutionContext context) {
-    if (JeezBoolean.TRUE.equals(booleanExpression.evaluate(context))) {
+  public Object evaluate(ExecutionContext context) {
+    if (TRUE.equals(booleanExpression.evaluate(context))) {
       return ifExpression.evaluate(context);
     } else if (elseExpression != null) {
       return elseExpression.evaluate(context);

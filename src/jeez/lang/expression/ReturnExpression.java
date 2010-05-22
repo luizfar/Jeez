@@ -1,7 +1,6 @@
 package jeez.lang.expression;
 
-import jeez.lang.JeezObject;
-import jeez.lang.context.ExecutionContext;
+import jeez.lang.execution.ExecutionContext;
 
 public class ReturnExpression implements Expression {
 
@@ -12,7 +11,7 @@ public class ReturnExpression implements Expression {
   }
 
   @Override
-  public JeezObject evaluate(ExecutionContext context) {
+  public Object evaluate(ExecutionContext context) {
     return expression.evaluate(context);
   }
 }

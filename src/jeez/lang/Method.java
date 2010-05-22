@@ -2,7 +2,7 @@ package jeez.lang;
 
 import java.util.List;
 
-import jeez.lang.context.ExecutionContext;
+import jeez.lang.execution.ExecutionContext;
 import jeez.lang.expression.Expression;
 
 public class Method extends Function {
@@ -19,17 +19,15 @@ public class Method extends Function {
   }
   
   @Override
-  public JeezObject execute(JeezObject target, List<Expression> arguments, ExecutionContext context) {
+  public Object execute(Object target, List<Expression> arguments, ExecutionContext context) {
     context.addLocalContext();
     
     for (ClassAttribute attr : owner.getClassAttributes()) {
       context.addToLocalContext(attr.getVariable());
     }
-    for (Variable var : target.getInstanceVariables()) {
-      context.addToLocalContext(var);
-    }
+    // TODO instance variables
     
-    JeezObject result = super.execute(target, arguments, context);
+    Object result = super.execute(target, arguments, context);
     context.removeLocalContext();
     
     return result;

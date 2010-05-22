@@ -1,8 +1,6 @@
 package jeez.lang.expression;
 
-import jeez.lang.JeezObject;
-import jeez.lang.context.ExecutionContext;
-import jeez.lang.java.JeezString;
+import jeez.lang.execution.ExecutionContext;
 
 public class LiteralStringExpression implements Expression {
 
@@ -17,7 +15,7 @@ public class LiteralStringExpression implements Expression {
   }
 
   @Override
-  public JeezObject evaluate(ExecutionContext symbolTable) {
-    return new JeezString(value);
+  public Object evaluate(ExecutionContext symbolTable) {
+    return value;
   }
 }

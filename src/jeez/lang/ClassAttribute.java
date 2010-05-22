@@ -1,6 +1,6 @@
 package jeez.lang;
 
-import jeez.lang.context.ExecutionContext;
+import jeez.lang.execution.ExecutionContext;
 import jeez.lang.expression.Expression;
 
 public class ClassAttribute {

@@ -1,20 +1,22 @@
 package jeez.lang;
 
+import jeez.lang.execution.exception.TypeMismatchException;
 
+@SuppressWarnings("unchecked")
 public class TypedVariable extends Variable {
 
-  private Clazz clazz;
+  private Class clazz;
   
-  public TypedVariable(Clazz clazz, String name) {
+  public TypedVariable(Class clazz, String name) {
     super(name);
     this.clazz = clazz;
   }
   
-  @Override
-  public void setValue(JeezObject value) {
-    if (!clazz.equals(value.getClazz())) {
-      throw new RuntimeException("Can't assign value of class '" + value.getClazz().getName() + "' to variable of type '" + clazz.getName() + "'");
+  public void setValue(Object value) {
+    if (clazz.isAssignableFrom(value.getClass())) {
+      super.setValue(value);
+    } else {
+      throw new TypeMismatchException(clazz, value.getClass());
     }
-    super.setValue(value);
   }
 }

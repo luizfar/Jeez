@@ -3,8 +3,8 @@ package jeez.lang.expression;
 import java.util.ArrayList;
 import java.util.List;
 
-import jeez.lang.JeezObject;
-import jeez.lang.context.ExecutionContext;
+import jeez.lang.execution.ExecutionContext;
+import jeez.lang.execution.MethodInvoker;
 
 public class MessageSend implements Expression {
 
@@ -24,8 +24,13 @@ public class MessageSend implements Expression {
   }
   
   @Override
-  public JeezObject evaluate(ExecutionContext context) {
-    JeezObject object = receiver.evaluate(context);
-    return object.receiveMessage(messageName, arguments, context);
+  public Object evaluate(ExecutionContext context) {
+    Object target = receiver.evaluate(context);
+    Object[] evaluatedArguments = new Object[arguments.size()];
+    for (int i = 0; i < evaluatedArguments.length; i++) {
+      evaluatedArguments[i] = arguments.get(i).evaluate(context);
+    }
+    
+    return new MethodInvoker().invoke(target, messageName, evaluatedArguments);
   }
 }

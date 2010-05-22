@@ -2,14 +2,11 @@ package jeez.lang;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import jeez.lang.bootstrap.Classes;
-import jeez.lang.context.ExecutionContext;
-import jeez.lang.expression.Expression;
+import jeez.interpreter.load.ClassCreator;
 
-public class Clazz extends JeezObject implements Type, MessageReceiver {
+public class Clazz extends Object implements Type {
 
   private String name;
   
@@ -77,8 +74,8 @@ public class Clazz extends JeezObject implements Type, MessageReceiver {
     return classMethods.values();
   }
   
-  public JeezObject newObject() {
-    return new JeezObject(this);
+  public Object newObject() {
+    return new Object();
   }
   
   public boolean equals(Object object) {
@@ -92,23 +89,20 @@ public class Clazz extends JeezObject implements Type, MessageReceiver {
   public int hashCode() {
     return name.hashCode();
   }
-
-  @Override
-  public JeezObject receiveMessage(String messageName, List<Expression> arguments, ExecutionContext context) {
-    ClassMethod method = classMethods.get(messageName);
-    if (method == null) {
-      throw new UnknownMessageException(Classes.CLASS, messageName);
-    }
-    return method.execute(this, arguments, context);
-  }
   
   public String toString() {
     return "Class " + getName();
   }
   
-  public void load(ExecutionContext context) {
-    for (ClassAttribute attr : getClassAttributes()) {
-      attr.init(context);
+  @SuppressWarnings("unchecked")
+  public Class accept(ClassCreator creator) {
+    creator.startClassCreation(this);
+    for (Attribute attr : attributes.values()) {
+      creator.createAttribute(attr);
     }
+    for (Method method : methods.values()) {
+      creator.createMethod(method);
+    }
+    return creator.finishClassCreation(this);
   }
 }

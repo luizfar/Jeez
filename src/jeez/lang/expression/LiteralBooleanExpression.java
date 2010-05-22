@@ -1,9 +1,6 @@
 package jeez.lang.expression;
 
-import static jeez.lang.java.JeezBoolean.FALSE;
-import static jeez.lang.java.JeezBoolean.TRUE;
-import jeez.lang.JeezObject;
-import jeez.lang.context.ExecutionContext;
+import jeez.lang.execution.ExecutionContext;
 
 public class LiteralBooleanExpression implements Expression {
 
@@ -18,7 +15,7 @@ public class LiteralBooleanExpression implements Expression {
   }
 
   @Override
-  public JeezObject evaluate(ExecutionContext symbolTable) {
-    return value ? TRUE : FALSE;
+  public Object evaluate(ExecutionContext symbolTable) {
+    return value ? Boolean.TRUE : Boolean.FALSE;
   }
 }
