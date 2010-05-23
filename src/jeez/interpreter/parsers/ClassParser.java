@@ -1,6 +1,5 @@
 package jeez.interpreter.parsers;
 
-import static jeez.interpreter.lexer.Symbol.ASSIGN;
 import static jeez.interpreter.lexer.Symbol.CLASS;
 import static jeez.interpreter.lexer.Symbol.COMMA;
 import static jeez.interpreter.lexer.Symbol.LEFT_CUR_BRACKET;
@@ -42,9 +41,9 @@ public class ClassParser {
     
     while (mainParser.getToken() != RIGHT_CUR_BRACKET) {
       if (mainParser.getToken() == STATIC) {
-        parseClassMember();
-      } else {
         parseMember();
+      } else {
+        parseClassMember();
       }
     }
     
@@ -53,25 +52,8 @@ public class ClassParser {
     return currentClass;
   }
   
-  private void parseClassMember() {
-    mainParser.expect(STATIC);
-    Type type = mainParser.parseType();
-    String name = mainParser.parseIdentifier();
-    
-    if (mainParser.getToken() == LEFT_PAR) {
-      currentClass.addToClassMethods(parseMethod(type, name));
-    } else {
-      Variable attribute = new Variable(name);
-      if (mainParser.getToken() == ASSIGN) {
-        mainParser.nextToken();
-        // tODO
-//        attribute.setValue(expressionParser.parseExpression());
-      }
-      currentClass.addToClassAttributes(attribute);
-    }
-  }
-
   private void parseMember() {
+    mainParser.expect(STATIC);
     Type type = mainParser.parseType();
     String name = mainParser.parseIdentifier();
     
@@ -79,6 +61,17 @@ public class ClassParser {
       currentClass.addToMethods(parseMethod(type, name));
     } else {
       currentClass.addToAttributes(new Attribute(name));
+    }
+  }
+
+  private void parseClassMember() {
+    Type type = mainParser.parseType();
+    String name = mainParser.parseIdentifier();
+    
+    if (mainParser.getToken() == LEFT_PAR) {
+      currentClass.addToClassMethods(parseMethod(type, name));
+    } else {
+      currentClass.addToClassAttributes(new Variable(name));
     } 
   }    
   

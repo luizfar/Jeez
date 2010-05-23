@@ -4,13 +4,14 @@ import static jeez.interpreter.lexer.Symbol.CLASS;
 import static jeez.interpreter.lexer.Symbol.EOF;
 import static jeez.interpreter.lexer.Symbol.IDENTIFIER;
 import static jeez.interpreter.lexer.Symbol.MODULE;
-import jeez.interpreter.lexer.JeezLexer;
+import jeez.interpreter.lexer.Lexer;
 import jeez.interpreter.lexer.Symbol;
+import jeez.lang.CustomType;
 import jeez.lang.Type;
 
 public class MainParser {
   
-  private JeezLexer lexer;
+  private Lexer lexer;
   
   private ClassParser classParser;
   
@@ -18,7 +19,7 @@ public class MainParser {
   
   private ExpressionParser expressionParser;
   
-  public MainParser(JeezLexer lexer) {
+  public MainParser(Lexer lexer) {
     this.lexer = lexer;
     
     classParser = new ClassParser(this);
@@ -107,6 +108,10 @@ public class MainParser {
         
       case VOID:
         result = Type.VOID;
+        break;
+        
+      case IDENTIFIER:
+        result = new CustomType(lexer.getStringValue());
         break;
         
       default:

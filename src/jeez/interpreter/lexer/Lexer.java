@@ -3,7 +3,7 @@ package jeez.interpreter.lexer;
 import java.util.Arrays;
 import java.util.Hashtable;
 
-public class JeezLexer {
+public class Lexer {
 
   public Symbol token;
   private String stringValue, literalStringValue;
@@ -76,7 +76,7 @@ public class JeezLexer {
     OPERATORS.put("^", Symbol.XOR);
   }
   
-  public JeezLexer(char[] originalInput) {
+  public Lexer(char[] originalInput) {
     input = Arrays.copyOf(originalInput, originalInput.length + 1);
     input[input.length - 1] = '\0';
     

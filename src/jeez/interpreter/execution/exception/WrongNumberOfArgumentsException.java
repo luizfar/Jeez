@@ -9,7 +9,7 @@ public class WrongNumberOfArgumentsException extends RuntimeException {
   public WrongNumberOfArgumentsException(Method method, int argumentsCount) {
     super("Method '" + method.getName() + "' of class '"
         + method.getOwner().getName() + "' expects "
-        + method.getParametersCount() + " arguments but only " + argumentsCount
-        + " were passed.");
+        + method.getParametersCount() + " arguments but " + argumentsCount
+        + (argumentsCount == 1 ? " was" : " were") + " passed.");
   }
 }

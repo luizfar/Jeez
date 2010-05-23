@@ -1,40 +1,43 @@
 package jeez.lang;
 
-import static jeez.lang.Constants.NEW;
-import jeez.lang.expression.ReturnExpression;
-import jeez.lang.expression.VariableExpression;
+import static jeez.interpreter.execution.Bootstrap.getStringClass;
 
 public class JeezString extends JeezClass {
 
-  public static JeezString STRING = new JeezString();
-  
   public JeezString() {
     super("String");
-    
-    Method newString = new Method(this, this, NEW);
-    newString.addToParameters(new TypedVariable(this, "str"));
-    newString.getBlock().addToExpressions(new ReturnExpression(new VariableExpression("str")));
-    
-    addToMethods(newString);
   }
   
-  public static JeezStringObject newValue(String value) {
-    return new JeezStringObject(value);
+  public static String newValue(java.lang.String value) {
+    return new String(value);
   }
   
-  static class JeezStringObject extends JeezObject {
-    String value;    
-    public JeezStringObject(String value) {
-      this.clazz = STRING;
+  public static class String extends JeezObject {
+    
+    private java.lang.String value;
+    
+    public String(java.lang.String value) {
+      super(getStringClass());
       this.value = value;
     }
     @Override
-    public String toString() {
+    public java.lang.String toString() {
       return value;
     }
     @Override
     public int hashCode() {
       return value.hashCode();
+    }
+    @Override
+    public boolean equals(Object obj) {
+      if (obj instanceof String) {
+        return value.equals(((String) obj).value);
+      }
+      if (obj instanceof java.lang.String) {
+        return value.equals((java.lang.String) obj);
+      }
+      
+      return false;
     }
   }
 }

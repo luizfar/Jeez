@@ -52,7 +52,7 @@ import jeez.lang.expression.TypedVariableDeclaration;
 import jeez.lang.expression.UnaryExpression;
 import jeez.lang.expression.VariableDeclaration;
 import jeez.lang.expression.VariableExpression;
-import jeez.lang.Integer;
+import jeez.lang.JeezInteger;
 
 public class ExpressionParser {
   
@@ -427,7 +427,7 @@ public class ExpressionParser {
     int value = mainParser.getIntegerValue();
     mainParser.nextToken();
     
-    return new IntegerExpression(new Integer(value));
+    return new IntegerExpression(new JeezInteger.Integer(value));
   }
   
   private Expression parseLiteralStringExpression() {

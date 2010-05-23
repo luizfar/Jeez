@@ -223,6 +223,8 @@ public class JeezTests {
       "def d = Dog.new(\"Rex\")\n" +
       "println d.getName()";
     
+    originalOut.print(code);
+    
     String expectedOutput = 
       "";
     
@@ -244,6 +246,8 @@ public class JeezTests {
       "" +
       "def d = Dog.new(\"Rex\")\n" +
       "println d.getName()\n";
+    
+    originalOut.println(code);
     
     String expectedOutput = 
       "Rex\n";

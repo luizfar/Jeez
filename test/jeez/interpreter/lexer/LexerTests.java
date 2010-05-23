@@ -1,7 +1,7 @@
 package jeez.interpreter.lexer;
 
 import static org.junit.Assert.*;
-import jeez.interpreter.lexer.JeezLexer;
+import jeez.interpreter.lexer.Lexer;
 import jeez.interpreter.lexer.JeezLexerException;
 import jeez.interpreter.lexer.Symbol;
 
@@ -10,12 +10,12 @@ import org.junit.Test;
 
 public class LexerTests {
   
-  private JeezLexer lexer;
+  private Lexer lexer;
   
   @Test
   public void keywordAndIdentifier() throws Exception {
     char[] code = "class someclass { }".toCharArray();
-    lexer = new JeezLexer(code);
+    lexer = new Lexer(code);
     lexer.nextToken();
     assertEquals(Symbol.CLASS, lexer.token);
     lexer.nextToken();
@@ -32,7 +32,7 @@ public class LexerTests {
   @Test
   public void literalString() throws Exception {
     char[] code = "a = \"a string\"".toCharArray();
-    lexer = new JeezLexer(code);
+    lexer = new Lexer(code);
     lexer.nextToken();
     lexer.nextToken();
     lexer.nextToken();
@@ -45,7 +45,7 @@ public class LexerTests {
   @Test
   public void literalStringWithEscapedCharacters() throws Exception {
     char[] code = "a = \"a \\ns\\t\\string\"".toCharArray();
-    lexer = new JeezLexer(code);
+    lexer = new Lexer(code);
     lexer.nextToken();
     lexer.nextToken();
     lexer.nextToken();
@@ -58,7 +58,7 @@ public class LexerTests {
   @Test(expected = JeezLexerException.class)
   public void unterminatedLiteralString() throws Exception {
     char[] code = "a = \"a string\n\"".toCharArray();
-    lexer = new JeezLexer(code);
+    lexer = new Lexer(code);
     lexer.nextToken();
     lexer.nextToken();
     lexer.nextToken();
@@ -68,7 +68,7 @@ public class LexerTests {
   @Test
   public void literalNumber() throws Exception {
     char[] code = "a = 123".toCharArray();
-    lexer = new JeezLexer(code);
+    lexer = new Lexer(code);
     lexer.nextToken();
     lexer.nextToken();
     lexer.nextToken();

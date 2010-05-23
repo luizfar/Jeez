@@ -10,7 +10,14 @@ public class JeezObject {
   
   private Map<String, Method> methods = new HashMap<String, Method>();
 
-  JeezClass clazz;
+  private JeezClass clazz;
+  
+  public JeezObject() {
+  }
+  
+  public JeezObject(JeezClass clazz) {
+    this.clazz = clazz;
+  }
   
   public JeezClass getJeezClass() {
     return clazz;
@@ -38,5 +45,28 @@ public class JeezObject {
   
   public Collection<Method> getMethods() {
     return methods.values();
+  }
+  
+  public Method findMethod(String name) {
+    Method method = getMethod(name);
+    if (method != null) {
+      return method;
+    }
+    
+    JeezClass clazz = getJeezClass();
+    JeezClass superClazz = clazz.getSuperClass();
+    
+    do {
+      method = clazz.getClassMethod(name);
+      if (method != null) {
+        return method;
+      }
+      clazz = superClazz;
+      superClazz = clazz.getSuperClass();
+    } while (clazz != superClazz && clazz != null);
+    
+    method = clazz.getClassMethod(name);
+    
+    return method;
   }
 }

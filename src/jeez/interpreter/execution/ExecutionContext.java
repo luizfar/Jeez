@@ -1,6 +1,10 @@
 package jeez.interpreter.execution;
 
-import static jeez.lang.JeezString.STRING;
+import static jeez.interpreter.execution.Bootstrap.getBooleanClass;
+import static jeez.interpreter.execution.Bootstrap.getClassClass;
+import static jeez.interpreter.execution.Bootstrap.getIntegerClass;
+import static jeez.interpreter.execution.Bootstrap.getObjectClass;
+import static jeez.interpreter.execution.Bootstrap.getStringClass;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,7 +28,11 @@ public class ExecutionContext {
   
   public void prepare() {
     addLocalContext();
-    addClass(STRING);
+    addClass(getObjectClass());
+    addClass(getClassClass());
+    addClass(getBooleanClass());
+    addClass(getIntegerClass());
+    addClass(getStringClass());
   }
   
   public void addClass(JeezClass clazz) {

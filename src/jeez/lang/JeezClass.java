@@ -1,10 +1,15 @@
 package jeez.lang;
 
+import static jeez.interpreter.execution.Bootstrap.CLASS;
+import static jeez.interpreter.execution.Bootstrap.OBJECT;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 public class JeezClass extends JeezObject implements Type {
+  
+  private JeezClass superClass = OBJECT;
   
   private String name;
   
@@ -13,11 +18,20 @@ public class JeezClass extends JeezObject implements Type {
   private Map<String, Method> classMethods = new HashMap<String, Method>();
   
   public JeezClass(String string) {
+    super(CLASS);
     this.name = string;
   }
   
   public String getName() {
     return name;
+  }
+  
+  public void setSuperClass(JeezClass superClass) {
+    this.superClass = superClass;
+  }
+  
+  public JeezClass getSuperClass() {
+    return superClass;
   }
   
   public void addToClassAttributes(Variable attribute) {

@@ -1,7 +1,7 @@
 package jeez.interpreter.lexer;
 
 import static org.junit.Assert.*;
-import jeez.interpreter.lexer.JeezLexer;
+import jeez.interpreter.lexer.Lexer;
 import jeez.interpreter.lexer.Symbol;
 
 import org.junit.Test;
@@ -9,12 +9,12 @@ import org.junit.Test;
 
 public class LexerOperatorsTests {
 
-  private JeezLexer lexer;
+  private Lexer lexer;
   
   @Test
   public void plus() throws Exception {
     char[] code = "a + b".toCharArray();
-    lexer = new JeezLexer(code);
+    lexer = new Lexer(code);
     lexer.nextToken();
     assertEquals(Symbol.IDENTIFIER, lexer.token);
     lexer.nextToken();
@@ -28,7 +28,7 @@ public class LexerOperatorsTests {
   @Test
   public void greaterThan() throws Exception {
     char[] code = "a > b".toCharArray();
-    lexer = new JeezLexer(code);
+    lexer = new Lexer(code);
     lexer.nextToken();
     assertEquals(Symbol.IDENTIFIER, lexer.token);
     lexer.nextToken();
@@ -42,7 +42,7 @@ public class LexerOperatorsTests {
   @Test
   public void greaterOrEquals() throws Exception {
     char[] code = "a >= b".toCharArray();
-    lexer = new JeezLexer(code);
+    lexer = new Lexer(code);
     lexer.nextToken();
     assertEquals(Symbol.IDENTIFIER, lexer.token);
     lexer.nextToken();
@@ -56,7 +56,7 @@ public class LexerOperatorsTests {
   @Test
   public void notEquals() throws Exception {
     char[] code = "a != b".toCharArray();
-    lexer = new JeezLexer(code);
+    lexer = new Lexer(code);
     lexer.nextToken();
     assertEquals(Symbol.IDENTIFIER, lexer.token);
     lexer.nextToken();
@@ -70,7 +70,7 @@ public class LexerOperatorsTests {
   @Test
   public void equals() throws Exception {
     char[] code = "a==b".toCharArray();
-    lexer = new JeezLexer(code);
+    lexer = new Lexer(code);
     lexer.nextToken();
     assertEquals(Symbol.IDENTIFIER, lexer.token);
     lexer.nextToken();
@@ -84,7 +84,7 @@ public class LexerOperatorsTests {
   @Test
   public void commaAndBrackets() throws Exception {
     char[] code = "a() { [b, c] }".toCharArray();
-    lexer = new JeezLexer(code);
+    lexer = new Lexer(code);
     lexer.nextToken();
     assertEquals(Symbol.IDENTIFIER, lexer.token);
     lexer.nextToken();

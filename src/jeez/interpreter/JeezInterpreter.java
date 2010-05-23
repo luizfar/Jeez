@@ -2,7 +2,7 @@ package jeez.interpreter;
 
 
 import jeez.interpreter.execution.ExecutionContext;
-import jeez.interpreter.lexer.JeezLexer;
+import jeez.interpreter.lexer.Lexer;
 import jeez.interpreter.lexer.Symbol;
 import jeez.interpreter.parsers.MainParser;
 import jeez.lang.JeezClass;
@@ -12,7 +12,7 @@ import jeez.lang.expression.Expression;
 public class JeezInterpreter {
 
   public void start(char[] input) {
-    JeezLexer lexer = new JeezLexer(input);
+    Lexer lexer = new Lexer(input);
     MainParser parser = new MainParser(lexer);
     ExecutionContext context = new ExecutionContext();
     context.prepare();
