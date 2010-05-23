@@ -8,8 +8,7 @@ import jeez.interpreter.lexer.JeezLexer;
 import jeez.interpreter.lexer.Symbol;
 import jeez.lang.Type;
 
-
-public class JeezParser {
+public class MainParser {
   
   private JeezLexer lexer;
   
@@ -19,7 +18,7 @@ public class JeezParser {
   
   private ExpressionParser expressionParser;
   
-  public JeezParser(JeezLexer lexer) {
+  public MainParser(JeezLexer lexer) {
     this.lexer = lexer;
     
     classParser = new ClassParser(this);
@@ -85,7 +84,7 @@ public class JeezParser {
     if (lexer.token != IDENTIFIER) {
       throw new ParserException("Identifier expected", lexer.getLineNumber());
     }
-    String identifier = lexer.getStringValue();
+    String identifier = new String(lexer.getStringValue());
     lexer.nextToken();
     
     return identifier;

@@ -10,9 +10,13 @@ public class ClassManager {
       return Class.forName(className);
     } catch (java.lang.ClassNotFoundException e) {
       try {
-        return Class.forName("java.lang." + className);
+        return Class.forName("jeez.lang." + className);
       } catch (java.lang.ClassNotFoundException e1) {
-        throw new ClassNotFoundException(className);
+        try {
+          return Class.forName("java.lang." + className);
+        } catch (java.lang.ClassNotFoundException e2) {
+          throw new ClassNotFoundException(className);
+        }
       }
     }
   }

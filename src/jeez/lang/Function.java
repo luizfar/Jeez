@@ -50,7 +50,7 @@ public class Function {
     return block;
   }
   
-  public Object execute(Object target, List<Expression> arguments, ExecutionContext context) {
+  public JeezObject execute(JeezObject target, List<Expression> arguments, ExecutionContext context) {
     context.addLocalContext();
     context.setSelfContext(target);
 
@@ -66,9 +66,9 @@ public class Function {
       context.addToLocalContext(argument);
     }
     
-    Object result = null;
+    JeezObject result = null;
     for (Expression expression : block.getExpressions()) {
-      Object value = expression.evaluate(context);
+      JeezObject value = expression.evaluate(context);
       if (expression instanceof ReturnExpression) {
         result = value;
         break;

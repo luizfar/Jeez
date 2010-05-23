@@ -1,7 +1,7 @@
 package jeez.lang.expression;
 
 import jeez.interpreter.execution.ExecutionContext;
-import jeez.interpreter.load.ClassCreator;
+import jeez.lang.JeezObject;
 import jeez.lang.Variable;
 
 public class AssignmentExpression implements Expression {
@@ -24,15 +24,10 @@ public class AssignmentExpression implements Expression {
   }
   
   @Override
-  public Object evaluate(ExecutionContext context) {
+  public JeezObject evaluate(ExecutionContext context) {
     Variable var = context.getFromAnyContext(variableName);
     var.setValue(expression.evaluate(context));
     
     return new VariableExpression(variableName).evaluate(context);
-  }
-
-  @Override
-  public void accept(ClassCreator classCreator) {
-    classCreator.generateAssignment(this);
   }
 }

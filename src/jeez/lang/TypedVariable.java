@@ -2,21 +2,20 @@ package jeez.lang;
 
 import jeez.interpreter.execution.exception.TypeMismatchException;
 
-@SuppressWarnings("unchecked")
 public class TypedVariable extends Variable {
 
-  private Class clazz;
+  private JeezClass clazz;
   
-  public TypedVariable(Class clazz, String name) {
+  public TypedVariable(JeezClass clazz, String name) {
     super(name);
     this.clazz = clazz;
   }
   
-  public void setValue(Object value) {
-    if (clazz.isAssignableFrom(value.getClass())) {
+  public void setValue(JeezObject value) {
+    if (clazz.isAssignableFrom(value.getJeezClass())) {
       super.setValue(value);
     } else {
-      throw new TypeMismatchException(clazz, value.getClass());
+      throw new TypeMismatchException(clazz, value.getJeezClass());
     }
   }
 }

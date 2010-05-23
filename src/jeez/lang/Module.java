@@ -3,7 +3,7 @@ package jeez.lang;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Module extends Object {
+public class Module extends JeezObject {
   
   private String name;
   

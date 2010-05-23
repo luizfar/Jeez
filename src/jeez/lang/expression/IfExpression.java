@@ -2,7 +2,7 @@ package jeez.lang.expression;
 
 import static java.lang.Boolean.TRUE;
 import jeez.interpreter.execution.ExecutionContext;
-import jeez.interpreter.load.ClassCreator;
+import jeez.lang.JeezObject;
 
 public class IfExpression implements Expression {
 
@@ -37,7 +37,7 @@ public class IfExpression implements Expression {
   }
 
   @Override
-  public Object evaluate(ExecutionContext context) {
+  public JeezObject evaluate(ExecutionContext context) {
     if (TRUE.equals(booleanExpression.evaluate(context))) {
       return ifExpression.evaluate(context);
     } else if (elseExpression != null) {
@@ -45,10 +45,5 @@ public class IfExpression implements Expression {
     }
     
     return null;
-  }
-
-  @Override
-  public void accept(ClassCreator classCreator) {
-    classCreator.generateIf(this);
   }
 }

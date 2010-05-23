@@ -1,7 +1,7 @@
 package jeez.lang.expression;
 
 import jeez.interpreter.execution.ExecutionContext;
-import jeez.interpreter.load.ClassCreator;
+import jeez.lang.JeezObject;
 
 public class PrintlnExpression implements Expression {
 
@@ -16,13 +16,8 @@ public class PrintlnExpression implements Expression {
   }
   
   @Override
-  public Object evaluate(ExecutionContext context) {
+  public JeezObject evaluate(ExecutionContext context) {
     System.out.println(expression.evaluate(context));
     return null;
-  }
-
-  @Override
-  public void accept(ClassCreator classCreator) {
-    classCreator.generatePrintln(this);
   }
 }

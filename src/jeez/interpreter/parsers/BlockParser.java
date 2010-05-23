@@ -6,23 +6,23 @@ import jeez.lang.Block;
 
 public class BlockParser {
 
-  private JeezParser jeezParser;
+  private MainParser mainParser;
   
   private ExpressionParser expressionParser;
   
-  public BlockParser(JeezParser jeezParser) {
-    this.jeezParser = jeezParser;
+  public BlockParser(MainParser jeezParser) {
+    this.mainParser = jeezParser;
     this.expressionParser = new ExpressionParser(jeezParser);
   }
   
   public Block parseBlock() {
     Block block = new Block();
     
-    jeezParser.expect(LEFT_CUR_BRACKET);
-    while (jeezParser.getToken() != RIGHT_CUR_BRACKET) {
+    mainParser.expect(LEFT_CUR_BRACKET);
+    while (mainParser.getToken() != RIGHT_CUR_BRACKET) {
       block.addToExpressions(expressionParser.parseExpression());
     }
-    jeezParser.nextToken();
+    mainParser.nextToken();
     
     return block;
   }

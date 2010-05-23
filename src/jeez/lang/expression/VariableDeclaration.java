@@ -1,7 +1,7 @@
 package jeez.lang.expression;
 
 import jeez.interpreter.execution.ExecutionContext;
-import jeez.interpreter.load.ClassCreator;
+import jeez.lang.JeezObject;
 import jeez.lang.Variable;
 
 public class VariableDeclaration implements Expression {
@@ -19,7 +19,7 @@ public class VariableDeclaration implements Expression {
   }
   
   @Override
-  public Object evaluate(ExecutionContext context) {
+  public JeezObject evaluate(ExecutionContext context) {
     Variable var = new Variable(variableName);
     context.addToLocalContext(var);
     
@@ -28,10 +28,5 @@ public class VariableDeclaration implements Expression {
     }
     
     return var.getValue();
-  }
-
-  @Override
-  public void accept(ClassCreator classCreator) {
-    classCreator.generateVariableDeclaration(this);
   }
 }

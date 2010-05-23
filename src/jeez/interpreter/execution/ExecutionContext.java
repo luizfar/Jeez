@@ -1,41 +1,44 @@
 package jeez.interpreter.execution;
 
+import static jeez.lang.JeezString.STRING;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import jeez.lang.Clazz;
+import jeez.lang.JeezClass;
+import jeez.lang.JeezObject;
 import jeez.lang.Module;
-import jeez.lang.ModuleVariable;
 import jeez.lang.Variable;
 
 public class ExecutionContext {
   
-  private Map<String, Clazz> classes = new HashMap<String, Clazz>();
+  private Map<String, JeezClass> classes = new HashMap<String, JeezClass>();
   
   private Map<String, Module> modules = new HashMap<String, Module>();
   
   private List<Map<String, Variable>> localContexts = new ArrayList<Map<String, Variable>>();
   
-  private Object self;
+  private JeezObject self;
   
-  public ExecutionContext() {
+  public void prepare() {
     addLocalContext();
+    addClass(STRING);
   }
   
-  public void addClass(Clazz clazz) {
+  public void addClass(JeezClass clazz) {
     classes.put(clazz.getName(), clazz);
-//    addToLocalContext();
+    addToLocalContext(new Variable(clazz.getName(), clazz));
   }
   
-  public Clazz getClass(String name) {
+  public JeezClass getClass(String name) {
     return classes.get(name);
   }
   
   public void addModule(Module module) {
     modules.put(module.getName(), module);
-    addToLocalContext(new ModuleVariable(module));
+    addToLocalContext(new Variable(module.getName(), module));
   }
   
   public Module getModule(String name) {
@@ -64,11 +67,11 @@ public class ExecutionContext {
     localContexts.remove(localContexts.size() - 1);
   }
   
-  public void setSelfContext(Object self) {
+  public void setSelfContext(JeezObject self) {
     this.self = self;
   }
 
-  public Object getSelfContext() {
+  public JeezObject getSelfContext() {
     return self;
   }
 }

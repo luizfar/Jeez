@@ -1,6 +1,5 @@
 package jeez.lang.expression;
 
-
 public class BinaryExpression extends MessageSend implements Expression {
 
   private BinaryOperator operator;

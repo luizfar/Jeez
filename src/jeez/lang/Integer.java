@@ -1,6 +1,6 @@
 package jeez.lang;
 
-public class Integer implements Comparable<Integer> {
+public class Integer extends JeezObject implements Comparable<Integer> {
 
   private final int value;
   
@@ -9,7 +9,7 @@ public class Integer implements Comparable<Integer> {
   }
   
   public Integer(String string) {
-    this.value = java.lang.Integer.parseInt(string);
+    this.value = java.lang.Integer.parseInt(string.toString());
   }
   
   public Integer _add(Integer i) {
@@ -24,7 +24,7 @@ public class Integer implements Comparable<Integer> {
     return new Integer(value * i.value);
   }
   
-  public String toString() {
+  public java.lang.String toString() {
     return java.lang.Integer.toString(value);
   }
   

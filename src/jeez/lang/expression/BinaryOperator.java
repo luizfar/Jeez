@@ -20,13 +20,13 @@ public class BinaryOperator {
 
   public String getMessage() {
     switch (symbol) {
-      case PLUS: return "_add";
+      case PLUS: return new String("_add");
       
-      case MINUS: return "_minus";
+      case MINUS: return new String("_minus");
       
-      case MULTIPLIER: return "_times";
+      case MULTIPLIER: return new String("_times");
       
-      case EQUAL: return "equals";
+      case EQUAL: return new String("equals");
       
       default: throw new RuntimeException("Unknown operator: " + symbol);
     }

@@ -54,22 +54,21 @@ import jeez.lang.expression.VariableDeclaration;
 import jeez.lang.expression.VariableExpression;
 import jeez.lang.Integer;
 
-
 public class ExpressionParser {
   
-  private JeezParser jeezParser;
+  private MainParser mainParser;
   
-  public ExpressionParser(JeezParser jeezParser) {
-    this.jeezParser = jeezParser;
+  public ExpressionParser(MainParser jeezParser) {
+    this.mainParser = jeezParser;
   }
   
   public Expression parseExpression() {
     Expression expression = parseExpressionHelper();
-    while (jeezParser.getToken() == Symbol.DOT || jeezParser.getToken() == Symbol.ASSIGN) {
-      if (jeezParser.getToken() == Symbol.DOT) {
+    while (mainParser.getToken() == Symbol.DOT || mainParser.getToken() == Symbol.ASSIGN) {
+      if (mainParser.getToken() == Symbol.DOT) {
         expression = parseMessageSendExpression(expression);
       }
-      if (jeezParser.getToken() == Symbol.ASSIGN) {
+      if (mainParser.getToken() == Symbol.ASSIGN) {
         expression = parseAssignmentExpression(expression);
       }
     }
@@ -79,7 +78,7 @@ public class ExpressionParser {
   
   private Expression parseExpressionHelper() {
     Expression expression = null;
-    switch (jeezParser.getToken()) {
+    switch (mainParser.getToken()) {
       case IF:
         expression = parseIfExpression();
         break;
@@ -113,45 +112,45 @@ public class ExpressionParser {
   }
   
   private Expression parseIfExpression() {
-    jeezParser.expect(IF);
+    mainParser.expect(IF);
     
     boolean parenthesisUsed = false;
-    if (jeezParser.getToken() == LEFT_PAR) {
-      jeezParser.nextToken();
+    if (mainParser.getToken() == LEFT_PAR) {
+      mainParser.nextToken();
       parenthesisUsed = true;
     }
     
     IfExpression ifExpression = new IfExpression(parseExpression());
     
     if (parenthesisUsed) {
-      jeezParser.expect(RIGHT_PAR);
+      mainParser.expect(RIGHT_PAR);
     }
     
     ifExpression.setIfExpression(parseExpression());
-    if (jeezParser.getToken() == ELSE) {
-      jeezParser.nextToken();
+    if (mainParser.getToken() == ELSE) {
+      mainParser.nextToken();
       ifExpression.setElseExpression(parseExpression());
     }
     return ifExpression;
   }
   
   private Expression parsePrintExpression() {
-    jeezParser.expect(PRINT);
+    mainParser.expect(PRINT);
     return new PrintExpression(parseExpression());
   }
   
   private Expression parsePrintlnExpressiont() {
-    jeezParser.expect(PRINTLN);
+    mainParser.expect(PRINTLN);
     return new PrintlnExpression(parseExpression());
   }
   
   private Expression parseDynamicDeclaration() {
-    jeezParser.expect(DEF);
-    String variableName = jeezParser.parseIdentifier();
+    mainParser.expect(DEF);
+    String variableName = mainParser.parseIdentifier();
     VariableDeclaration expression = new VariableDeclaration(variableName);
     
-    if (jeezParser.getToken() == ASSIGN) {
-      jeezParser.nextToken();
+    if (mainParser.getToken() == ASSIGN) {
+      mainParser.nextToken();
       expression.setInitExpression(parseExpression());
     }
     
@@ -159,12 +158,12 @@ public class ExpressionParser {
   }
   
   private Expression parseTypedDeclaration(String className) {
-    String variableName = jeezParser.parseIdentifier();
+    String variableName = mainParser.parseIdentifier();
     TypedVariableDeclaration expression = 
       new TypedVariableDeclaration(className, variableName);
     
-    if (jeezParser.getToken() == ASSIGN) {
-      jeezParser.nextToken();
+    if (mainParser.getToken() == ASSIGN) {
+      mainParser.nextToken();
       expression.setInitExpression(parseExpression());
     }
     
@@ -172,24 +171,24 @@ public class ExpressionParser {
   }
   
   private Expression parseReturnExpression() {
-    jeezParser.expect(RETURN);
+    mainParser.expect(RETURN);
     return new ReturnExpression(parseExpression());
   }
   
   private Expression parseExpressionList() {
-    jeezParser.expect(LEFT_CUR_BRACKET);
+    mainParser.expect(LEFT_CUR_BRACKET);
     
     ExpressionList expressions = new ExpressionList();
-    while (jeezParser.getToken() != RIGHT_CUR_BRACKET) {
+    while (mainParser.getToken() != RIGHT_CUR_BRACKET) {
       expressions.addToExpressions(parseExpression());
     }
-    jeezParser.expect(RIGHT_CUR_BRACKET);
+    mainParser.expect(RIGHT_CUR_BRACKET);
     
     return expressions;
   }
   
   private Expression parseAssignmentExpression(String variableName) {
-    jeezParser.expect(ASSIGN);
+    mainParser.expect(ASSIGN);
     return new AssignmentExpression(variableName, parseExpression());
   }
   
@@ -197,14 +196,15 @@ public class ExpressionParser {
     if (expression.getClass() != VariableExpression.class) {
       throw new RuntimeException("Can't assign to this");
     }
-    return parseAssignmentExpression(((VariableExpression) expression).getVariableName());
+    return parseAssignmentExpression(((VariableExpression) expression)
+        .getVariableName());
   }
 
   private Expression parseOrExpression() {
     Expression expr = parseAndExpression();
     
-    while (jeezParser.getToken() == OR) {
-      jeezParser.nextToken();
+    while (mainParser.getToken() == OR) {
+      mainParser.nextToken();
       Expression right = parseAndExpression();
       expr = new BinaryExpression(new BinaryOperator(OR), expr, right);
     }
@@ -215,8 +215,8 @@ public class ExpressionParser {
   private Expression parseAndExpression() {
     Expression expr = parseShortOrExpression();
     
-    while (jeezParser.getToken() == AND) {
-      jeezParser.nextToken();
+    while (mainParser.getToken() == AND) {
+      mainParser.nextToken();
       Expression right = parseShortOrExpression();
       expr = new BinaryExpression(new BinaryOperator(AND), expr, right);
     }
@@ -227,8 +227,8 @@ public class ExpressionParser {
   private Expression parseShortOrExpression() {
     Expression expr = parseXorExpression();
     
-    while (jeezParser.getToken() == SHORT_OR) {
-      jeezParser.nextToken();
+    while (mainParser.getToken() == SHORT_OR) {
+      mainParser.nextToken();
       Expression right = parseXorExpression();
       expr = new BinaryExpression(new BinaryOperator(SHORT_OR), expr, right);
     }
@@ -239,8 +239,8 @@ public class ExpressionParser {
   private Expression parseXorExpression() {
     Expression expr = parseShortAndExpression();
     
-    while (jeezParser.getToken() == XOR) {
-      jeezParser.nextToken();
+    while (mainParser.getToken() == XOR) {
+      mainParser.nextToken();
       Expression right = parseShortAndExpression();
       expr = new BinaryExpression(new BinaryOperator(XOR), expr, right);
     }
@@ -251,8 +251,8 @@ public class ExpressionParser {
   private Expression parseShortAndExpression() {
     Expression expr = parseEqualExpression();
     
-    while (jeezParser.getToken() == SHORT_AND) {
-      jeezParser.nextToken();
+    while (mainParser.getToken() == SHORT_AND) {
+      mainParser.nextToken();
       Expression right = parseEqualExpression();
       expr = new BinaryExpression(new BinaryOperator(SHORT_AND), expr, right);
     }
@@ -263,9 +263,9 @@ public class ExpressionParser {
   private Expression parseEqualExpression() {
     Expression expr = parseRelationalExpression();
     
-    while (jeezParser.getToken() == EQUAL || jeezParser.getToken() == NOT_EQUAL) {
-      BinaryOperator operator = new BinaryOperator(jeezParser.getToken());
-      jeezParser.nextToken();
+    while (mainParser.getToken() == EQUAL || mainParser.getToken() == NOT_EQUAL) {
+      BinaryOperator operator = new BinaryOperator(mainParser.getToken());
+      mainParser.nextToken();
       Expression right = parseRelationalExpression();
       expr = new BinaryExpression(operator, expr, right);
     }
@@ -276,13 +276,13 @@ public class ExpressionParser {
   private Expression parseRelationalExpression() {
     Expression expr = parseAddExpression();
     
-    while (jeezParser.getToken() == GREATER_THAN ||
-           jeezParser.getToken() == GREATER_EQUAL ||
-           jeezParser.getToken() == LESS_THAN ||
-           jeezParser.getToken() == LESS_EQUAL ||
-           jeezParser.getToken() == IS) {
-      BinaryOperator operator = new BinaryOperator(jeezParser.getToken());
-      jeezParser.nextToken();
+    while (mainParser.getToken() == GREATER_THAN ||
+           mainParser.getToken() == GREATER_EQUAL ||
+           mainParser.getToken() == LESS_THAN ||
+           mainParser.getToken() == LESS_EQUAL ||
+           mainParser.getToken() == IS) {
+      BinaryOperator operator = new BinaryOperator(mainParser.getToken());
+      mainParser.nextToken();
       Expression right = parseAddExpression();
       expr = new BinaryExpression(operator, expr, right);
     }
@@ -293,9 +293,9 @@ public class ExpressionParser {
   private Expression parseAddExpression() {
     Expression expr = parseMultiplyExpression();
     
-    while (jeezParser.getToken() == PLUS || jeezParser.getToken() == MINUS) {
-      BinaryOperator operator = new BinaryOperator(jeezParser.getToken());
-      jeezParser.nextToken();
+    while (mainParser.getToken() == PLUS || mainParser.getToken() == MINUS) {
+      BinaryOperator operator = new BinaryOperator(mainParser.getToken());
+      mainParser.nextToken();
       
       Expression right = parseMultiplyExpression();
       expr = new BinaryExpression(operator, expr, right);
@@ -307,11 +307,11 @@ public class ExpressionParser {
   private Expression parseMultiplyExpression() {
     Expression expr = parseUnaryExpression();
     
-    while (jeezParser.getToken() == MULTIPLIER
-        || jeezParser.getToken() == DIVISOR
-        || jeezParser.getToken() == REMAINDER) {
-      BinaryOperator operator = new BinaryOperator(jeezParser.getToken());
-      jeezParser.nextToken();
+    while (mainParser.getToken() == MULTIPLIER
+        || mainParser.getToken() == DIVISOR
+        || mainParser.getToken() == REMAINDER) {
+      BinaryOperator operator = new BinaryOperator(mainParser.getToken());
+      mainParser.nextToken();
       
       Expression right = parseUnaryExpression();
       expr = new BinaryExpression(operator, expr, right);
@@ -321,10 +321,10 @@ public class ExpressionParser {
   }
 
   private Expression parseUnaryExpression() {
-    if (jeezParser.getToken() == PLUS || jeezParser.getToken() == MINUS
-        || jeezParser.getToken() == NOT) {
-      Symbol operator = jeezParser.getToken();
-      jeezParser.nextToken();
+    if (mainParser.getToken() == PLUS || mainParser.getToken() == MINUS
+        || mainParser.getToken() == NOT) {
+      Symbol operator = mainParser.getToken();
+      mainParser.nextToken();
       
       return new UnaryExpression(operator, parsePrimaryExpression());
     }
@@ -332,17 +332,17 @@ public class ExpressionParser {
   }
 
   private Expression parsePrimaryExpression() {
-    switch (jeezParser.getToken()) {
+    switch (mainParser.getToken()) {
       case NULL:
-        jeezParser.nextToken();
+        mainParser.nextToken();
         return new NullExpression();
       
       case SELF:
-        jeezParser.nextToken();
+        mainParser.nextToken();
         return new SelfExpression();
         
       case LEFT_PAR:
-        throw new RuntimeException(jeezParser.getLineNumber() + ": Not yet implemented.");
+        throw new RuntimeException(mainParser.getLineNumber() + ": Not yet implemented.");
         
       case LEFT_BRACKET:
         throw new RuntimeException("Not yet implemented.");
@@ -361,16 +361,16 @@ public class ExpressionParser {
         return parseLiteralStringExpression();
     }
     
-    throw new RuntimeException(jeezParser.getLineNumber() + ": Should throw an error here");
+    throw new RuntimeException(mainParser.getLineNumber() + ": Should throw an error here");
   }
 
   private Expression parseDeclarationOrVariableOrMethodExpression() {
-    String identifier = jeezParser.getStringValue();
-    jeezParser.nextToken();
+    String identifier = mainParser.getStringValue();
+    mainParser.nextToken();
     
-    switch (jeezParser.getToken()) {
+    switch (mainParser.getToken()) {
       case IDENTIFIER:
-        if (jeezParser.foundEndOfExpression()) {
+        if (mainParser.foundEndOfExpression()) {
           return parseVariableExpression(identifier);
         }
         return parseTypedDeclaration(identifier);
@@ -385,29 +385,29 @@ public class ExpressionParser {
   
   private Expression parseMessageSendToThis(String messageName) {
     MessageSend messageSend = new MessageSend(new SelfExpression(), messageName);
-    jeezParser.expect(LEFT_PAR);
-    while (jeezParser.getToken() != RIGHT_PAR) {
+    mainParser.expect(LEFT_PAR);
+    while (mainParser.getToken() != RIGHT_PAR) {
       messageSend.addToArguments(parseExpression());
-      if (jeezParser.getToken() == COMMA) {
-        jeezParser.nextToken();
+      if (mainParser.getToken() == COMMA) {
+        mainParser.nextToken();
       }
     }
-    jeezParser.nextToken();
+    mainParser.nextToken();
     
     return messageSend;
   }
   
   private Expression parseMessageSendExpression(Expression receiver) {
-    jeezParser.expect(DOT);
-    MessageSend messageSend = new MessageSend(receiver, jeezParser.parseIdentifier());
-    jeezParser.expect(LEFT_PAR);
-    while (jeezParser.getToken() != RIGHT_PAR) {
+    mainParser.expect(DOT);
+    MessageSend messageSend = new MessageSend(receiver, mainParser.parseIdentifier());
+    mainParser.expect(LEFT_PAR);
+    while (mainParser.getToken() != RIGHT_PAR) {
       messageSend.addToArguments(parseExpression());
-      if (jeezParser.getToken() == COMMA) {
-        jeezParser.nextToken();
+      if (mainParser.getToken() == COMMA) {
+        mainParser.nextToken();
       }
     }
-    jeezParser.nextToken();
+    mainParser.nextToken();
     
     return messageSend;
   }
@@ -417,22 +417,22 @@ public class ExpressionParser {
   }
   
   private Expression parseLiteralBooleanExpression() {
-    boolean value = jeezParser.getToken() == TRUE;
-    jeezParser.nextToken();
+    boolean value = mainParser.getToken() == TRUE;
+    mainParser.nextToken();
     
     return new LiteralBooleanExpression(value);
   }
   
   private Expression parseIntegerExpression() {
-    int value = jeezParser.getIntegerValue();
-    jeezParser.nextToken();
+    int value = mainParser.getIntegerValue();
+    mainParser.nextToken();
     
     return new IntegerExpression(new Integer(value));
   }
   
   private Expression parseLiteralStringExpression() {
-    String stringLiteral = jeezParser.getStringLiteral();
-    jeezParser.nextToken();
+    String stringLiteral = mainParser.getStringLiteral();
+    mainParser.nextToken();
     
     return new LiteralStringExpression(stringLiteral);
   }

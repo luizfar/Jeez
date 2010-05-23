@@ -11,24 +11,24 @@ import jeez.lang.Variable;
 
 public class FunctionParser {
 
-  private JeezParser jeezParser;
+  private MainParser mainParser;
   
   private BlockParser blockParser;
   
-  public FunctionParser(JeezParser jeezParser) {
-    this.jeezParser = jeezParser;
+  public FunctionParser(MainParser jeezParser) {
+    this.mainParser = jeezParser;
     this.blockParser = new BlockParser(jeezParser);
   }
   
   public Function parseFunction() {
-    jeezParser.expect(DEF);
-    Function function = new Function(DUCK, jeezParser.parseIdentifier());
+    mainParser.expect(DEF);
+    Function function = new Function(DUCK, mainParser.parseIdentifier());
     
-    jeezParser.expect(LEFT_PAR);
-    if (jeezParser.getToken() != RIGHT_PAR) {
+    mainParser.expect(LEFT_PAR);
+    if (mainParser.getToken() != RIGHT_PAR) {
       parseParameterListFor(function);
     }
-    jeezParser.nextToken();
+    mainParser.nextToken();
     
     Block block = blockParser.parseBlock();
     function.setBlock(block);
@@ -38,13 +38,13 @@ public class FunctionParser {
 
   private void parseParameterListFor(Function function) {
     function.addToParameters(parseParameter());
-    while (jeezParser.getToken() == COMMA) {
-      jeezParser.nextToken();
+    while (mainParser.getToken() == COMMA) {
+      mainParser.nextToken();
       function.addToParameters(parseParameter());
     }
   }
   
   private Variable parseParameter() {
-    return new Variable(jeezParser.parseIdentifier());
+    return new Variable(mainParser.parseIdentifier());
   }
 }

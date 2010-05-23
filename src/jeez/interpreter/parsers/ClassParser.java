@@ -8,74 +8,74 @@ import static jeez.interpreter.lexer.Symbol.LEFT_PAR;
 import static jeez.interpreter.lexer.Symbol.RIGHT_CUR_BRACKET;
 import static jeez.interpreter.lexer.Symbol.RIGHT_PAR;
 import static jeez.interpreter.lexer.Symbol.STATIC;
+import jeez.interpreter.execution.ClassBuilder;
 import jeez.lang.Attribute;
 import jeez.lang.Block;
-import jeez.lang.ClassAttribute;
-import jeez.lang.ClassMethod;
-import jeez.lang.Clazz;
 import jeez.lang.Function;
+import jeez.lang.JeezClass;
 import jeez.lang.Method;
 import jeez.lang.Type;
 import jeez.lang.Variable;
 
 public class ClassParser {
   
-  private Clazz currentClass;
+  private JeezClass currentClass;
   
-  private JeezParser jeezParser;
+  private ClassBuilder classBuilder;
+  
+  private MainParser mainParser;
   
   private BlockParser blockParser;
   
-  private ExpressionParser expressionParser;
-  
-  public ClassParser(JeezParser jeezParser) {
-    this.jeezParser = jeezParser;
-    this.blockParser = new BlockParser(jeezParser);
-    this.expressionParser = new ExpressionParser(jeezParser);
+  public ClassParser(MainParser mainParser) {
+    this.mainParser = mainParser;
+    this.blockParser = new BlockParser(mainParser);
+    this.classBuilder = new ClassBuilder();
   }
   
-  Clazz parseClass() {
-    jeezParser.expect(CLASS);
+  JeezClass parseClass() {
+    mainParser.expect(CLASS);
     
-    currentClass = new Clazz(jeezParser.parseIdentifier());
+    currentClass = classBuilder.build(mainParser.parseIdentifier());
     
-    jeezParser.expect(LEFT_CUR_BRACKET);
+    mainParser.expect(LEFT_CUR_BRACKET);
     
-    while (jeezParser.getToken() != RIGHT_CUR_BRACKET) {
-      if (jeezParser.getToken() == STATIC) {
+    while (mainParser.getToken() != RIGHT_CUR_BRACKET) {
+      if (mainParser.getToken() == STATIC) {
         parseClassMember();
       } else {
         parseMember();
       }
     }
     
-    jeezParser.expect(RIGHT_CUR_BRACKET);
+    mainParser.expect(RIGHT_CUR_BRACKET);
 
     return currentClass;
   }
   
   private void parseClassMember() {
-    jeezParser.expect(STATIC);
-    Type type = jeezParser.parseType();
-    String name = jeezParser.parseIdentifier();
+    mainParser.expect(STATIC);
+    Type type = mainParser.parseType();
+    String name = mainParser.parseIdentifier();
     
-    if (jeezParser.getToken() == LEFT_PAR) {
-      currentClass.addToClassMethods(parseClassMethod(type, name));
+    if (mainParser.getToken() == LEFT_PAR) {
+      currentClass.addToClassMethods(parseMethod(type, name));
     } else {
-      ClassAttribute attribute = new ClassAttribute(name);
-      if (jeezParser.getToken() == ASSIGN) {
-        jeezParser.nextToken();
-        attribute.setInitialExpression(expressionParser.parseExpression());
+      Variable attribute = new Variable(name);
+      if (mainParser.getToken() == ASSIGN) {
+        mainParser.nextToken();
+        // tODO
+//        attribute.setValue(expressionParser.parseExpression());
       }
       currentClass.addToClassAttributes(attribute);
     }
   }
 
   private void parseMember() {
-    Type type = jeezParser.parseType();
-    String name = jeezParser.parseIdentifier();
+    Type type = mainParser.parseType();
+    String name = mainParser.parseIdentifier();
     
-    if (jeezParser.getToken() == LEFT_PAR) {
+    if (mainParser.getToken() == LEFT_PAR) {
       currentClass.addToMethods(parseMethod(type, name));
     } else {
       currentClass.addToAttributes(new Attribute(name));
@@ -86,20 +86,14 @@ public class ClassParser {
     Method method = new Method(currentClass, type, methodName);
     parseParametersAndBodyFor(method);
     return method;
-  }  
-  
-  private ClassMethod parseClassMethod(Type type, String methodName) {
-    ClassMethod method = new ClassMethod(currentClass, type, methodName);
-    parseParametersAndBodyFor(method);
-    return method;
   }
   
   private void parseParametersAndBodyFor(Function function) {
-    jeezParser.expect(LEFT_PAR);
-    if (jeezParser.getToken() != RIGHT_PAR) {
+    mainParser.expect(LEFT_PAR);
+    if (mainParser.getToken() != RIGHT_PAR) {
       parseParameterListFor(function);
     }
-    jeezParser.nextToken();
+    mainParser.nextToken();
     
     Block block = blockParser.parseBlock();
     function.setBlock(block);
@@ -107,13 +101,13 @@ public class ClassParser {
 
   private void parseParameterListFor(Function function) {
     function.addToParameters(parseParameter());
-    while (jeezParser.getToken() == COMMA) {
-      jeezParser.nextToken();
+    while (mainParser.getToken() == COMMA) {
+      mainParser.nextToken();
       function.addToParameters(parseParameter());
     }
   }
   
   private Variable parseParameter() {
-    return new Variable(jeezParser.parseIdentifier());
+    return new Variable(mainParser.parseIdentifier());
   }
 }

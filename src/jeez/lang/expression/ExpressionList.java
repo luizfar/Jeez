@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jeez.interpreter.execution.ExecutionContext;
-import jeez.interpreter.load.ClassCreator;
+import jeez.lang.JeezObject;
 
 public class ExpressionList implements Expression {
 
@@ -19,16 +19,11 @@ public class ExpressionList implements Expression {
   }
   
   @Override
-  public Object evaluate(ExecutionContext context) {
-    Object result = null;
+  public JeezObject evaluate(ExecutionContext context) {
+    JeezObject result = null;
     for (Expression expression : expressions) {
       result = expression.evaluate(context);
     }
     return result;
-  }
-
-  @Override
-  public void accept(ClassCreator classCreator) {
-    classCreator.generateExpressionList(this);
   }
 }

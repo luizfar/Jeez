@@ -1,8 +1,8 @@
 package jeez.lang.expression;
 
 import jeez.interpreter.execution.ExecutionContext;
-import jeez.interpreter.load.ClassCreator;
 import jeez.lang.Integer;
+import jeez.lang.JeezObject;
 
 public class IntegerExpression implements Expression {
 
@@ -17,12 +17,7 @@ public class IntegerExpression implements Expression {
   }
 
   @Override
-  public Object evaluate(ExecutionContext symbolTable) {
+  public JeezObject evaluate(ExecutionContext symbolTable) {
     return value;
-  }
-
-  @Override
-  public void accept(ClassCreator classCreator) {
-    classCreator.generateInteger(this);
   }
 }

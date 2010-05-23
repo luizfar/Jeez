@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jeez.interpreter.execution.ExecutionContext;
-import jeez.interpreter.execution.MethodInvoker;
-import jeez.interpreter.load.ClassCreator;
+import jeez.interpreter.execution.exception.UnknownMessageException;
+import jeez.interpreter.execution.exception.WrongNumberOfArgumentsException;
+import jeez.lang.JeezObject;
+import jeez.lang.Method;
 
 public class MessageSend implements Expression {
 
@@ -23,32 +25,24 @@ public class MessageSend implements Expression {
   public void addToArguments(Expression expression) {
     arguments.add(expression);
   }
-  
-  public Expression getReceiver() {
-    return receiver;
-  }
-
-  public String getMessageName() {
-    return messageName;
-  }
-
-  public List<Expression> getArguments() {
-    return arguments;
-  }
 
   @Override
-  public Object evaluate(ExecutionContext context) {
-    Object target = receiver.evaluate(context);
-    Object[] evaluatedArguments = new Object[arguments.size()];
-    for (int i = 0; i < evaluatedArguments.length; i++) {
-      evaluatedArguments[i] = arguments.get(i).evaluate(context);
+  public JeezObject evaluate(ExecutionContext context) {
+    JeezObject target = receiver.evaluate(context);
+    Method method = target.getMethod(messageName);
+    
+    if (method == null) {
+      method = target.getJeezClass().getMethod(messageName);
     }
     
-    return MethodInvoker.invoke(target, messageName, evaluatedArguments);
-  }
-
-  @Override
-  public void accept(ClassCreator classCreator) {
-    classCreator.generateMessageSend(this);
+    if (method == null) {
+      throw new UnknownMessageException(messageName);
+    }
+    
+    if (method.getParametersCount() != arguments.size()) {
+      throw new WrongNumberOfArgumentsException(method, arguments.size());
+    }
+    
+    return method.execute(target, arguments, context);
   }
 }

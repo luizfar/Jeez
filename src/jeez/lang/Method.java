@@ -7,27 +7,27 @@ import jeez.lang.expression.Expression;
 
 public class Method extends Function {
 
-  private Clazz owner;
+  private JeezClass owner;
   
-  public Method(Clazz owner, Type type, String name) {
+  public Method(JeezClass owner, Type type, String name) {
     super(type, name);
     this.owner = owner;
   }
   
-  public Clazz getOwner() {
+  public JeezClass getOwner() {
     return owner;
   }
   
   @Override
-  public Object execute(Object target, List<Expression> arguments, ExecutionContext context) {
+  public JeezObject execute(JeezObject target, List<Expression> arguments, ExecutionContext context) {
     context.addLocalContext();
     
-    for (ClassAttribute attr : owner.getClassAttributes()) {
-      context.addToLocalContext(attr.getVariable());
+    for (Variable attr : owner.getClassAttributes()) {
+      context.addToLocalContext(attr);
     }
     // TODO instance variables
     
-    Object result = super.execute(target, arguments, context);
+    JeezObject result = super.execute(target, arguments, context);
     context.removeLocalContext();
     
     return result;

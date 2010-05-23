@@ -1,29 +1,17 @@
 package jeez.interpreter.execution.exception;
 
-@SuppressWarnings("unchecked")
 public class UnknownMessageException extends RuntimeException {
 
   private static final long serialVersionUID = -7540865694439999239L;
 
-  private Class clazz;
-  
-  private String variableName;
-  
   private String messageName;
   
-  public UnknownMessageException(Class clazz, String messageName) {
-    this.clazz = clazz;
+  public UnknownMessageException(String messageName) {
     this.messageName = messageName;
-  }
-  
-  public void setVariableName(String variableName) {
-    this.variableName = variableName;
   }
   
   @Override
   public String getMessage() {
-    return "Object" + (variableName != null ? " '" + variableName + "' " : " ")
-        + "of class '" + clazz.getName() + "' does not understand message '"
-        + messageName + "'";
+    return "Object does not understand message '" + messageName + "'.";
   }
 }

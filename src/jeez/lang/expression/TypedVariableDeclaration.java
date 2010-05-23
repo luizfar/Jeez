@@ -1,7 +1,9 @@
 package jeez.lang.expression;
 
-import jeez.interpreter.execution.ClassManager;
 import jeez.interpreter.execution.ExecutionContext;
+import jeez.interpreter.execution.exception.ClassNotFoundException;
+import jeez.lang.JeezClass;
+import jeez.lang.JeezObject;
 import jeez.lang.TypedVariable;
 
 public class TypedVariableDeclaration extends VariableDeclaration {
@@ -13,9 +15,12 @@ public class TypedVariableDeclaration extends VariableDeclaration {
     this.className = className;
   }
   
-  @SuppressWarnings("unchecked")
-  public Object evaluate(ExecutionContext context) {
-    Class clazz = ClassManager.findClass(className);
+  public JeezObject evaluate(ExecutionContext context) {
+    JeezClass clazz = context.getClass(className);
+    if (clazz == null) {
+      throw new ClassNotFoundException(className.toString());
+    }
+    
     TypedVariable var = new TypedVariable(clazz, variableName);
     context.addToLocalContext(var);
     
