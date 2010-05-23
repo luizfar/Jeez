@@ -1,8 +1,8 @@
 package jeez.lang.expression;
 
+import jeez.interpreter.execution.ClassManager;
+import jeez.interpreter.execution.ExecutionContext;
 import jeez.lang.TypedVariable;
-import jeez.lang.execution.ClassManager;
-import jeez.lang.execution.ExecutionContext;
 
 public class TypedVariableDeclaration extends VariableDeclaration {
 

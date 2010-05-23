@@ -3,9 +3,9 @@ package jeez.lang.expression;
 import java.util.ArrayList;
 import java.util.List;
 
+import jeez.interpreter.execution.ExecutionContext;
+import jeez.interpreter.execution.MethodInvoker;
 import jeez.interpreter.load.ClassCreator;
-import jeez.lang.execution.ExecutionContext;
-import jeez.lang.execution.MethodInvoker;
 
 public class MessageSend implements Expression {
 
@@ -44,7 +44,7 @@ public class MessageSend implements Expression {
       evaluatedArguments[i] = arguments.get(i).evaluate(context);
     }
     
-    return new MethodInvoker().invoke(target, messageName, evaluatedArguments);
+    return MethodInvoker.invoke(target, messageName, evaluatedArguments);
   }
 
   @Override

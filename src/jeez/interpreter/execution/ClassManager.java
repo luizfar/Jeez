@@ -1,6 +1,6 @@
-package jeez.lang.execution;
+package jeez.interpreter.execution;
 
-import jeez.lang.execution.exception.ClassNotFoundException;
+import jeez.interpreter.execution.exception.ClassNotFoundException;
 
 public class ClassManager {
 

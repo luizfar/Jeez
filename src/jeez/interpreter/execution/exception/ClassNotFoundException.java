@@ -1,4 +1,4 @@
-package jeez.lang.execution.exception;
+package jeez.interpreter.execution.exception;
 
 public class ClassNotFoundException extends RuntimeException {
 

@@ -1,12 +1,12 @@
 package jeez.interpreter;
 
 
+import jeez.interpreter.execution.ExecutionContext;
 import jeez.interpreter.lexer.JeezLexer;
 import jeez.interpreter.lexer.Symbol;
 import jeez.interpreter.parsers.JeezParser;
 import jeez.lang.Clazz;
 import jeez.lang.Module;
-import jeez.lang.execution.ExecutionContext;
 import jeez.lang.expression.Expression;
 
 public class JeezInterpreter {

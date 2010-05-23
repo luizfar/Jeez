@@ -3,7 +3,7 @@ package jeez.lang;
 import java.util.ArrayList;
 import java.util.List;
 
-import jeez.lang.execution.ExecutionContext;
+import jeez.interpreter.execution.ExecutionContext;
 import jeez.lang.expression.Expression;
 import jeez.lang.expression.ReturnExpression;
 

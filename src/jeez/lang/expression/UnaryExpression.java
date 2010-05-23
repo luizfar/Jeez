@@ -1,8 +1,8 @@
 package jeez.lang.expression;
 
+import jeez.interpreter.execution.ExecutionContext;
 import jeez.interpreter.lexer.Symbol;
 import jeez.interpreter.load.ClassCreator;
-import jeez.lang.execution.ExecutionContext;
 
 public class UnaryExpression implements Expression {
 

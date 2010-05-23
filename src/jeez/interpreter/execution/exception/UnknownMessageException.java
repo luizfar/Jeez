@@ -1,4 +1,4 @@
-package jeez.lang.execution.exception;
+package jeez.interpreter.execution.exception;
 
 @SuppressWarnings("unchecked")
 public class UnknownMessageException extends RuntimeException {

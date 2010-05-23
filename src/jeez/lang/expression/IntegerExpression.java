@@ -1,7 +1,7 @@
 package jeez.lang.expression;
 
+import jeez.interpreter.execution.ExecutionContext;
 import jeez.interpreter.load.ClassCreator;
-import jeez.lang.execution.ExecutionContext;
 import jeez.lang.Integer;
 
 public class IntegerExpression implements Expression {

@@ -1,11 +1,11 @@
-package jeez.lang.execution;
+package jeez.interpreter.execution;
 
 import static jeez.lang.Clazz.NEW;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
-import jeez.lang.execution.exception.UnknownMessageException;
+import jeez.interpreter.execution.exception.UnknownMessageException;
 
 public class MethodFinder {
 

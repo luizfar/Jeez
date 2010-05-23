@@ -1,13 +1,10 @@
-package jeez.lang.execution;
+package jeez.interpreter.execution;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import jeez.interpreter.load.ClassCreator;
-import jeez.interpreter.load.JavassistClassCreator;
-import jeez.lang.ClassVariable;
 import jeez.lang.Clazz;
 import jeez.lang.Module;
 import jeez.lang.ModuleVariable;
@@ -23,15 +20,13 @@ public class ExecutionContext {
   
   private Object self;
   
-  private ClassCreator classLoader = new JavassistClassCreator();
-  
   public ExecutionContext() {
     addLocalContext();
   }
   
   public void addClass(Clazz clazz) {
     classes.put(clazz.getName(), clazz);
-    addToLocalContext(new ClassVariable(clazz.accept(classLoader)));
+//    addToLocalContext();
   }
   
   public Clazz getClass(String name) {

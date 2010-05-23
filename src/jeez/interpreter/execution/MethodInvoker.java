@@ -1,4 +1,4 @@
-package jeez.lang.execution;
+package jeez.interpreter.execution;
 
 import static jeez.lang.Clazz.NEW;
 
@@ -6,16 +6,16 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import jeez.lang.execution.exception.UnknownMessageException;
+import jeez.interpreter.execution.exception.UnknownMessageException;
 
 public class MethodInvoker {
   
-  private JeezMethodsInvoker jeezMethodsInvoker = new JeezMethodsInvoker();
+  private static JeezMethodsInvoker jeezMethodsInvoker = new JeezMethodsInvoker();
   
-  private MethodFinder methodFinder = new MethodFinder();
+  private static MethodFinder methodFinder = new MethodFinder();
 
   @SuppressWarnings("unchecked")
-  public Object invoke(Object target, String methodName, Object[] arguments) {
+  public static Object invoke(Object target, String methodName, Object[] arguments) {
     Class clazz = target.getClass();
     
     if (clazz == Class.class && NEW.equals(methodName)) {
@@ -38,7 +38,7 @@ public class MethodInvoker {
   }
   
   @SuppressWarnings("unchecked")
-  private Object createObject(Class clazz, Object[] arguments) {
+  private static Object createObject(Class clazz, Object[] arguments) {
     Constructor constructor = methodFinder.findConstructor(clazz, arguments);
 
     try {

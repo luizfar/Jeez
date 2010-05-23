@@ -1,6 +1,6 @@
 package jeez.lang;
 
-import jeez.lang.execution.exception.TypeMismatchException;
+import jeez.interpreter.execution.exception.TypeMismatchException;
 
 @SuppressWarnings("unchecked")
 public class TypedVariable extends Variable {

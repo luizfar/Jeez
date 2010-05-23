@@ -1,4 +1,4 @@
-package jeez.lang.bootstrap;
+package jeez.interpreter.execution;
 
 public class Bootstrap {
 

@@ -1,9 +1,9 @@
-package jeez.lang.execution;
+package jeez.interpreter.execution;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import jeez.lang.execution.exception.UnknownMessageException;
+import jeez.interpreter.execution.exception.UnknownMessageException;
 
 @SuppressWarnings("unchecked")
 public class JeezMethodsInvoker {
