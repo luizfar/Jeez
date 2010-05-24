@@ -22,10 +22,9 @@ public class Method extends Function {
   public JeezObject execute(JeezObject target, List<Expression> arguments, ExecutionContext context) {
     context.addLocalContext();
     
-    for (Variable attr : owner.getClassAttributes()) {
+    for (Variable attr : target.getAttributes()) {
       context.addToLocalContext(attr);
     }
-    // TODO instance variables
     
     JeezObject result = super.execute(target, arguments, context);
     context.removeLocalContext();

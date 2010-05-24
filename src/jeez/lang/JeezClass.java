@@ -2,10 +2,17 @@ package jeez.lang;
 
 import static jeez.interpreter.execution.Bootstrap.CLASS;
 import static jeez.interpreter.execution.Bootstrap.OBJECT;
+import static jeez.interpreter.execution.Bootstrap.getObjectClass;
+import static jeez.lang.Constants.NEW;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import jeez.interpreter.execution.ExecutionContext;
+import jeez.interpreter.execution.MethodInvoker;
+import jeez.lang.expression.Expression;
 
 public class JeezClass extends JeezObject implements Type {
   
@@ -13,7 +20,7 @@ public class JeezClass extends JeezObject implements Type {
   
   private String name;
   
-  private Map<String, Variable> classAttributes = new HashMap<String, Variable>();
+  private Map<String, Attribute> classAttributes = new HashMap<String, Attribute>();
   
   private Map<String, Method> classMethods = new HashMap<String, Method>();
   
@@ -34,15 +41,15 @@ public class JeezClass extends JeezObject implements Type {
     return superClass;
   }
   
-  public void addToClassAttributes(Variable attribute) {
+  public void addToClassAttributes(Attribute attribute) {
     classAttributes.put(attribute.getName(), attribute);
   }
   
-  public Variable getClassAttribute(String name) {
+  public Attribute getClassAttribute(String name) {
     return classAttributes.get(name);
   }
   
-  public Collection<Variable> getClassAttributes() {
+  public Collection<Attribute> getClassAttributes() {
     return classAttributes.values();
   }
   
@@ -56,6 +63,36 @@ public class JeezClass extends JeezObject implements Type {
   
   public Collection<Method> getClassMethods() {
     return classMethods.values();
+  }
+  
+  public JeezObject createNewObject(List<Expression> arguments, ExecutionContext context) {
+    JeezObject object = new JeezObject(this);
+    for (Attribute attribute : getClassAttributes()) {
+      object.addToAttributes(new Variable(attribute.getName()));
+    }
+    
+    Method initializer = getClassMethod(NEW);
+    if (initializer != null) {
+      new MethodInvoker().doInvoke(object, initializer, NEW, arguments, context);
+    }
+    
+    return object;
+  }
+
+  public boolean isAssignableFrom(JeezClass clazz) {
+    if (equals(clazz)) {
+      return true;
+    }
+    
+    JeezClass superClass = clazz.getSuperClass();
+    while (superClass != getObjectClass()) {
+      if (equals(superClass)) {
+        return true;
+      }
+      superClass = superClass.getSuperClass();
+    }
+    
+    return false;
   }
   
   @Override
@@ -76,9 +113,5 @@ public class JeezClass extends JeezObject implements Type {
   @Override
   public java.lang.String toString() {
     return "Class " + getName();
-  }
-  
-  public boolean isAssignableFrom(JeezClass clazz) {
-    return equals(clazz);
   }
 }

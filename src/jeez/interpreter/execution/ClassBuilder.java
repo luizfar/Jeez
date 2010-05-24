@@ -1,6 +1,7 @@
 package jeez.interpreter.execution;
 
 import static jeez.interpreter.execution.Bootstrap.getObjectClass;
+import static jeez.lang.Constants.NEW;
 
 import java.util.List;
 
@@ -15,14 +16,18 @@ public class ClassBuilder {
     final JeezClass clazz = new JeezClass(name);
     clazz.setSuperClass(getObjectClass());
     
-    Method newObject = new Method(clazz, clazz, "new") {
+    Method newMethod = new Method(clazz, clazz, NEW) {
       @Override
       public JeezObject execute(JeezObject target, List<Expression> arguments, ExecutionContext context) {
-        return new JeezObject(clazz);
+        return clazz.createNewObject(arguments, context);
+      }
+      
+      @Override
+      public boolean acceptArguments(List<Expression> arguments) {
+        return true;
       }
     };
-    
-    clazz.addToMethods(newObject);
+    clazz.addToMethods(newMethod);
     
     return clazz;
   }

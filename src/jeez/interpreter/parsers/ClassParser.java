@@ -2,6 +2,7 @@ package jeez.interpreter.parsers;
 
 import static jeez.interpreter.lexer.Symbol.CLASS;
 import static jeez.interpreter.lexer.Symbol.COMMA;
+import static jeez.interpreter.lexer.Symbol.EXTENDS;
 import static jeez.interpreter.lexer.Symbol.LEFT_CUR_BRACKET;
 import static jeez.interpreter.lexer.Symbol.LEFT_PAR;
 import static jeez.interpreter.lexer.Symbol.RIGHT_CUR_BRACKET;
@@ -37,6 +38,11 @@ public class ClassParser {
     
     currentClass = classBuilder.build(mainParser.parseIdentifier());
     
+    if (mainParser.getToken() == EXTENDS) {
+      mainParser.nextToken();
+      currentClass.setSuperClass(classBuilder.build(mainParser.parseIdentifier()));
+    }
+    
     mainParser.expect(LEFT_CUR_BRACKET);
     
     while (mainParser.getToken() != RIGHT_CUR_BRACKET) {
@@ -60,7 +66,7 @@ public class ClassParser {
     if (mainParser.getToken() == LEFT_PAR) {
       currentClass.addToMethods(parseMethod(type, name));
     } else {
-      currentClass.addToAttributes(new Attribute(name));
+      currentClass.addToAttributes(new Variable(name));
     }
   }
 
@@ -71,7 +77,7 @@ public class ClassParser {
     if (mainParser.getToken() == LEFT_PAR) {
       currentClass.addToClassMethods(parseMethod(type, name));
     } else {
-      currentClass.addToClassAttributes(new Variable(name));
+      currentClass.addToClassAttributes(new Attribute(name));
     } 
   }    
   

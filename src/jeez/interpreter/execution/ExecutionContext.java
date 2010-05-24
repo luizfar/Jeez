@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import jeez.interpreter.execution.exception.ClassNotFoundException;
 import jeez.lang.JeezClass;
 import jeez.lang.JeezObject;
 import jeez.lang.Module;
@@ -28,14 +29,28 @@ public class ExecutionContext {
   
   public void prepare() {
     addLocalContext();
-    addClass(getObjectClass());
-    addClass(getClassClass());
-    addClass(getBooleanClass());
-    addClass(getIntegerClass());
-    addClass(getStringClass());
+    
+    addClass(getObjectClass(), false);
+    addClass(getClassClass(), false);
+    addClass(getBooleanClass(), false);
+    addClass(getIntegerClass(), false);
+    addClass(getStringClass(), false);
   }
   
   public void addClass(JeezClass clazz) {
+    addClass(clazz, true);
+  }
+  
+  private void addClass(JeezClass clazz, boolean resolveSuperclass) {
+    if (resolveSuperclass) {
+      String superClassName = clazz.getSuperClass().getName();
+      JeezClass superClass = classes.get(superClassName);
+      if (superClass == null) {
+        throw new ClassNotFoundException(superClassName);
+      }
+      clazz.setSuperClass(superClass);
+    }
+    
     classes.put(clazz.getName(), clazz);
     addToLocalContext(new Variable(clazz.getName(), clazz));
   }

@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class JeezObject {
   
-  private Map<String, Attribute> attributes = new HashMap<String, Attribute>();
+  private Map<String, Variable> attributes = new HashMap<String, Variable>();
   
   private Map<String, Method> methods = new HashMap<String, Method>();
 
@@ -23,15 +23,15 @@ public class JeezObject {
     return clazz;
   }
   
-  public void addToAttributes(Attribute attribute) {
+  public void addToAttributes(Variable attribute) {
     attributes.put(attribute.getName(), attribute);
   }
   
-  public Attribute getAttribute(String name) {
+  public Variable getAttribute(String name) {
     return attributes.get(name);
   }
   
-  public Collection<Attribute> getAttributes() {
+  public Collection<Variable> getAttributes() {
     return attributes.values();
   }
   

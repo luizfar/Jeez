@@ -50,6 +50,11 @@ public class Function {
     return block;
   }
   
+  public boolean acceptArguments(List<Expression> arguments) {
+    return arguments.size() == parameters.size();
+  }
+  
+  // TODO function should not have target
   public JeezObject execute(JeezObject target, List<Expression> arguments, ExecutionContext context) {
     context.addLocalContext();
     context.setSelfContext(target);
