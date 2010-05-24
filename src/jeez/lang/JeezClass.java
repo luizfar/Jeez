@@ -72,9 +72,7 @@ public class JeezClass extends JeezObject implements Type {
     }
     
     Method initializer = getClassMethod(NEW);
-    if (initializer != null) {
-      new MethodInvoker().doInvoke(object, initializer, NEW, arguments, context);
-    }
+    new MethodInvoker().doInvoke(object, initializer, NEW, arguments, context);
     
     return object;
   }

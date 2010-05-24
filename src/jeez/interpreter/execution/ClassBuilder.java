@@ -16,6 +16,14 @@ public class ClassBuilder {
     final JeezClass clazz = new JeezClass(name);
     clazz.setSuperClass(getObjectClass());
     
+    Method defaultInitializer = new Method(clazz, clazz, NEW) {
+      @Override
+      public JeezObject execute(JeezObject target, List<Expression> arguments, ExecutionContext context) {
+        return target;
+      }
+    };
+    clazz.addToClassMethods(defaultInitializer);
+    
     Method newMethod = new Method(clazz, clazz, NEW) {
       @Override
       public JeezObject execute(JeezObject target, List<Expression> arguments, ExecutionContext context) {
