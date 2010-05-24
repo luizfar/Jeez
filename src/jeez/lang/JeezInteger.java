@@ -22,8 +22,29 @@ public class JeezInteger extends JeezClass {
     };
     _add.addToParameters(new TypedVariable(this, "i"));
     
-    addToClassMethods(_add);
+    Method _minus = new Method(this, this, "_minus") {
+      @Override
+      public JeezObject execute(JeezObject target, List<Expression> arguments, ExecutionContext context) {
+        Integer self = (Integer) target; 
+        Integer i = (Integer) arguments.get(0).evaluate(context);
+        return new Integer(self.value - i.value);
+      }
+    };
+    _minus.addToParameters(new TypedVariable(this, "i"));
     
+    Method _times = new Method(this, this, "_times") {
+      @Override
+      public JeezObject execute(JeezObject target, List<Expression> arguments, ExecutionContext context) {
+        Integer self = (Integer) target; 
+        Integer i = (Integer) arguments.get(0).evaluate(context);
+        return new Integer(self.value * i.value);
+      }
+    };
+    _times.addToParameters(new TypedVariable(this, "i"));
+    
+    addToClassMethods(_add);
+    addToClassMethods(_minus);
+    addToClassMethods(_times);
   }
   
   public static class Integer extends JeezObject  implements Comparable<Integer> {

@@ -33,6 +33,7 @@ import static jeez.interpreter.lexer.Symbol.SHORT_OR;
 import static jeez.interpreter.lexer.Symbol.TRUE;
 import static jeez.interpreter.lexer.Symbol.XOR;
 import jeez.interpreter.lexer.Symbol;
+import jeez.lang.JeezInteger;
 import jeez.lang.expression.AssignmentExpression;
 import jeez.lang.expression.BinaryExpression;
 import jeez.lang.expression.BinaryOperator;
@@ -52,7 +53,6 @@ import jeez.lang.expression.TypedVariableDeclaration;
 import jeez.lang.expression.UnaryExpression;
 import jeez.lang.expression.VariableDeclaration;
 import jeez.lang.expression.VariableExpression;
-import jeez.lang.JeezInteger;
 
 public class ExpressionParser {
   
@@ -63,20 +63,6 @@ public class ExpressionParser {
   }
   
   public Expression parseExpression() {
-    Expression expression = parseExpressionHelper();
-    while (mainParser.getToken() == Symbol.DOT || mainParser.getToken() == Symbol.ASSIGN) {
-      if (mainParser.getToken() == Symbol.DOT) {
-        expression = parseMessageSendExpression(expression);
-      }
-      if (mainParser.getToken() == Symbol.ASSIGN) {
-        expression = parseAssignmentExpression(expression);
-      }
-    }
-    
-    return expression;
-  }
-  
-  private Expression parseExpressionHelper() {
     Expression expression = null;
     switch (mainParser.getToken()) {
       case IF:
@@ -332,14 +318,18 @@ public class ExpressionParser {
   }
 
   private Expression parsePrimaryExpression() {
+    Expression expression;
+    
     switch (mainParser.getToken()) {
       case NULL:
         mainParser.nextToken();
-        return new NullExpression();
+        expression = new NullExpression();
+        break;
       
       case SELF:
         mainParser.nextToken();
-        return new SelfExpression();
+        expression =  new SelfExpression();
+        break;
         
       case LEFT_PAR:
         throw new RuntimeException(mainParser.getLineNumber() + ": Not yet implemented.");
@@ -348,20 +338,36 @@ public class ExpressionParser {
         throw new RuntimeException("Not yet implemented.");
       
       case IDENTIFIER:
-        return parseDeclarationOrVariableOrMethodExpression();
+        expression =  parseDeclarationOrVariableOrMethodExpression();
+        break;
       
       case TRUE:
       case FALSE:
-        return parseLiteralBooleanExpression();
+        expression =  parseLiteralBooleanExpression();
+        break;
         
       case INTEGER:
-        return parseIntegerExpression();
+        expression =  parseIntegerExpression();
+        break;
       
       case LITERAL_STRING:
-        return parseLiteralStringExpression();
+        expression =  parseLiteralStringExpression();
+        break;
+        
+      default:
+        throw new RuntimeException("Identifier, 'true', 'false', 'null', 'self', '(', '[' or a literal value expected.");
     }
     
-    throw new RuntimeException(mainParser.getLineNumber() + ": Should throw an error here");
+    while (mainParser.getToken() == Symbol.DOT || mainParser.getToken() == Symbol.ASSIGN) {
+      if (mainParser.getToken() == Symbol.DOT) {
+        expression = parseMessageSendExpression(expression);
+      }
+      if (mainParser.getToken() == Symbol.ASSIGN) {
+        expression = parseAssignmentExpression(expression);
+      }
+    }
+    
+    return expression;
   }
 
   private Expression parseDeclarationOrVariableOrMethodExpression() {

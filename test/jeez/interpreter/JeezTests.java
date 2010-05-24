@@ -50,7 +50,6 @@ public class JeezTests {
     String code = 
       "class Dog {\n" +
       "  def name\n" +
-      "  static def dogCount\n" +
       "  def setName(n) {\n" +
       "    name = n\n" +
       "  }\n" +
@@ -60,14 +59,10 @@ public class JeezTests {
       "  def bark() {\n" +
       "    println \"woof woof\"\n" +
       "  }\n" +
-      "  static def getCount(){\n" +
-      "    return dogCount\n" +
-      "  }\n" +
       "}\n" +
       "def d = Dog.new()\n" +
       "d.setName(\"Rex\")\n" +
       "println d.getName()\n" +
-      "println Dog.getCount()\n" +
       "println Dog.getName()\n" +
       "if (d.understands(\"bark\")) {\n" +
       "  d.bark()\n" +
@@ -88,7 +83,6 @@ public class JeezTests {
     
     String expectedOutput = 
       "Rex\n" +
-      "null\n" +
       "Dog\n" +
       "woof woof\n" +
       "Class Class\n" +
@@ -295,6 +289,8 @@ public class JeezTests {
       "print \"i after: \"\n" +
       "println i\n" +
       "println Math.sub(5, 3)\n";
+    
+    originalOut.println(code);
     
     String expectedOutput = 
       "i before: 10\n" +

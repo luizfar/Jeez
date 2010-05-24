@@ -1,7 +1,6 @@
 package jeez.lang;
 
 import static jeez.interpreter.execution.Bootstrap.CLASS;
-import static jeez.interpreter.execution.Bootstrap.OBJECT;
 import static jeez.interpreter.execution.Bootstrap.getObjectClass;
 import static jeez.lang.Constants.NEW;
 
@@ -16,7 +15,7 @@ import jeez.lang.expression.Expression;
 
 public class JeezClass extends JeezObject implements Type {
   
-  private JeezClass superClass = OBJECT;
+  private JeezClass superClass;
   
   private String name;
   
@@ -27,6 +26,10 @@ public class JeezClass extends JeezObject implements Type {
   public JeezClass(String string) {
     super(CLASS);
     this.name = string;
+  }
+  
+  public void init() {
+    clazz = CLASS;
   }
   
   public String getName() {
@@ -67,14 +70,28 @@ public class JeezClass extends JeezObject implements Type {
   
   public JeezObject createNewObject(List<Expression> arguments, ExecutionContext context) {
     JeezObject object = new JeezObject(this);
-    for (Attribute attribute : getClassAttributes()) {
-      object.addToAttributes(new Variable(attribute.getName()));
-    }
+    addAttributesTo(object);
     
     Method initializer = getClassMethod(NEW);
     new MethodInvoker().doInvoke(object, initializer, NEW, arguments, context);
     
     return object;
+  }
+  
+  private void addAttributesTo(JeezObject object) {
+    for (Attribute attribute : getClassAttributes()) {
+      object.addToAttributes(new Variable(attribute.getName()));
+    }
+    addInheritedAttributesTo(object);
+  }
+  
+  private void addInheritedAttributesTo(JeezObject object) {
+    if (this != getSuperClass()) {
+      for (Attribute attribute : getSuperClass().getClassAttributes()) {
+        object.addToAttributes(new Variable(attribute.getName()));
+      }
+      getSuperClass().addInheritedAttributesTo(object);
+    }
   }
 
   public boolean isAssignableFrom(JeezClass clazz) {

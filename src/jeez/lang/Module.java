@@ -1,5 +1,7 @@
 package jeez.lang;
 
+import static jeez.interpreter.execution.Bootstrap.getModuleClass;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,6 +12,7 @@ public class Module extends JeezObject {
   private Map<String, Function> functions = new HashMap<String, Function>();
   
   public Module(String name) {
+    super(getModuleClass());
     this.name = name;
   }
   

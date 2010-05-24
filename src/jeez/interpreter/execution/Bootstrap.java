@@ -19,15 +19,17 @@ public class Bootstrap {
   
   private static ClassBuilder CLASS_BUILDER = new ClassBuilder();
   
-  public static JeezBoolean BOOLEAN;
+  private static JeezBoolean BOOLEAN;
   
-  public static JeezInteger INTEGER;
+  private static JeezInteger INTEGER;
   
-  public static JeezString STRING;
+  private static JeezString STRING;
   
-  public static JeezClass OBJECT;
+  private static JeezClass OBJECT;
   
-  public static JeezClass CLASS;
+  private static JeezClass MODULE;
+  
+  public static JeezClass CLASS = getClassClass();
   
   public static JeezClass getBooleanClass() {
     if (BOOLEAN == null) {
@@ -51,6 +53,14 @@ public class Bootstrap {
       STRING.setSuperClass(OBJECT);
     }
     return STRING;
+  }
+  
+  public static JeezClass getModuleClass() {
+    if (MODULE == null) {
+      MODULE = CLASS_BUILDER.build("Module");
+      MODULE.setSuperClass(OBJECT);
+    }
+    return MODULE;
   }
   
   public static JeezClass getObjectClass() {
@@ -115,12 +125,19 @@ public class Bootstrap {
         }
       };
       equals.addToParameters(new TypedVariable(OBJECT, "another"));
-
+      
+      Method getClass = new Method(OBJECT, getClassClass(), "getClass") {
+        @Override
+        public JeezObject execute(JeezObject target, List<Expression> arguments, ExecutionContext context) {
+          return target.getJeezClass();
+        }
+      };
       
       OBJECT.addToMethods(newObject);
       OBJECT.addToClassMethods(showMethods);
       OBJECT.addToClassMethods(understands);
       OBJECT.addToClassMethods(equals);
+      OBJECT.addToClassMethods(getClass);
     }
     return OBJECT;
   }
@@ -128,17 +145,31 @@ public class Bootstrap {
   public static JeezClass getClassClass() {
     if (CLASS == null) {
       CLASS = CLASS_BUILDER.build("Class");
+      CLASS.init();
+      CLASS.setSuperClass(getObjectClass());
       
       Method newClass = new Method(CLASS, CLASS, NEW) {
         @Override
         public JeezObject execute(JeezObject target, List<Expression> arguments,ExecutionContext context) {
           String name = ((JeezString.String) arguments.get(0).evaluate(context)).toString();
-          return CLASS_BUILDER.build(name);
+          JeezClass clazz = CLASS_BUILDER.build(name);
+          context.addClass(clazz);
+          
+          return clazz;
         }
       };
       newClass.addToParameters(new TypedVariable(getStringClass(), "name"));
       
+      Method getName = new Method(CLASS, getStringClass(), "getName") {
+        @Override
+        public JeezObject execute(JeezObject target, List<Expression> arguments, ExecutionContext context) {
+          JeezClass clazz = (JeezClass) target;
+          return new JeezString.String(clazz.getName());
+        }
+      };
+      
       CLASS.addToMethods(newClass);
+      CLASS.addToClassMethods(getName);
     }
     
     return CLASS;

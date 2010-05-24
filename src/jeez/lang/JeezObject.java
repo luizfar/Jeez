@@ -10,7 +10,7 @@ public class JeezObject {
   
   private Map<String, Method> methods = new HashMap<String, Method>();
 
-  private JeezClass clazz;
+  protected JeezClass clazz;
   
   public JeezObject() {
   }

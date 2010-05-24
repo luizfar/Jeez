@@ -21,12 +21,12 @@ public class Method extends Function {
   @Override
   public JeezObject execute(JeezObject target, List<Expression> arguments, ExecutionContext context) {
     context.addLocalContext();
-    
     for (Variable attr : target.getAttributes()) {
       context.addToLocalContext(attr);
     }
     
     JeezObject result = super.execute(target, arguments, context);
+    
     context.removeLocalContext();
     
     return result;

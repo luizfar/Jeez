@@ -1,6 +1,6 @@
 package jeez.lang.expression;
 
-import static java.lang.Boolean.TRUE;
+import static jeez.lang.JeezBoolean.TRUE;
 import jeez.interpreter.execution.ExecutionContext;
 import jeez.lang.JeezObject;
 
