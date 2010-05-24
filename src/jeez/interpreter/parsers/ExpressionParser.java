@@ -122,12 +122,26 @@ public class ExpressionParser {
   
   private Expression parsePrintExpression() {
     mainParser.expect(PRINT);
-    return new PrintExpression(parseExpression());
+    PrintExpression expression = new PrintExpression();
+    expression.addToExpressions(parseExpression());
+    while (mainParser.getToken() == COMMA) {
+      mainParser.nextToken();
+      expression.addToExpressions(parseExpression());
+    }
+    
+    return expression;
   }
   
   private Expression parsePrintlnExpressiont() {
     mainParser.expect(PRINTLN);
-    return new PrintlnExpression(parseExpression());
+    PrintlnExpression expression = new PrintlnExpression();
+    expression.addToExpressions(parseExpression());
+    while (mainParser.getToken() == COMMA) {
+      mainParser.nextToken();
+      expression.addToExpressions(parseExpression());
+    }
+    
+    return expression;
   }
   
   private Expression parseDynamicDeclaration() {

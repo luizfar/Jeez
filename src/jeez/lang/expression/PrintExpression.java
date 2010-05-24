@@ -1,23 +1,29 @@
 package jeez.lang.expression;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jeez.interpreter.execution.ExecutionContext;
 import jeez.lang.JeezObject;
 
 public class PrintExpression implements Expression {
 
-  private Expression expression;
+  private List<Expression> expressions = new ArrayList<Expression>();
   
-  public PrintExpression(Expression expression) {
-    this.expression = expression;
+  public void addToExpressions(Expression expression) {
+    expressions.add(expression);
   }
   
-  public Expression getExpression() {
-    return expression;
+  public List<Expression> getExpressions() {
+    return expressions;
   }
   
   @Override
   public JeezObject evaluate(ExecutionContext context) {
-    System.out.print(expression.evaluate(context));
+    for (Expression expression : expressions) {
+      System.out.print(expression.evaluate(context));
+    }
+    
     return null;
   }
 }
