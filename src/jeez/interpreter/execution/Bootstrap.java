@@ -68,14 +68,7 @@ public class Bootstrap {
       OBJECT = new JeezClass("Object");
       OBJECT.setSuperClass(OBJECT);
       
-      Method newObject = new Method(OBJECT, OBJECT, "new") {
-        @Override
-        public JeezObject execute(JeezObject target, List<Expression> arguments, ExecutionContext context) {
-          return new JeezObject(OBJECT);
-        }
-      };
-      
-      Method showMethods = new Method(OBJECT, STRING, "showMethods") {
+      Method showMethods = new Method(OBJECT, getStringClass(), "showMethods") {
         @Override
         public JeezObject execute(JeezObject target, List<Expression> arguments, ExecutionContext context) {
           StringBuilder builder = new StringBuilder();
@@ -107,7 +100,7 @@ public class Bootstrap {
         }
       };
       
-      Method understands = new Method(OBJECT, BOOLEAN, "understands") {
+      Method understands = new Method(OBJECT, getBooleanClass(), "understands") {
         @Override
         public JeezObject execute(JeezObject target, List<Expression> arguments, ExecutionContext context) {
           String messageName = ((JeezString.String) arguments.get(0).evaluate(context)).toString();
@@ -117,7 +110,7 @@ public class Bootstrap {
       };
       understands.addToParameters(new TypedVariable(getStringClass(), "message"));
       
-      Method equals = new Method(OBJECT, BOOLEAN, "equals") {
+      Method equals = new Method(OBJECT, getBooleanClass(), "equals") {
         @Override
         public JeezObject execute(JeezObject target, List<Expression> arguments, ExecutionContext context) {
           JeezObject another = arguments.get(0).evaluate(context);
@@ -133,11 +126,21 @@ public class Bootstrap {
         }
       };
       
-      OBJECT.addToMethods(newObject);
+      Method is = new Method(OBJECT, getBooleanClass(), "is") {
+        @Override
+        public JeezObject execute(JeezObject target, List<Expression> arguments, ExecutionContext context) {
+          JeezClass superClass = (JeezClass) arguments.get(0).evaluate(context);
+          JeezClass clazz = target.getJeezClass();
+          return (clazz.equals(superClass) || clazz.isSubClassOf(superClass)) ? TRUE : FALSE;
+        }
+      };
+      is.addToParameters(new TypedVariable(getClassClass(), "clazz"));
+      
       OBJECT.addToClassMethods(showMethods);
       OBJECT.addToClassMethods(understands);
       OBJECT.addToClassMethods(equals);
       OBJECT.addToClassMethods(getClass);
+      OBJECT.addToClassMethods(is);
     }
     return OBJECT;
   }

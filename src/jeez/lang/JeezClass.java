@@ -93,21 +93,29 @@ public class JeezClass extends JeezObject implements Type {
       getSuperClass().addInheritedAttributesTo(object);
     }
   }
+  
+  public boolean isSubClassOf(JeezClass clazz) {
+    JeezClass superClass = getSuperClass();
+    while (superClass != getObjectClass()) {
+      if (superClass.equals(clazz)) {
+        return true;
+      }
+      superClass = superClass.getSuperClass();
+    }
+    
+    if (clazz == getObjectClass()) {
+      return true;
+    }
+    
+    return false;
+  }
 
   public boolean isAssignableFrom(JeezClass clazz) {
     if (equals(clazz)) {
       return true;
     }
     
-    JeezClass superClass = clazz.getSuperClass();
-    while (superClass != getObjectClass()) {
-      if (equals(superClass)) {
-        return true;
-      }
-      superClass = superClass.getSuperClass();
-    }
-    
-    return false;
+    return clazz.isSubClassOf(this);
   }
   
   @Override

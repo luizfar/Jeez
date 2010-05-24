@@ -44,7 +44,6 @@ public class Lexer {
     KEYWORDS.put("abstract", Symbol.ABSTRACT);
     KEYWORDS.put("print", Symbol.PRINT);
     KEYWORDS.put("println", Symbol.PRINTLN);
-    KEYWORDS.put("is", Symbol.IS);
     KEYWORDS.put("def", Symbol.DEF);
     KEYWORDS.put("module", Symbol.MODULE);
     
